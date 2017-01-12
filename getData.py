@@ -30,11 +30,11 @@ def percentChange(dataSet1, dataSet2):
 	return round((netChange(dataSet1,dataSet2) / getClosePrice(dataSet1) * 100), ROUND_PRECISION)
 
 def dayRange(dataSet):
-	return round(getClosePrice - getOpenPrice(dataSet), ROUND_PRECISION)
+	return round(getClosePrice(dataSet) - getOpenPrice(dataSet), ROUND_PRECISION)
 	
 # Main
 
 SpxData = [line.rstrip('\n') for line in open('Data\Test.csv')]
 for idx, val in enumerate(SpxData):
 	if(idx != 0) and (idx < len(SpxData)-1):		
-		print(percentChange(SpxData[idx + 1], val))
+		print(dayRange(val))
