@@ -3,12 +3,12 @@ from PriceData import PriceData
 class EquityData:
 
 	ROUND_PERCISION = 2
-	MOV_AVG = [5,30]
+	MOV_AVG = [5,10]
 
 	def __init__(self, csvFile):
 		self.allData = []
 		self.parseCsvFile(csvFile)
-		self.calcMovAvg()
+		self.calcMovAvgs()
 
 	def parseCsvFile(self, csvFile):
 		data = [line.rstrip('\n') for line in open(csvFile)]
@@ -16,14 +16,14 @@ class EquityData:
 			if(idx != 0):		
 				self.allData.append((PriceData(csvline)))	
 
-	def calcMovAvg(self):
+	def calcMovAvgs(self):
 		for idx, priceData in reversed(list(enumerate(self.allData))):
-			if(idx > self.MOV_AVG[0]):
-				periodStart = idx - self.MOV_AVG[0]
-				priceData.movAvg.append(sum(self.allData[i].close for i in range(periodStart, idx)) / self.MOV_AVG[0])
-			else:
-				priceData.movAvg.append(0)
-
+			for period in self.MOV_AVG:
+				if(idx > period):
+					periodStart = idx - period
+					priceData.movAvg.append(sum(self.allData[i].close for i in range(periodStart, idx)) / period)
+				else:
+					priceData.movAvg.append(0)
 
 	def displayData(self):
 		for day in self.allData:
