@@ -3,11 +3,7 @@ from PriceData import PriceData
 class EquityData:
 
 	ROUND_PERCISION = 2
-	MOV_AVG_1 = 5
-	MOV_AVG_2 = 50
-	MOV_AVG_3 = 100
-	MOV_AVG_4 = 200
-	MOV_AVG_5 = 300
+	MOV_AVG = [20,30]
 
 	def __init__(self, csvFile):
 		self.allData = []
@@ -22,10 +18,9 @@ class EquityData:
 
 	def calcMovAvg(self):
 		for idx, priceData in reversed(list(enumerate(self.allData))):
-			if(idx > self.MOV_AVG_1):
-				periodStart = idx - self.MOV_AVG_1
-				priceData.movAvg1 = sum(self.allData[i].close for i in range(periodStart, idx)) / self.MOV_AVG_1
-
+			if(idx > self.MOV_AVG[0]):
+				periodStart = idx - self.MOV_AVG[0]
+				priceData.movAvg1 = sum(self.allData[i].close for i in range(periodStart, idx)) / self.MOV_AVG[0]
 
 
 	def displayData(self):
