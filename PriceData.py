@@ -2,7 +2,9 @@ from datetime import datetime
 
 class PriceData:
 	def __init__(self, csvLine):
-		self.parseCsvLine(csvLine)		
+		self.parseCsvLine(csvLine)
+		self.netChange = 0
+		self.movAvg20 = 0
 
 	def parseCsvLine(self, csvLine):
 		csvData = csvLine.split(',')
