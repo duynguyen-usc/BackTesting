@@ -19,7 +19,9 @@ class EquityData:
 	def runInterDayCalculations(self):
 		for idx, priceData in reversed(list(enumerate(self.allData))):
 			if(idx < len(self.allData) - 1):
-				priceData.netChange = priceData.close - self.allData[idx + 1].close
+				yesterdaysClose = self.allData[idx + 1].close
+				priceData.netChange = priceData.close - yesterdaysClose
+				priceData.netPercentChange = (priceData.netChange / yesterdaysClose) * 100
 
 			for period in self.MOV_AVG:
 				if(idx > period):
@@ -30,7 +32,6 @@ class EquityData:
 
 	def displayData(self):
 		for day in self.allData:
-			print("{0} {1} {2} {3}".format(str(day.date.strftime('%m/%d/%Y')), 
-								  	       str(round(day.close, self.ROUND_PERCISION)),
-									       str(round(day.netChange, self.ROUND_PERCISION)), 
-									       str(round(day.movAvg[len(day.movAvg)-1], self.ROUND_PERCISION))))
+			print("{0} {1} {2}".format(str(day.date.strftime('%m/%d/%y')), 
+								  	   str(round(day.close, self.ROUND_PERCISION)),
+									   str(round(day.netPercentChange, self.ROUND_PERCISION)) + '%'))

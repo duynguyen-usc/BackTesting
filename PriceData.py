@@ -4,6 +4,7 @@ class PriceData:
 	def __init__(self, csvLine):
 		self.parseCsvLine(csvLine)
 		self.netChange = 0
+		self.netPercentChange = 0
 		self.movAvg = []
 
 	def parseCsvLine(self, csvLine):
