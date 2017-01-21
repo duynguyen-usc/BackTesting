@@ -2,7 +2,7 @@ from PriceData import PriceData
 
 class EquityData:
 
-	ROUND_PERCISION = 2
+	NUMBER_FORMAT = '.2f'
 	MOV_AVG = [20,50, 100, 200, 300]
 
 	def __init__(self, csvFile):
@@ -32,6 +32,6 @@ class EquityData:
 
 	def displayData(self):
 		for day in self.allData:
-			print("{0} {1} {2}".format(str(day.date.strftime('%m/%d/%y')), 
-								  	   str(round(day.close, self.ROUND_PERCISION)),
-									   str(round(day.netPercentChange, self.ROUND_PERCISION)) + '%'))
+			print("{0}:    {1}    {2}".format(str(day.date.strftime('%m/%d/%y')), 
+								  	          str(format(day.close, self.NUMBER_FORMAT)),
+									          str(format(day.netPercentChange, self.NUMBER_FORMAT)) + '%'))
