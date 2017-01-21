@@ -5,5 +5,5 @@ from EquityData import EquityData
 
 path = os.path.dirname(os.path.realpath(__file__))
 os.chdir(path)
-testData = EquityData('Data/Test.csv')
-testData.displayData()
+testData = EquityData('Data/SPX.csv')
+testData.movAvgTable()
