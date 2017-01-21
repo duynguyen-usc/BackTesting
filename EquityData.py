@@ -18,15 +18,16 @@ class EquityData:
 
 	def runInterDayCalculations(self):
 		for idx, priceData in reversed(list(enumerate(self.allData))):
-			if(idx < len(self.allData) - 1):
+			indexCount = len(self.allData) - 1
+			if(idx < indexCount):
 				yesterdaysClose = self.allData[idx + 1].close
 				priceData.netChange = priceData.close - yesterdaysClose
 				priceData.netPercentChange = (priceData.netChange / yesterdaysClose) * 100
 
 			for period in self.MOV_AVG:
-				if(idx > period):
-					periodStart = idx - period
-					priceData.movAvg.append(sum(self.allData[i].close for i in range(periodStart, idx)) / period)
+				idxOfFirstDay = idx + period
+				if(idxOfFirstDay < indexCount):
+					priceData.movAvg.append(sum(self.allData[i].close for i in range(idx, idxOfFirstDay)) / period)
 				else:
 					priceData.movAvg.append(0)
 
