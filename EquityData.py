@@ -17,8 +17,8 @@ class EquityData:
 				self.allData.append((PriceData(csvline)))
 
 	def runInterDayCalculations(self):
-		for idx, priceData in reversed(list(enumerate(self.allData))):
-			indexCount = len(self.allData) - 1
+		indexCount = len(self.allData) - 1
+		for idx, priceData in (enumerate(self.allData)):			
 			if(idx < indexCount):
 				yesterdaysClose = self.allData[idx + 1].close
 				priceData.netChange = priceData.close - yesterdaysClose
@@ -30,6 +30,7 @@ class EquityData:
 					priceData.movAvg.append(sum(self.allData[i].close for i in range(idx, idxOfFirstDay)) / period)
 				else:
 					priceData.movAvg.append(0)
+
 
 	def percentChangeTable(self):
 		for day in self.allData:
