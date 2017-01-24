@@ -1,11 +1,11 @@
 import os
-import statistics
+import numpy
 from PriceData import PriceData
 
 class EquityData:
 	PRINT_SPACING = '   '
 	NUMBER_FORMAT = '.2f'
-	MOV_AVG = [20, 50, 100, 200, 300]
+	MOV_AVG = [20, 200]
 
 	def __init__(self, csvFile):
 		self.allData = []
@@ -34,13 +34,17 @@ class EquityData:
 	def calcStdDev(self, numberOfDays, indexStart):
 		indexEnd = indexStart + numberOfDays
 		if(indexEnd < self.count):
-			return statistics.stdev([self.allData[i].close for i in range(indexStart, indexEnd)])
+			return numpy.std([self.allData[i].close for i in range(indexStart, indexEnd)])
 		return 0
 
 	def calcAllMovAvgs(self):
 		for idx, priceData in (enumerate(self.allData)):
 			for period in self.MOV_AVG:				
 				priceData.movAvg.append(self.calcMovAvg(period, idx))
+				if (period == 20):
+					stddev = self.calcStdDev(period, idx)
+					priceData.upperBand = 2 * stddev
+					priceData.lowerBand = -2 * stddev
 
 	def displayPercentChange(self):
 		for day in self.allData:

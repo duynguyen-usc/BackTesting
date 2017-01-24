@@ -6,6 +6,8 @@ class PriceData:
 		self.netChange = 0
 		self.netPercentChange = 0
 		self.movAvg = []
+		self.upperBand = 0
+		self.lowerBand = 0
 
 	def parseCsvLine(self, csvLine):
 		csvData = csvLine.split(',')
