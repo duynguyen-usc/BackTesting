@@ -28,7 +28,7 @@ class EquityData:
 	def calcMovAvg(self, numberOfDays, indexStart):
 		indexEnd = indexStart + numberOfDays
 		if(indexEnd < self.count):
-			return statistics.mean([self.allData[i].close for i in range(indexStart, indexEnd)])
+			return sum(self.allData[i].close for i in range(indexStart, indexEnd)) / numberOfDays
 		return 0
 
 	def calcStdDev(self, numberOfDays, indexStart):
@@ -39,12 +39,8 @@ class EquityData:
 
 	def calcAllMovAvgs(self):
 		for idx, priceData in (enumerate(self.allData)):
-			for period in self.MOV_AVG:
-				idxOfFirstDay = idx + period
-				if(idxOfFirstDay < self.count):
-					priceData.movAvg.append(sum(self.allData[i].close for i in range(idx, idxOfFirstDay)) / period)
-				else:
-					priceData.movAvg.append(0)
+			for period in self.MOV_AVG:				
+				priceData.movAvg.append(self.calcMovAvg(period, idx))
 
 	def displayPercentChange(self):
 		for day in self.allData:
@@ -70,5 +66,7 @@ class EquityData:
 path = os.path.dirname(os.path.realpath(__file__))
 os.chdir(path)
 testData = EquityData('Data/SPX.csv')
-print(testData.calcMovAvg(20, 0))
-print(testData.calcStdDev(20, 0))
+# print(testData.calcMovAvg(20, 0))
+# print(testData.calcStdDev(20, 0))
+testData.calcAllMovAvgs()
+testData.movAvgTable()
