@@ -8,7 +8,6 @@ class EquityData:
 	def __init__(self, csvFile):
 		self.allData = []
 		self.parseCsvFile(csvFile)
-		self.runInterDayCalculations()
 
 	def parseCsvFile(self, csvFile):
 		data = [line.rstrip('\n') for line in open(csvFile)]
@@ -16,14 +15,17 @@ class EquityData:
 			if(idx != 0):		
 				self.allData.append((PriceData(csvline)))
 
-	def runInterDayCalculations(self):
+	def calcNetChange(self):
 		indexCount = len(self.allData) - 1
-		for idx, priceData in (enumerate(self.allData)):			
+		for idx, priceData in (enumerate(self.allData)):
 			if(idx < indexCount):
 				yesterdaysClose = self.allData[idx + 1].close
 				priceData.netChange = priceData.close - yesterdaysClose
 				priceData.netPercentChange = (priceData.netChange / yesterdaysClose) * 100
 
+	def calcAllMovAvgs(self):
+		indexCount = len(self.allData) - 1
+		for idx, priceData in (enumerate(self.allData)):
 			for period in self.MOV_AVG:
 				idxOfFirstDay = idx + period
 				if(idxOfFirstDay < indexCount):
@@ -31,8 +33,7 @@ class EquityData:
 				else:
 					priceData.movAvg.append(0)
 
-
-	def percentChangeTable(self):
+	def displayPercentChange(self):
 		for day in self.allData:
 			print("{1}:{0}{2}{0}{3}".format(self.PRINT_SPACING,
 											str(day.date.strftime('%m/%d/%y')),
