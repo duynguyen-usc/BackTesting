@@ -1,3 +1,5 @@
+import os
+import statistics
 from PriceData import PriceData
 
 class EquityData:
@@ -22,6 +24,18 @@ class EquityData:
 				yesterdaysClose = self.allData[idx + 1].close
 				priceData.netChange = priceData.close - yesterdaysClose
 				priceData.netPercentChange = (priceData.netChange / yesterdaysClose) * 100
+
+	def calcMovAvg(self, numberOfDays, indexStart):
+		indexEnd = indexStart + numberOfDays
+		if(indexEnd < self.count):
+			return statistics.mean([self.allData[i].close for i in range(indexStart, indexEnd)])
+		return 0
+
+	def calcStdDev(self, numberOfDays, indexStart):
+		indexEnd = indexStart + numberOfDays
+		if(indexEnd < self.count):
+			return statistics.stdev([self.allData[i].close for i in range(indexStart, indexEnd)])
+		return 0
 
 	def calcAllMovAvgs(self):
 		for idx, priceData in (enumerate(self.allData)):
@@ -49,3 +63,12 @@ class EquityData:
 				                      str(day.date.strftime('%m/%d/%y')), 
 								  	  str(format(day.close, self.NUMBER_FORMAT)),
 									  movAverages))
+
+
+# Main
+
+path = os.path.dirname(os.path.realpath(__file__))
+os.chdir(path)
+testData = EquityData('Data/SPX.csv')
+print(testData.calcMovAvg(20, 0))
+print(testData.calcStdDev(20, 0))
