@@ -3,11 +3,11 @@ from datetime import datetime
 class PriceData:
 	def __init__(self, csvLine):
 		self.parseCsvLine(csvLine)
-		self.netChange = 0
-		self.netPercentChange = 0
+		self.netChange = None
+		self.netPercentChange = None
 		self.movAvg = []
-		self.upperBand = 0
-		self.lowerBand = 0
+		self.upperBand = None
+		self.lowerBand = None
 
 	def parseCsvLine(self, csvLine):
 		csvData = csvLine.split(',')
