@@ -5,8 +5,13 @@ from EquityData import EquityData
 
 path = os.path.dirname(os.path.realpath(__file__))
 os.chdir(path)
-testData = EquityData('Data/SPX.csv')
+datadir = 'Data/'
+csvfiles=[]
+for file in os.listdir(datadir):
+    if file.endswith(".csv"):
+        csvfiles.append(file)
 
-testData.trendStats(EquityData.ONE_HUNDRED_FIFTY_DAY)
-testData.trendStats(EquityData.TWO_HUNDRED_DAY)
-testData.trendStats(EquityData.TWO_HUNDRED_FIFTY_DAY)
+for f in csvfiles:
+	print(f)
+	historicalData = EquityData(datadir + f)
+	historicalData.trendStats(EquityData.TWO_HUNDRED_DAY)
