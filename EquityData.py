@@ -1,11 +1,15 @@
-import os
 import numpy
 from PriceData import PriceData
 
 class EquityData:
 	PRINT_SPACING = '   '
 	NUMBER_FORMAT = '.2f'
-	MOV_AVGS= [20, 150, 200, 250]	
+	
+	TWENTY_DAY = 0
+	ONE_HUNDRED_FIFTY_DAY = 1
+	TWO_HUNDRED_DAY = 2
+	TWO_HUNDRED_FIFTY_DAY = 3
+	MOV_AVGS = [20, 150, 200, 250]	
 
 	def __init__(self, csvFile):
 		self.allData = []
@@ -54,3 +58,12 @@ class EquityData:
 		if(indexEnd < self.count):
 			return numpy.std([self.allData[i].close for i in range(indexStart, indexEnd)])
 		return 0
+
+	def __percent(self, x, total):
+		return format(100 * x / total, self.NUMBER_FORMAT)
+
+	def trendStats(self, period):		
+		daysBelow200 = sum(1 if(day.close < day.movAvg[period]) else 0 for day in self.allData)
+		daysAbove200 = len(self.allData) - daysAbove200
+		print("Days above {0} moving average = {1} ({2}%)".format(self.MOV_AVGS[period], daysAbove200, self.__percent(daysAbove200, len(self.allData))))
+		print("Days below {0} moving average = {1} ({2}%)".format(self.MOV_AVGS[period], daysBelow200, self.__percent(daysBelow200, len(self.allData))))
