@@ -63,7 +63,7 @@ class EquityData:
 		return format(100 * x / total, self.NUMBER_FORMAT)
 
 	def trendStats(self, period):		
-		daysBelow200 = sum(1 if(day.close < day.movAvg[period]) else 0 for day in self.allData)
+		daysBelow200 = sum(1 if(day.movAvg[period] != 0 and day.close < day.movAvg[period]) else 0 for day in self.allData)
 		daysAbove200 = len(self.allData) - daysBelow200
 		print("Days above {0} moving average = {1} ({2}%)".format(self.MOV_AVGS[period], daysAbove200, self.__percent(daysAbove200, len(self.allData))))
 		print("Days below {0} moving average = {1} ({2}%)".format(self.MOV_AVGS[period], daysBelow200, self.__percent(daysBelow200, len(self.allData))))
