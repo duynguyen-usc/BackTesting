@@ -1,15 +1,17 @@
 import numpy
 from PriceData import PriceData
+from PriceData import StrategyResult
 
 class EquityData:
 	PRINT_SPACING = '   '
 	NUMBER_FORMAT = '.2f'
 	
 	TWENTY_DAY = 0
-	ONE_HUNDRED_FIFTY_DAY = 1
-	TWO_HUNDRED_DAY = 2
-	TWO_HUNDRED_FIFTY_DAY = 3
-	MOV_AVGS = [20, 150, 200, 250]	
+	FIFTY_DAY = 1
+	ONE_HUNDRED_FIFTY_DAY = 2
+	TWO_HUNDRED_DAY = 3
+	TWO_HUNDRED_FIFTY_DAY = 4
+	MOV_AVGS = [20, 50, 150, 200, 300]	
 
 	def __init__(self, csvFile):
 		self.allData = []
@@ -63,11 +65,25 @@ class EquityData:
 		return format(100 * x / total, self.NUMBER_FORMAT)
 
 	def trendStats(self, period):		
-		daysBelow200 = sum(1 if(day.movAvg[period] != 0 and day.close < day.movAvg[period]) else 0 for day in self.allData)
-		daysAbove200 = len(self.allData) - daysBelow200
-		print("Days above {0} moving average = {1} ({2}%)".format(self.MOV_AVGS[period], daysAbove200, self.__percent(daysAbove200, len(self.allData))))
-		print("Days below {0} moving average = {1} ({2}%)".format(self.MOV_AVGS[period], daysBelow200, self.__percent(daysBelow200, len(self.allData))))
+		daysBelow = sum(1 if(day.movAvg[period] != 0 and day.close < day.movAvg[period]) else 0 for day in self.allData)
+		daysAbove = len(self.allData) - daysBelow
+		print("Days above {0} moving average = {1} ({2}%)".format(self.MOV_AVGS[period], daysAbove, self.__percent(daysAbove, len(self.allData))))
+		print("Days below {0} moving average = {1} ({2}%)".format(self.MOV_AVGS[period], daysBelow, self.__percent(daysBelow, len(self.allData))))
 
+	def strategyMovAvg(self):
+		d = 'Sell puts @ 200 moving day averge one month out '
+		d += 'if day net change is down at least 0.50 percent '
+		d += 'and below the 20 day movAvg but above 50 movAvg'
+		strategyResult = StrategyResult(d)
+		expiration = 20 # one month ~ 20 trading days
+		for idx, day in enumerate(self.allData):
+			if(day.netPercentChange != None and 
+			   day.netPercentChange < -0.50 and 
+			   day.close < day.movAvg[self.TWENTY_DAY] and 
+			   day.close > day.movAvg[self.FIFTY_DAY] and 
+			   day.close > day.movAvg[self.ONE_HUNDRED_FIFTY_DAY]):
+				strategyResult.total += 1
+				if(self.allData[idx - expiration].close > day.movAvg[self.TWO_HUNDRED_FIFTY_DAY]):
+					strategyResult.wins += 1
 
-
-
+		strategyResult.display()
