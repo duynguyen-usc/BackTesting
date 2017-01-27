@@ -6,12 +6,14 @@ class EquityData:
 	PRINT_SPACING = '   '
 	NUMBER_FORMAT = '.2f'
 	
-	MOVAVG_20 = 0
-	MOVAVG_50 = 1
-	MOVAVG_150 = 2
-	MOVAVG_200 = 3
-	MOVAVG_250 = 4
-	PERIODS = [20, 50, 150, 200, 300]	
+	MOVAVG_10 = 0
+	MOVAVG_20 = 1
+	MOVAVG_50 = 2
+	MOVAVG_150 = 3
+	MOVAVG_200 = 4
+	MOVAVG_250 = 5
+	MOVAVG_300 = 5
+	PERIODS = [10, 20, 50, 150, 200]	
 
 	def __init__(self, csvFile):
 		self.allData = []
@@ -64,16 +66,16 @@ class EquityData:
 	def __percent(self, x, total):
 		return format(100 * x / total, self.NUMBER_FORMAT)
 
-	def trendStats(self, period):		
-		daysBelow = sum(1 if(day.movAvg[period] != 0 and day.close < day.movAvg[period]) else 0 for day in self.allData)
+	def displayTrendStats(self):		
+		daysBelow = sum(1 if(day.movAvg[self.MOVAVG_200] != 0 and day.close < day.movAvg[self.MOVAVG_200]) else 0 for day in self.allData)
 		daysAbove = len(self.allData) - daysBelow
-		print("Days above {0} moving average = {1} ({2}%)".format(self.PERIODS[period], daysAbove, self.__percent(daysAbove, len(self.allData))))
-		print("Days below {0} moving average = {1} ({2}%)".format(self.PERIODS[period], daysBelow, self.__percent(daysBelow, len(self.allData))))
+		print("Days above {0} moving average = {1} ({2}%)".format(self.PERIODS[self.MOVAVG_200], daysAbove, self.__percent(daysAbove, len(self.allData))))
+		print("Days below {0} moving average = {1} ({2}%)".format(self.PERIODS[self.MOVAVG_200], daysBelow, self.__percent(daysBelow, len(self.allData))))
 
 	def strategyMovAvg(self):
-		d = 'Sell puts @ 200 moving day averge one month out '
+		d = 'Sell puts @ {0} moving day averge one month out '.format(self.PERIODS[self.MOVAVG_200])
 		d += 'if day net change is down at least 0.50 percent '
-		d += 'and below the 20 day movAvg but above 50 movAvg'
+		d += 'and below the 20 day movAvg but above 50 and 200 movAvg'
 		strategyResult = StrategyResult(d)
 		expiration = 20 # one month ~ 20 trading days
 		for idx, day in enumerate(self.allData):
@@ -81,9 +83,13 @@ class EquityData:
 			   day.netPercentChange < -0.50 and 
 			   day.close < day.movAvg[self.MOVAVG_20] and 
 			   day.close > day.movAvg[self.MOVAVG_50] and 
-			   day.close > day.movAvg[self.MOVAVG_150]):
+			   day.close > day.movAvg[self.MOVAVG_200]):
 				strategyResult.total += 1
-				if(self.allData[idx - expiration].close > day.movAvg[self.MOVAVG_250]):
+				if(self.allData[idx - expiration].close > day.movAvg[self.MOVAVG_200]):
 					strategyResult.wins += 1
 
 		strategyResult.display()
+
+spx = EquityData('Data/SPX.csv')
+spx.displayTrendStats()
+spx.strategyMovAvg()
