@@ -73,29 +73,50 @@ class EquityData:
 		print("Days above {0} moving average = {1} ({2}%)".format(self.PERIODS[self.MOVAVG_200], daysAbove, self.__percent(daysAbove, len(self.allData))))
 		print("Days below {0} moving average = {1} ({2}%)".format(self.PERIODS[self.MOVAVG_200], daysBelow, self.__percent(daysBelow, len(self.allData))))
 
-	def displayStrategyResult(self, total, wins):
+	def displayStrategyResult(self, name, total, wins):
 		losses = total - wins
+		print("Strategy name: " + name)
 		print("Total = {0}".format(total))
 		print("Wins = {0} ({1}%)".format(wins, self.__percent(wins, total)))
-		print("Losses = {0} ({1}%)".format(losses, self.__percent(losses, total)))
+		print("Losses = {0} ({1}%)\n".format(losses, self.__percent(losses, total)))
 
 	def strategyMovAvg(self):
 		t = 0
 		w = 0
 		for idx, day in enumerate(self.allData):
-			if(day.netPercentChange != None and 
-			   day.netPercentChange < -0.50 and 
-			   day.close < day.movAvg[self.MOVAVG_20] and 
-			   day.close > day.movAvg[self.MOVAVG_50] and 
+			if(idx - self.MONTH >= 0 and 
+			   day.netPercentChange != None and 
+			   day.netPercentChange < 0 and 
 			   day.close > day.movAvg[self.MOVAVG_200]):
 				t += 1
 				if(self.allData[idx - self.MONTH].close > day.movAvg[self.MOVAVG_200]):
 					w += 1
-		self.displayStrategyResult(t, w)
+		self.displayStrategyResult('Moving average', t, w)
 
-	
-
+	def strategyPercentDown(self, percentDown):
+		t = 0
+		w = 0
+		for idx, day in enumerate(self.allData):
+			if(idx - self.MONTH >= 0 and 
+			   day.netPercentChange != None and 
+			   day.netPercentChange < 0):
+				t += 1
+				if(self.allData[idx - self.MONTH].close > day.close * (1 - percentDown)):
+					w += 1
+		self.displayStrategyResult(str(100 * percentDown) + " percent down strategy", t, w)
 
 spx = EquityData('Data/SPX.csv')
-spx.displayTrendStats()
-spx.strategyMovAvg()
+# spx.displayTrendStats()
+# spx.strategyMovAvg()
+spx.strategyPercentDown(0.12)
+spx.strategyPercentDown(0.11)
+spx.strategyPercentDown(0.10)
+spx.strategyPercentDown(0.09)
+spx.strategyPercentDown(0.08)
+spx.strategyPercentDown(0.07)
+spx.strategyPercentDown(0.06)
+spx.strategyPercentDown(0.05)
+spx.strategyPercentDown(0.04)
+spx.strategyPercentDown(0.03)
+
+
