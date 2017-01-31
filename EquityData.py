@@ -73,22 +73,28 @@ class EquityData:
 		print("Days above {0} moving average = {1} ({2}%)".format(self.PERIODS[self.MOVAVG_200], daysAbove, self.__percent(daysAbove, len(self.allData))))
 		print("Days below {0} moving average = {1} ({2}%)".format(self.PERIODS[self.MOVAVG_200], daysBelow, self.__percent(daysBelow, len(self.allData))))
 
+	def displayStrategyResult(self, total, wins):
+		losses = total - wins
+		print("Total = {0}".format(total))
+		print("Wins = {0} ({1}%)".format(wins, self.__percent(wins, total)))
+		print("Losses = {0} ({1}%)".format(losses, self.__percent(losses, total)))
+
 	def strategyMovAvg(self):
-		total = 0
-		wins = 0
+		t = 0
+		w = 0
 		for idx, day in enumerate(self.allData):
 			if(day.netPercentChange != None and 
 			   day.netPercentChange < -0.50 and 
 			   day.close < day.movAvg[self.MOVAVG_20] and 
 			   day.close > day.movAvg[self.MOVAVG_50] and 
 			   day.close > day.movAvg[self.MOVAVG_200]):
-				total += 1
+				t += 1
 				if(self.allData[idx - self.MONTH].close > day.movAvg[self.MOVAVG_200]):
-					wins += 1
-		losses = total - wins
-		print("Total = {0}".format(total))
-		print("Wins = {0} ({1}%)".format(wins, self.__percent(wins, total)))
-		print("Losses = {0} ({1}%)".format(losses, self.__percent(losses, total)))
+					w += 1
+		self.displayStrategyResult(t, w)
+
+	
+
 
 spx = EquityData('Data/SPX.csv')
 spx.displayTrendStats()
