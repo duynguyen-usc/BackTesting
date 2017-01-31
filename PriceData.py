@@ -18,25 +18,3 @@ class PriceData:
 		self.close = float(csvData[4])
 		self.adjClose = float(csvData[5])
 		self.volume = float(csvData[6])
-
-class StrategyResult:
-	def __init__(self, desc):
-		self.total = 0
-		self.wins = 0
-		self.description = desc
-
-	def losses(self):
-		return self.total - self.wins
-
-	def winPercent(self):
-		return (self.wins / self.total) * 100
-
-	def lossPercent(self):
-		return 100 - self.winPercent()
-
-	def display(self):
-		print(self.description)
-		print("Wins: {0} ({1}%)".format(self.wins, format(self.winPercent(), '0.2f')))
-		print("Losses: {0} ({1}%)".format(self.losses(), format(self.lossPercent(), '0.2f')))
-
-

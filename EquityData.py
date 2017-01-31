@@ -1,6 +1,5 @@
 import numpy
 from PriceData import PriceData
-from PriceData import StrategyResult
 
 class EquityData:
 	PRINT_SPACING = '   '
@@ -13,7 +12,9 @@ class EquityData:
 	MOVAVG_200 = 4
 	MOVAVG_250 = 5
 	MOVAVG_300 = 5
-	PERIODS = [10, 20, 50, 150, 200]	
+	PERIODS = [10, 20, 50, 150, 200]
+
+	MONTH = 20
 
 	def __init__(self, csvFile):
 		self.allData = []
@@ -73,22 +74,21 @@ class EquityData:
 		print("Days below {0} moving average = {1} ({2}%)".format(self.PERIODS[self.MOVAVG_200], daysBelow, self.__percent(daysBelow, len(self.allData))))
 
 	def strategyMovAvg(self):
-		d = 'Sell puts @ {0} moving day averge one month out '.format(self.PERIODS[self.MOVAVG_200])
-		d += 'if day net change is down at least 0.50 percent '
-		d += 'and below the 20 day movAvg but above 50 and 200 movAvg'
-		strategyResult = StrategyResult(d)
-		expiration = 20 # one month ~ 20 trading days
+		total = 0
+		wins = 0
 		for idx, day in enumerate(self.allData):
 			if(day.netPercentChange != None and 
 			   day.netPercentChange < -0.50 and 
 			   day.close < day.movAvg[self.MOVAVG_20] and 
 			   day.close > day.movAvg[self.MOVAVG_50] and 
 			   day.close > day.movAvg[self.MOVAVG_200]):
-				strategyResult.total += 1
-				if(self.allData[idx - expiration].close > day.movAvg[self.MOVAVG_200]):
-					strategyResult.wins += 1
-
-		strategyResult.display()
+				total += 1
+				if(self.allData[idx - self.MONTH].close > day.movAvg[self.MOVAVG_200]):
+					wins += 1
+		losses = total - wins
+		print("Total = {0}".format(total))
+		print("Wins = {0} ({1}%)".format(wins, self.__percent(wins, total)))
+		print("Losses = {0} ({1}%)".format(losses, self.__percent(losses, total)))
 
 spx = EquityData('Data/SPX.csv')
 spx.displayTrendStats()
