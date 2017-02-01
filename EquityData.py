@@ -118,6 +118,15 @@ class EquityData:
 		self.__displayTrendStats()
 		self.__strategyMovAvg(threshold)
 
+
+def runAllData():
+	datadir = 'Data/'
+	for f in os.listdir(datadir):
+		if f.endswith(".csv"):
+			print(f)
+			historicalData = EquityData(datadir + f)
+			historicalData.runAll()
+
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)
