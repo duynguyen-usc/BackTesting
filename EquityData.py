@@ -104,19 +104,3 @@ class EquityData:
 				if(self.allData[idx - self.MONTH].close > day.close * (1 - percentDown)):
 					w += 1
 		self.displayStrategyResult(str(100 * percentDown) + " percent down strategy", t, w)
-
-spx = EquityData('Data/SPX.csv')
-# spx.displayTrendStats()
-# spx.strategyMovAvg()
-spx.strategyPercentDown(0.12)
-spx.strategyPercentDown(0.11)
-spx.strategyPercentDown(0.10)
-spx.strategyPercentDown(0.09)
-spx.strategyPercentDown(0.08)
-spx.strategyPercentDown(0.07)
-spx.strategyPercentDown(0.06)
-spx.strategyPercentDown(0.05)
-spx.strategyPercentDown(0.04)
-spx.strategyPercentDown(0.03)
-
-

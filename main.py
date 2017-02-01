@@ -1,16 +1,23 @@
 import os
 from EquityData import EquityData
 
-# Main
 
-path = os.path.dirname(os.path.realpath(__file__))
-os.chdir(path)
-# datadir = 'Data/'
-# for f in os.listdir(datadir):
-#     if f.endswith(".csv"):
-#     	print(f)
-#     	historicalData = EquityData(datadir + f)
-#     	historicalData.trendStats(EquityData.TWO_HUNDRED_DAY)
-spx = EquityData('Data/SPX.csv')
-spx.trendStats(EquityData.MOVAVG_200)
-spx.strategyMovAvg()
+def runAllData():
+	datadir = 'Data/'
+	for f in os.listdir(datadir):
+		if f.endswith(".csv"):
+			print(f)
+			historicalData = EquityData(datadir + f)
+			historicalData.trendStats(EquityData.TWO_HUNDRED_DAY)
+
+def main():
+	path = os.path.dirname(os.path.realpath(__file__))
+	os.chdir(path)
+	spx = EquityData('Data/SPX.csv')
+	# spx.displayTrendStats()
+	# spx.strategyMovAvg()
+	# spx.strategyPercentDown(0.12)
+	# spx.strategyPercentDown(0.11)
+
+if __name__ == "__main__":
+    main()
