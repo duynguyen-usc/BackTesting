@@ -1,3 +1,4 @@
+import os
 import numpy
 from PriceData import PriceData
 
@@ -78,7 +79,7 @@ class EquityData:
 		daysBelow = sum(1 if(day.movAvg[self.MOVAVG_200] != 0 and day.close < day.movAvg[self.MOVAVG_200]) else 0 for day in self.allData)
 		daysAbove = len(self.allData) - daysBelow
 		print("Days above {0} moving average = {1} ({2}%)".format(self.PERIODS[self.MOVAVG_200], daysAbove, self.__percent(daysAbove, len(self.allData))))
-		print("Days below {0} moving average = {1} ({2}%)".format(self.PERIODS[self.MOVAVG_200], daysBelow, self.__percent(daysBelow, len(self.allData))))
+		print("Days below {0} moving average = {1} ({2}%)\n".format(self.PERIODS[self.MOVAVG_200], daysBelow, self.__percent(daysBelow, len(self.allData))))
 
 	def __strategyMovAvg(self, percentChangeThreshold=0):
 		t = 0
@@ -86,9 +87,13 @@ class EquityData:
 		for idx, day in enumerate(self.allData):
 			if(idx - self.MONTH >= 0 and 
 			   day.netPercentChange != None and 
-			   day.netPercentChange < percentChangeThreshold):			
+			   day.netPercentChange < percentChangeThreshold and
+			   day.close > day.movAvg[self.MOVAVG_20]):
 				t += 1
-				if(self.allData[idx - self.MONTH].close > day.movAvg[self.MOVAVG_200]):
+				strike = day.close * (1 - 0.03) # strike minimum
+				if (day.movAvg[self.MOVAVG_200] < strike):
+					strike = day.movAvg[self.MOVAVG_200]
+				if(self.allData[idx - self.MONTH].close > strike):
 					w += 1
 		self.__displayStrategyResult('Moving average', t, w)
 
@@ -104,10 +109,20 @@ class EquityData:
 					w += 1
 		self.__displayStrategyResult(str(100 * percentDown) + " percent down strategy", t, w)
 
-	def runAll(self):		
-		self.__displayTrendStats()
-		self.__strategyMovAvg()
-
+	def runAll(self):
+		threshold = -0.50
 		percentToTest = [0.10, 0.075, 0.05, 0.03]
 		for p in percentToTest:
-			self.__strategyPercentDown(p)
+			self.__strategyPercentDown(p, threshold)
+		
+		self.__displayTrendStats()
+		self.__strategyMovAvg(threshold)
+
+def main():
+	path = os.path.dirname(os.path.realpath(__file__))
+	os.chdir(path)
+	spx = EquityData('Data/SPX.csv')
+	spx.runAll()	
+
+if __name__ == "__main__":
+    main()
