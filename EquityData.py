@@ -104,10 +104,10 @@ class EquityData:
 					w += 1
 		self.__displayStrategyResult(str(100 * percentDown) + " percent down strategy", t, w)
 
-	def runAll(self):
-		percentToTest = [0.10, 0.075, 0.05, 0.03]
+	def runAll(self):		
 		self.__displayTrendStats()
 		self.__strategyMovAvg()
 
+		percentToTest = [0.10, 0.075, 0.05, 0.03]
 		for p in percentToTest:
 			self.__strategyPercentDown(p)

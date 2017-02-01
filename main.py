@@ -8,7 +8,7 @@ def runAllData():
 		if f.endswith(".csv"):
 			print(f)
 			historicalData = EquityData(datadir + f)
-			historicalData.trendStats(EquityData.TWO_HUNDRED_DAY)
+			historicalData.runAll()
 
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))
