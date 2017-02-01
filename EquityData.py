@@ -67,40 +67,47 @@ class EquityData:
 	def __percent(self, x, total):
 		return format(100 * x / total, self.NUMBER_FORMAT)
 
-	def displayTrendStats(self):		
-		daysBelow = sum(1 if(day.movAvg[self.MOVAVG_200] != 0 and day.close < day.movAvg[self.MOVAVG_200]) else 0 for day in self.allData)
-		daysAbove = len(self.allData) - daysBelow
-		print("Days above {0} moving average = {1} ({2}%)".format(self.PERIODS[self.MOVAVG_200], daysAbove, self.__percent(daysAbove, len(self.allData))))
-		print("Days below {0} moving average = {1} ({2}%)".format(self.PERIODS[self.MOVAVG_200], daysBelow, self.__percent(daysBelow, len(self.allData))))
-
-	def displayStrategyResult(self, name, total, wins):
+	def __displayStrategyResult(self, name, total, wins):
 		losses = total - wins
 		print("Strategy name: " + name)
 		print("Total = {0}".format(total))
 		print("Wins = {0} ({1}%)".format(wins, self.__percent(wins, total)))
 		print("Losses = {0} ({1}%)\n".format(losses, self.__percent(losses, total)))
 
-	def strategyMovAvg(self):
+	def __displayTrendStats(self):		
+		daysBelow = sum(1 if(day.movAvg[self.MOVAVG_200] != 0 and day.close < day.movAvg[self.MOVAVG_200]) else 0 for day in self.allData)
+		daysAbove = len(self.allData) - daysBelow
+		print("Days above {0} moving average = {1} ({2}%)".format(self.PERIODS[self.MOVAVG_200], daysAbove, self.__percent(daysAbove, len(self.allData))))
+		print("Days below {0} moving average = {1} ({2}%)".format(self.PERIODS[self.MOVAVG_200], daysBelow, self.__percent(daysBelow, len(self.allData))))
+
+	def __strategyMovAvg(self, percentChangeThreshold=0):
 		t = 0
 		w = 0
 		for idx, day in enumerate(self.allData):
 			if(idx - self.MONTH >= 0 and 
 			   day.netPercentChange != None and 
-			   day.netPercentChange < 0 and 
-			   day.close > day.movAvg[self.MOVAVG_200]):
+			   day.netPercentChange < percentChangeThreshold):			
 				t += 1
 				if(self.allData[idx - self.MONTH].close > day.movAvg[self.MOVAVG_200]):
 					w += 1
-		self.displayStrategyResult('Moving average', t, w)
+		self.__displayStrategyResult('Moving average', t, w)
 
-	def strategyPercentDown(self, percentDown):
+	def __strategyPercentDown(self, percentDown, percentChangeThreshold=0):
 		t = 0
 		w = 0
 		for idx, day in enumerate(self.allData):
 			if(idx - self.MONTH >= 0 and 
 			   day.netPercentChange != None and 
-			   day.netPercentChange < 0):
+			   day.netPercentChange < percentChangeThreshold):
 				t += 1
 				if(self.allData[idx - self.MONTH].close > day.close * (1 - percentDown)):
 					w += 1
-		self.displayStrategyResult(str(100 * percentDown) + " percent down strategy", t, w)
+		self.__displayStrategyResult(str(100 * percentDown) + " percent down strategy", t, w)
+
+	def runAll(self):
+		percentToTest = [0.10, 0.075, 0.05, 0.03]
+		self.__displayTrendStats()
+		self.__strategyMovAvg()
+
+		for p in percentToTest:
+			self.__strategyPercentDown(p)

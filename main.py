@@ -14,10 +14,7 @@ def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)
 	spx = EquityData('Data/SPX.csv')
-	# spx.displayTrendStats()
-	# spx.strategyMovAvg()
-	# spx.strategyPercentDown(0.12)
-	# spx.strategyPercentDown(0.11)
+	spx.runAll()	
 
 if __name__ == "__main__":
     main()
