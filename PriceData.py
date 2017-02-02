@@ -8,6 +8,8 @@ class PriceData:
 		self.movAvg = []
 		self.upperBand = None
 		self.lowerBand = None
+		self.bandWidth = None
+		self.bandAverage = float(0)
 
 	def parseCsvLine(self, csvLine):
 		csvData = csvLine.split(',')
