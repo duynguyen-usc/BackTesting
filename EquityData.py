@@ -46,8 +46,8 @@ class EquityData:
 	def __calcChange(self, index):
 		if(index < self.lastIndex):
 			yesterdaysClose = self.allData[index + 1].close
-			self.allData[index].netChange = self.allData[index].close - yesterdaysClose
-			self.allData[index].netPercentChange = (self.allData[index].netChange / yesterdaysClose) * 100
+			self.allData[index].change = self.allData[index].close - yesterdaysClose
+			self.allData[index].percentChange = (self.allData[index].change / yesterdaysClose) * 100
 
 	def __getMax(self, indexStart, indexEnd):		
 		if(indexEnd < self.lastIndex):
@@ -77,9 +77,6 @@ class EquityData:
 	def __percent(self, x, total):
 		return format(100 * x / total, self.NUMBER_FORMAT)
 	
-	def __percentageChangeIsBelow(self, day, x):
-		return (day.netPercentChange != None and day.netPercentChange < x)
-
 	def __selectStrike(self):		
 		strike = day.close * (1 - THREE_PERCENT) # strike minimum
 		if (day.movAvg[self.MOVAVG_200] < strike):
