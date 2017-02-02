@@ -78,7 +78,7 @@ class EquityData:
 		return format(100 * x / total, self.NUMBER_FORMAT)
 	
 	def __selectStrike(self, day):		
-		strike = day.close * (1 - 0.03) # strike minimum
+		strike = day.close * (1 - 0.02) # strike minimum
 		if (day.movAvg[self.MOVAVG_200] < strike):
 			strike = day.movAvg[self.MOVAVG_200]
 		return strike
