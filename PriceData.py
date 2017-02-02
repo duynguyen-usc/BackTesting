@@ -9,7 +9,7 @@ class PriceData:
 		self.upperBand = None
 		self.lowerBand = None
 		self.bandWidth = None
-		self.bandAverage = float(0)
+		self.bandAverage = None
 
 	def __parseCsvLine(self, csvLine):
 		csvData = csvLine.split(',')
@@ -21,8 +21,17 @@ class PriceData:
 		self.adjClose = float(csvData[5])
 		self.volume = float(csvData[6])
 
+	def percentChangeIsAbove(self, x):
+		return (True if(self.percentChange != None and self.percentChange > x) else False)
+
 	def percentChangeIsBelow(self, x):
 		return (True if(self.percentChange != None and self.percentChange < x) else False)
 
 	def closeIsAbove(self, x):
-		return (True if(self.close > x) else False)
+		return self.close > x
+
+	def closeIsBelow(self, x):
+		return self.close < x
+
+	def closeAboveOpen(self):
+		return self.close > self.open
