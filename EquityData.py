@@ -1,6 +1,7 @@
 import os
 import numpy
 from PriceData import PriceData
+from PriceData import BollingerBand
 
 class EquityData:
 	PRINT_SPACING = '   '
@@ -32,16 +33,18 @@ class EquityData:
 				self.allData.append((PriceData(csvline)))
 
 	def __interDayCalculations(self):
-		for idx, priceData in enumerate(self.allData):
+		for idx, day in enumerate(self.allData):
 			self.__calcChange(idx)
-			for n in self.PERIODS:
-				priceData.movAvg.append(self.__getAverage(idx, idx + n))
-				# if (n == self.PERIODS[self.MOVAVG_20]):
-				if (n == 20):
-					stddev = self.__calcStdDev(idx, idx + n)
-					priceData.upperBand = 2 * stddev
-					priceData.lowerBand = -2 * stddev
-					priceData.bandWidth = priceData.upperBand - priceData.lowerBand					
+			self.__calcMovAvgs(idx)
+			self.__calcBollingerBand(idx)
+				
+	def __calcMovAvgs(self, idx):
+		for n in self.PERIODS:
+			self.allData[idx].movAvg.append(self.__getAverage(idx, idx + n))
+
+	def __calcBollingerBand(self, idx):
+		n = self.PERIODS[self.MOVAVG_20]
+		self.allData[idx].bollingerBand = BollingerBand(self.allData[idx].movAvg[self.MOVAVG_20], self.__calcStdDev(idx, idx + n))
 
 	def __calcChange(self, index):
 		if(index < self.lastIndex):
