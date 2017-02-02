@@ -4,7 +4,8 @@ class StrategyResult:
 	def __init__(self, name):
 		self.__name = name
 		self.__total = 0
-		self.__wins = 0		
+		self.__wins = 0
+		self.__tradeDays = []
 
 	def __percent(self, x, total):
 		return format(100 * x / total, '0.2f')
@@ -12,15 +13,20 @@ class StrategyResult:
 	def addWin(self):
 		self.__wins += 1
 
-	def addToTotal(self):
-		self.__total += 1
+	def addTradeDay(self, singleDayPriceData):
+		self.__tradeDays.append(singleDayPriceData)
+
+	def displayResults(self):
+		total = len(self.__tradeDays)
+		losses = total - self.__wins
+		s = "Strategy name: {0}\nTotal = {1}\n".format(self.__name, total)
+		s += "Wins = {0} ({1}%)\n".format(self.__wins, self.__percent(self.__wins, total))
+		s += "Losses = {0} ({1}%)\n".format(losses, self.__percent(losses, total))
+		return s
 
 	def toString(self):
-		losses = self.__total - self.__wins
-		s = "Strategy name: {0}\nTotal = {1}\n".format(self.__name, self.__total)
-		s += "Wins = {0} ({1}%)\n".format(self.__wins, self.__percent(self.__wins, self.__total))
-		s += "Losses = {0} ({1}%)\n".format(losses, self.__percent(losses, self.__total))
-		return s
+		return 'TBD'
+
 
 class BollingerBand:
 	def __init__(self, movAvgMidline, stddeviation):

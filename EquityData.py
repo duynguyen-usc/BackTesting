@@ -93,10 +93,10 @@ class EquityData:
 			if(idx - self.MONTH >= 0 and 
 			   day.percentChangeIsBelow(self.PERCENT_CHANGE_TRIGGER) and
 			   day.closeIsAbove(day.movAvg[self.MOVAVG_20])):
-				strategyResult.addToTotal()
+				strategyResult.addTradeDay(day)
 				if(self.allData[idx - self.MONTH].closeIsAbove(self.__selectStrike(day))):
 					strategyResult.addWin()
-		print(strategyResult.toString())
+		print(strategyResult.displayResults())
 
 	def __displayTrendStats(self):		
 		daysBelow = sum(1 if(day.movAvg[self.MOVAVG_200] != 0 and day.close < day.movAvg[self.MOVAVG_200]) else 0 for day in self.allData)
