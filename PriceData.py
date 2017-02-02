@@ -2,7 +2,7 @@ from datetime import datetime
 
 class PriceData:
 	def __init__(self, csvLine):
-		self.parseCsvLine(csvLine)
+		self.__parseCsvLine(csvLine)
 		self.netChange = None
 		self.netPercentChange = None
 		self.movAvg = []
@@ -11,7 +11,7 @@ class PriceData:
 		self.bandWidth = None
 		self.bandAverage = float(0)
 
-	def parseCsvLine(self, csvLine):
+	def __parseCsvLine(self, csvLine):
 		csvData = csvLine.split(',')
 		self.date = datetime.strptime(csvData[0], "%Y-%m-%d")
 		self.open = float(csvData[1])
@@ -20,3 +20,9 @@ class PriceData:
 		self.close = float(csvData[4])
 		self.adjClose = float(csvData[5])
 		self.volume = float(csvData[6])
+
+	def percentChangeIsBelow(self, x):
+		return (True if(self.netPercentChange != None and self.netPercentChange < x) else False)
+
+	def closeIsAbove(self, x):
+		return (True if(self.close > x) else False)
