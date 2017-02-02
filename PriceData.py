@@ -14,7 +14,7 @@ class StrategyResult:
 		self.__wins += 1
 
 	def addTradeDay(self, singleDayPriceData):
-		self.__tradeDays.append(singleDayPriceData)
+		self.__tradeDays.append(singleDayPriceData)		
 
 	def displayResults(self):
 		total = len(self.__tradeDays)
@@ -25,8 +25,10 @@ class StrategyResult:
 		return s
 
 	def toString(self):
-		return 'TBD'
-
+		srString = ""
+		for day in self.__tradeDays:
+			srString += day.toString() + '\n'
+		return srString
 
 class BollingerBand:
 	def __init__(self, movAvgMidline, stddeviation):
@@ -67,3 +69,6 @@ class PriceData:
 
 	def closeAboveOpen(self):
 		return self.close > self.open
+
+	def toString(self):
+		return "{0}\t{1}\t{2}%".format(format(self.date, "%Y-%m-%d"), format(self.close, '0.2f'), format(self.percentChange, '0.2f'))
