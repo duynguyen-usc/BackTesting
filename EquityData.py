@@ -2,6 +2,7 @@ import os
 import numpy
 from PriceData import PriceData
 from PriceData import BollingerBand
+from PriceData import StrategyResult
 
 class EquityData:
 	PRINT_SPACING = '   '
@@ -87,22 +88,15 @@ class EquityData:
 		return strike
 
 	def __strategyMovAvg(self):
-		t = 0
-		w = 0
+		strategyResult = StrategyResult('Moving Average')
 		for idx, day in enumerate(self.allData):
 			if(idx - self.MONTH >= 0 and 
 			   day.percentChangeIsBelow(self.PERCENT_CHANGE_TRIGGER) and
 			   day.closeIsAbove(day.movAvg[self.MOVAVG_20])):
-				t += 1
-				w += (1 if(self.allData[idx - self.MONTH].closeIsAbove(self.__selectStrike(day))) else 0)
-		self.__displayStrategyResult('Moving average', t, w)
-
-	def __displayStrategyResult(self, name, total, wins):
-		losses = total - wins
-		print("Strategy name: " + name)
-		print("Total = {0}".format(total))
-		print("Wins = {0} ({1}%)".format(wins, self.__percent(wins, total)))
-		print("Losses = {0} ({1}%)\n".format(losses, self.__percent(losses, total)))
+				strategyResult.addToTotal()
+				if(self.allData[idx - self.MONTH].closeIsAbove(self.__selectStrike(day))):
+					strategyResult.addWin()
+		print(strategyResult.toString())
 
 	def __displayTrendStats(self):		
 		daysBelow = sum(1 if(day.movAvg[self.MOVAVG_200] != 0 and day.close < day.movAvg[self.MOVAVG_200]) else 0 for day in self.allData)

@@ -1,5 +1,27 @@
 from datetime import datetime
 
+class StrategyResult:
+	def __init__(self, name):
+		self.name = name
+		self.total = 0
+		self.wins = 0		
+
+	def __percent(self, x, total):
+		return format(100 * x / total, '0.2f')
+
+	def addWin(self):
+		self.wins += 1
+
+	def addToTotal(self):
+		self.total += 1
+
+	def toString(self):
+		losses = self.total - self.wins
+		s = "Strategy name: {0}\nTotal = {1}\n".format(self.name, self.total)
+		s += "Wins = {0} ({1}%)\n".format(self.wins, self.__percent(self.wins, self.total))
+		s += "Losses = {0} ({1}%)\n".format(losses, self.__percent(losses, self.total))
+		return s
+
 class BollingerBand:
 	def __init__(self, movAvgMidline, stddeviation):
 		self.midLine = movAvgMidline
