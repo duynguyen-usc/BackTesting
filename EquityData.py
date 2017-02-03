@@ -87,8 +87,8 @@ class EquityData:
 		return strike
 
 	def __trendStats(self):		
-		self.daysBelow = sum(1 if(day.movAvg[self.MOVAVG_200] != 0 and day.close < day.movAvg[self.MOVAVG_200]) else 0 for day in self.allData)
-		self.daysAbove = len(self.allData) - self.daysBelow
+		self.__daysBelow = sum(1 if(day.movAvg[self.MOVAVG_200] != 0 and day.close < day.movAvg[self.MOVAVG_200]) else 0 for day in self.allData)
+		self.__daysAbove = len(self.allData) - self.__daysBelow
 
 	def __strategyMovAvg(self):
 		self.__movAvgStrategy = StrategyResult('Moving Average')
@@ -97,8 +97,8 @@ class EquityData:
 				self.__movAvgStrategy.addTradeDay(day, self.__movAvgStrike(day))
 
 	def displayAll(self):
-		print("Days above {0} moving average = {1} ({2}%)".format(self.PERIODS[self.MOVAVG_200], self.daysAbove, self.__percent(self.daysAbove, len(self.allData))))
-		print("Days below {0} moving average = {1} ({2}%)\n".format(self.PERIODS[self.MOVAVG_200], self.daysBelow, self.__percent(self.daysBelow, len(self.allData))))
+		print("Days above {0} moving average = {1} ({2}%)".format(self.PERIODS[self.MOVAVG_200], self.__daysAbove, self.__percent(self.__daysAbove, len(self.allData))))
+		print("Days below {0} moving average = {1} ({2}%)\n".format(self.PERIODS[self.MOVAVG_200], self.__daysBelow, self.__percent(self.__daysBelow, len(self.allData))))
 		print(self.__movAvgStrategy.toString())
 		print(self.__movAvgStrategy.displayResults())
 
