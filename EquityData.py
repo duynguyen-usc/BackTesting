@@ -42,7 +42,9 @@ class EquityData:
 
 	def __calcBollingerBand(self, idx):
 		n = self.PERIODS[self.MOVAVG_20]
-		self.__allData[idx].bollingerBand = BollingerBand(self.__allData[idx].movAvg[self.MOVAVG_20], self.__calcStdDev(idx, idx + n))
+		mid = self.__allData[idx].movAvg[self.MOVAVG_20]
+		stddev = self.__calcStdDev(idx, idx + n)
+		self.__allData[idx].bollingerBand = BollingerBand(mid, stddev)
 
 	def __calcChange(self, index):
 		if(index < self.__lastIndex):
@@ -97,7 +99,9 @@ class EquityData:
 	def __strategyMovAvg(self):
 		self.__movAvgStrategy = StrategyResult('Moving Average')
 		for idx, day in enumerate(self.__allData):
-			if(idx - self.MONTH >= 0 and day.percentChangeIsBelow(self.PERCENT_CHANGE_TRIGGER) and day.closeIsAbove(day.movAvg[self.MOVAVG_20])):
+			if(idx - self.MONTH >= 0 and 
+				day.percentChangeIsBelow(self.PERCENT_CHANGE_TRIGGER) and 
+				day.closeIsAbove(day.movAvg[self.MOVAVG_20])):
 				self.__movAvgStrategy.addTradeDay(day, self.__movAvgStrike(day))
 
 	def displayAll(self):
