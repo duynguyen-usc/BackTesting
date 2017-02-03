@@ -5,16 +5,11 @@ from PriceData import BollingerBand
 from PriceData import StrategyResult
 
 class EquityData:
-	PRINT_SPACING = '   '
-	NUMBER_FORMAT = '.2f'
-	
 	MOVAVG_10 = 0
 	MOVAVG_20 = 1
 	MOVAVG_50 = 2
 	MOVAVG_150 = 3
-	MOVAVG_200 = 4
-	MOVAVG_250 = 5
-	MOVAVG_300 = 6
+	MOVAVG_200 = 4	
 	PERIODS = [10, 20, 50, 150, 200]
 
 	MONTH = 20
@@ -25,7 +20,9 @@ class EquityData:
 		self.allData = []
 		self.__parseCsvFile(csvFile)		
 		self.lastIndex = len(self.allData) - 1
-		self.__interDayCalculations()	
+		self.__interDayCalculations()
+		self.__trendStats()
+		self.__strategyMovAvg()	
 
 	def __parseCsvFile(self, csvFile):
 		data = [line.rstrip('\n') for line in open(csvFile)]
@@ -81,7 +78,7 @@ class EquityData:
 		return 0
 
 	def __percent(self, x, total):
-		return format(100 * x / total, self.NUMBER_FORMAT)
+		return format(100 * x / total, '0.2f')
 	
 	def __movAvgStrike(self, day):		
 		strike = day.close * (1 - self.PERCENT_DOWN_MIN)
@@ -89,37 +86,35 @@ class EquityData:
 			strike = day.movAvg[self.MOVAVG_200]
 		return strike
 
+	def __trendStats(self):		
+		self.daysBelow = sum(1 if(day.movAvg[self.MOVAVG_200] != 0 and day.close < day.movAvg[self.MOVAVG_200]) else 0 for day in self.allData)
+		self.daysAbove = len(self.allData) - self.daysBelow
+
 	def __strategyMovAvg(self):
-		strategyResult = StrategyResult('Moving Average')
+		self.strategyResult = StrategyResult('Moving Average')
 		for idx, day in enumerate(self.allData):
 			if(idx - self.MONTH >= 0 and day.percentChangeIsBelow(self.PERCENT_CHANGE_TRIGGER) and day.closeIsAbove(day.movAvg[self.MOVAVG_20])):
-				strategyResult.addTradeDay(day, self.__movAvgStrike(day))				
-		print(strategyResult.toString())
-		print(strategyResult.displayResults())
+				self.strategyResult.addTradeDay(day, self.__movAvgStrike(day))
 
-	def __displayTrendStats(self):		
-		daysBelow = sum(1 if(day.movAvg[self.MOVAVG_200] != 0 and day.close < day.movAvg[self.MOVAVG_200]) else 0 for day in self.allData)
-		daysAbove = len(self.allData) - daysBelow
-		print("Days above {0} moving average = {1} ({2}%)".format(self.PERIODS[self.MOVAVG_200], daysAbove, self.__percent(daysAbove, len(self.allData))))
-		print("Days below {0} moving average = {1} ({2}%)\n".format(self.PERIODS[self.MOVAVG_200], daysBelow, self.__percent(daysBelow, len(self.allData))))
+	def displayAll(self):
+		print("Days above {0} moving average = {1} ({2}%)".format(self.PERIODS[self.MOVAVG_200], self.daysAbove, self.__percent(self.daysAbove, len(self.allData))))
+		print("Days below {0} moving average = {1} ({2}%)\n".format(self.PERIODS[self.MOVAVG_200], self.daysBelow, self.__percent(self.daysBelow, len(self.allData))))
+		print(self.strategyResult.toString())
+		print(self.strategyResult.displayResults())
 
-	def runAll(self):
-		self.__displayTrendStats()
-		self.__strategyMovAvg()
 
 def runAllData():
 	datadir = 'Data/'
 	for f in os.listdir(datadir):
 		if f.endswith(".csv"):
 			print(f)
-			historicalData = EquityData(datadir + f)
-			historicalData.runAll()
+			historicalData = EquityData(datadir + f)			
 
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)
 	spx = EquityData('Data/SPX.csv')
-	spx.runAll()	
+	spx.displayAll()	
 
 if __name__ == "__main__":
     main()
