@@ -97,12 +97,12 @@ class EquityData:
 		self.__daysAbove = len(self.__allData) - self.__daysBelow
 
 	def __trendStatsToString(self):
-		s = format("Days above {0} ", self.PERIODS[self.MOVAVG_200])
-		s += format("moving average = {1} ", self.__daysAbove)
-		s += format("({2}%)".format(self.__percent(self.__daysAbove, len(self.__allData))))
-		s += format("Days below {0} ", self.PERIODS[self.MOVAVG_200])
-		s += format("moving average = {1} ", self.__daysBelow)
-		s += format("({2}%)".format(self.__percent(self.__daysBelow, len(self.__allData))))
+		s = "Days above {0} ".format(self.PERIODS[self.MOVAVG_200])
+		s += "moving average = {0} ".format(self.__daysAbove)
+		s += "({0}%)".format(self.__percent(self.__daysAbove, len(self.__allData)))
+		s += "\nDays below {0} ".format(self.PERIODS[self.MOVAVG_200])
+		s += "moving average = {0} ".format(self.__daysBelow)
+		s += "({0}%)\n".format(self.__percent(self.__daysBelow, len(self.__allData)))
 		return(s)
 
 	def __strategyMovAvg(self):
