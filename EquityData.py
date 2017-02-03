@@ -83,8 +83,8 @@ class EquityData:
 	def __percent(self, x, total):
 		return format(100 * x / total, self.NUMBER_FORMAT)
 	
-	def __selectStrike(self, day):		
-		strike = day.close * (1 - 0.02) # strike minimum
+	def __movAvgStrike(self, day):		
+		strike = day.close * (1 - self.PERCENT_DOWN_MIN)
 		if (day.movAvg[self.MOVAVG_200] < strike):
 			strike = day.movAvg[self.MOVAVG_200]
 		return strike
@@ -93,7 +93,7 @@ class EquityData:
 		strategyResult = StrategyResult('Moving Average')
 		for idx, day in enumerate(self.allData):
 			if(idx - self.MONTH >= 0 and day.percentChangeIsBelow(self.PERCENT_CHANGE_TRIGGER) and day.closeIsAbove(day.movAvg[self.MOVAVG_20])):
-				strategyResult.addTradeDay(day, self.__selectStrike(day))				
+				strategyResult.addTradeDay(day, self.__movAvgStrike(day))				
 		print(strategyResult.toString())
 		print(strategyResult.displayResults())
 
@@ -106,7 +106,6 @@ class EquityData:
 	def runAll(self):
 		self.__displayTrendStats()
 		self.__strategyMovAvg()
-
 
 def runAllData():
 	datadir = 'Data/'
