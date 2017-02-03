@@ -16,7 +16,7 @@ class EquityData:
 	PERCENT_DOWN_MIN = 0.03
 	PERCENT_CHANGE_TRIGGER = -0.50
 	
-	def __init__(self, csvFile):
+	def __init__(self, csvFile):		
 		self.__allData = []
 		self.__parseCsvFile(csvFile)		
 		self.__lastIndex = len(self.__allData) - 1
@@ -86,8 +86,12 @@ class EquityData:
 			strike = day.movAvg[self.MOVAVG_200]
 		return strike
 
-	def __trendStats(self):		
-		self.__daysBelow = sum(1 if(day.movAvg[self.MOVAVG_200] != 0 and day.close < day.movAvg[self.MOVAVG_200]) else 0 for day in self.__allData)
+	def __trendStats(self):
+		self.__daysBelow = 0
+		for day in self.__allData: 
+			if(day.movAvg[self.MOVAVG_200] != 0 and 
+				day.close < day.movAvg[self.MOVAVG_200]):
+				self.__daysBelow += 1
 		self.__daysAbove = len(self.__allData) - self.__daysBelow
 
 	def __strategyMovAvg(self):
