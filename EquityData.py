@@ -96,6 +96,15 @@ class EquityData:
 				self.__daysBelow += 1
 		self.__daysAbove = len(self.__allData) - self.__daysBelow
 
+	def __trendStatsToString(self):
+		s = format("Days above {0} ", self.PERIODS[self.MOVAVG_200])
+		s += format("moving average = {1} ", self.__daysAbove)
+		s += format("({2}%)".format(self.__percent(self.__daysAbove, len(self.__allData))))
+		s += format("Days below {0} ", self.PERIODS[self.MOVAVG_200])
+		s += format("moving average = {1} ", self.__daysBelow)
+		s += format("({2}%)".format(self.__percent(self.__daysBelow, len(self.__allData))))
+		return(s)
+
 	def __strategyMovAvg(self):
 		self.__movAvgStrategy = StrategyResult('Moving Average')
 		for idx, day in enumerate(self.__allData):
@@ -105,12 +114,8 @@ class EquityData:
 				self.__movAvgStrategy.addTradeDay(day, self.__movAvgStrike(day))
 
 	def displayAll(self):
-		print("Days above {0} moving average = {1} ({2}%)".format(self.PERIODS[self.MOVAVG_200], self.__daysAbove, self.__percent(self.__daysAbove, len(self.__allData))))
-		print("Days below {0} moving average = {1} ({2}%)\n".format(self.PERIODS[self.MOVAVG_200], self.__daysBelow, self.__percent(self.__daysBelow, len(self.__allData))))
-		print(self.__movAvgStrategy.toString())
+		print(self.__trendStatsToString())
 		print(self.__movAvgStrategy.displayResults())
-
-
 
 def runAllData():
 	datadir = 'Data/'
