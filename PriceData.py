@@ -60,25 +60,22 @@ class PriceData:
 		# self.volume = float(csvData[6])
 
 	def percentChangeIsAbove(self, x):
-		return (True if(self.percentChange != None and self.percentChange > x) else False)
+		return self.percentChange != None and self.percentChange > x
 
 	def percentChangeIsBelow(self, x):
-		return (True if(self.percentChange != None and self.percentChange < x) else False)
+		return self.percentChange != None and self.percentChange < x
 
 	def closeIsAbove(self, x):
-		return self.close > x
+		return self.close != 0 and self.close > x
 
 	def closeIsBelow(self, x):
-		return self.close < x
-
-	def closeAboveOpen(self):
-		return self.close > self.open
+		return self.close != 0 and self.close < x	
 
 	def oneMonthCloseIsAbove(self, x):
-		return self.closeMonthLater > x
+		return self.closeMonthLater != 0 and self.closeMonthLater > x
 
 	def oneMonthCloseIsBelow(self, x):
-		return self.closeMonthLater < x
+		return self.closeMonthLater != 0 and self.closeMonthLater < x
 
 	def toString(self):
 		return "{0}\t{1}\t{2}%\t{3}".format(format(self.date, "%Y-%m-%d"), 
