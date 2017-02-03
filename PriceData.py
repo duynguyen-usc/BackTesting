@@ -10,8 +10,8 @@ class StrategyResult:
 	def __percent(self, x, total):
 		return format(100 * x / total, '0.2f')
 
-	def addWin(self):
-		self.__wins += 1
+	def addWinIf(self, criteria):
+		if (criteria == True): self.__wins += 1
 
 	def addTradeDay(self, singleDayPriceData):
 		self.__tradeDays.append(singleDayPriceData)		

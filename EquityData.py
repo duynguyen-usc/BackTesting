@@ -92,12 +92,9 @@ class EquityData:
 	def __strategyMovAvg(self):
 		strategyResult = StrategyResult('Moving Average')
 		for idx, day in enumerate(self.allData):
-			if(idx - self.MONTH >= 0 and 
-			   day.percentChangeIsBelow(self.PERCENT_CHANGE_TRIGGER) and
-			   day.closeIsAbove(day.movAvg[self.MOVAVG_20])):
-				strategyResult.addTradeDay(day)				
-				if(self.allData[idx - self.MONTH].closeIsAbove(self.__selectStrike(day))):
-					strategyResult.addWin()
+			if(idx - self.MONTH >= 0 and day.percentChangeIsBelow(self.PERCENT_CHANGE_TRIGGER) and day.closeIsAbove(day.movAvg[self.MOVAVG_20])):
+				strategyResult.addTradeDay(day)
+				strategyResult.addWinIf(day.oneMonthCloseIsAbove(self.__selectStrike(day)))
 		print(strategyResult.toString())
 		print(strategyResult.displayResults())
 
