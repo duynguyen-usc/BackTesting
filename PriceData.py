@@ -10,11 +10,13 @@ class StrategyResult:
 	def __percent(self, x, total):
 		return format(100 * x / total, '0.2f')
 
-	def addWinIf(self, criteria):
-		if (criteria == True): self.__wins += 1
-
-	def addTradeDay(self, singleDayPriceData):
-		self.__tradeDays.append(singleDayPriceData)		
+	def addTradeDay(self, singleDayPriceData, strikePrice):		
+		if (singleDayPriceData.oneMonthCloseIsAbove(strikePrice)): 
+			self.__wins += 1
+			singleDayPriceData.winLoss = 'W'
+		else:
+			singleDayPriceData.winLoss = 'L'
+		self.__tradeDays.append(singleDayPriceData)
 
 	def displayResults(self):
 		total = len(self.__tradeDays)
@@ -40,11 +42,12 @@ class BollingerBand:
 class PriceData:
 	def __init__(self, csvLine):
 		self.__parseCsvLine(csvLine)
-		self.change = 0
-		self.percentChange = 0
+		self.change = None
+		self.percentChange = None
+		self.closeMonthLater = None
+		self.winLoss = None
 		self.movAvg = []
-		self.bollingerBand = BollingerBand(0,0)
-		self.closeMonthLater = 0		
+		self.bollingerBand = BollingerBand(0,0)		
 
 	def __parseCsvLine(self, csvLine):
 		csvData = csvLine.split(',')
