@@ -29,7 +29,7 @@ class StrategyResult:
 	def toString(self):
 		srString = ""
 		for day in self.__tradeDays:
-			srString += day.toString() + '\n'
+			srString += "{0}\t{1}\n".format(day.toString(), day.winLoss)
 		return srString
 
 class BollingerBand:
