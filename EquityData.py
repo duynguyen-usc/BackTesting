@@ -52,6 +52,8 @@ class EquityData:
 			yesterdaysClose = self.allData[index + 1].close
 			self.allData[index].change = self.allData[index].close - yesterdaysClose
 			self.allData[index].percentChange = (self.allData[index].change / yesterdaysClose) * 100
+		if(index - self.MONTH > 0):
+			self.allData[index].closeMonthLater = self.allData[index - self.MONTH].close
 
 	def __getMax(self, indexStart, indexEnd):		
 		if(indexEnd < self.lastIndex):
