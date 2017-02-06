@@ -10,7 +10,9 @@ class EquityData:
 	MOVAVG_50 = 2
 	MOVAVG_150 = 3
 	MOVAVG_200 = 4	
-	PERIODS = [10, 20, 50, 150, 200]
+	MOVAVG_250 = 5
+	MOVAVG_300 = 6
+	PERIODS = [10, 20, 50, 150, 200, 250, 300]
 
 	MONTH = 20
 	PERCENT_DOWN_MIN = 0.03
@@ -110,7 +112,8 @@ class EquityData:
 		for idx, day in enumerate(self.__allData):
 			if(idx - self.MONTH >= 0 and 
 				day.percentChangeIsBelow(self.PERCENT_CHANGE_TRIGGER) and 
-				day.closeIsAbove(day.movAvg[self.MOVAVG_20])):
+				day.closeIsAbove(day.movAvg[self.MOVAVG_20]) and 
+				day.closeIsAbove(day.movAvg[self.MOVAVG_250])):
 				self.__movAvgStrategy.addTradeDay(day, self.__movAvgStrike(day))
 
 	def displayAll(self):

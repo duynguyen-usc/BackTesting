@@ -69,7 +69,7 @@ class PriceData:
 		return self.close != 0 and self.close > x
 
 	def closeIsBelow(self, x):
-		return self.close != 0 and self.close < x	
+		return self.close != 0 and self.close < x
 
 	def oneMonthCloseIsAbove(self, x):
 		return self.closeMonthLater != 0 and self.closeMonthLater > x
