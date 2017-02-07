@@ -1,8 +1,8 @@
 import os
 import numpy
 from PriceData import PriceData
-from PriceData import BollingerBand
-from PriceData import StrategyResult
+from BollingerBand import BollingerBand
+from StrategyResult import StrategyResult
 
 class EquityData:
 	MOVAVG_10 = 0
