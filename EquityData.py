@@ -3,25 +3,15 @@ import numpy
 from PriceData import PriceData
 from BollingerBand import BollingerBand
 from StrategyResult import StrategyResult
+from MovingAverage import MovAvg
 
-class EquityData:
-	MOVAVG_10 = 0
-	MOVAVG_20 = 1
-	MOVAVG_50 = 2
-	MOVAVG_150 = 3
-	MOVAVG_200 = 4	
-	MOVAVG_250 = 5
-	MOVAVG_300 = 6
-	PERIODS = [10, 20, 50, 150, 200, 250, 300]
-
+class EquityData:	
 	MONTH = 20
-	
-	
 	def __init__(self, csvFile):		
 		self.__allData = []
 		self.__parseCsvFile(csvFile)		
 		self.__lastIndex = len(self.__allData) - 1
-		self.__interDayCalculations()		
+		# self.__interDayCalculations()		
 
 	def __parseCsvFile(self, csvFile):
 		data = [line.rstrip('\n') for line in open(csvFile)]
@@ -32,18 +22,6 @@ class EquityData:
 	def __interDayCalculations(self):
 		for idx, day in enumerate(self.__allData):
 			self.__calcChange(idx)
-			self.__calcMovAvgs(idx)
-			self.__calcBollingerBand(idx)
-				
-	def __calcMovAvgs(self, idx):
-		for n in self.PERIODS:
-			self.__allData[idx].movAvg.append(self.__getAverage(idx, idx + n))
-
-	def __calcBollingerBand(self, idx):
-		n = self.PERIODS[self.MOVAVG_20]
-		mid = self.__allData[idx].movAvg[self.MOVAVG_20]
-		stddev = self.__calcStdDev(idx, idx + n)
-		self.__allData[idx].bollingerBand = BollingerBand(mid, stddev)
 
 	def __calcChange(self, index):
 		if(index < self.__lastIndex):
@@ -77,15 +55,12 @@ class EquityData:
 		if(indexEnd < self.__lastIndex):
 			return numpy.std([self.__allData[i].close for i in range(indexStart, indexEnd)])
 		return 0
-
-	def __percent(self, x, total):
-		return format(100 * x / total, '0.2f')
 	
 
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)
-	spx = EquityData('Data/SPX.csv')	
+	spx = EquityData('Data/SPX.csv')		
 
 if __name__ == "__main__":
     main()

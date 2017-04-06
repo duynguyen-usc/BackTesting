@@ -1,5 +1,5 @@
 
-class MovingAverage:
+class MovAvg:
 	periods = {
 		'20day':20,
 		'50day':50,
