@@ -13,7 +13,7 @@ class PriceData:
 	def __init__(self, csvLine):
 		self.__parseCsvLine(csvLine)
 		self.change = None
-		self.percentChange = None		
+		self.percentChange = 0	
 
 	def __parseCsvLine(self, csvLine):
 		csvData = csvLine.split(',')
@@ -38,6 +38,6 @@ class PriceData:
 		return self.close != 0 and self.close < x
 
 	def toString(self):
-		return "{0}\t{1}\t{2}%\t{3}".format(format(self.date, "%Y-%m-%d"), 
+		return "{0}\t{1}\t{2}%\n".format(format(self.date, "%Y-%m-%d"), 
 											format(self.close, '0.2f'), 
 											format(self.percentChange, '0.2f'))

@@ -1,8 +1,5 @@
-import os
 import numpy
 from PriceData import PriceData
-from BollingerBand import BollingerBand
-from MovingAverage import MovAvg
 
 class EquityData:	
 	def __init__(self, csvFile):		
@@ -47,13 +44,9 @@ class EquityData:
 		if(indexEnd < self.__lastIndex):
 			return numpy.std([self.data[i].close for i in range(indexStart, indexEnd)])
 		return 0
-	
 
-def main():
-	path = os.path.dirname(os.path.realpath(__file__))
-	os.chdir(path)
-	spx = EquityData('Data/SPX.csv')
-
-
-if __name__ == "__main__":
-    main()
+	def toString(self):
+		s = ''
+		for day in self.data:
+			s += day.toString()
+		return s
