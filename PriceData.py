@@ -13,11 +13,8 @@ class PriceData:
 	def __init__(self, csvLine):
 		self.__parseCsvLine(csvLine)
 		self.change = None
-		self.percentChange = None
-		self.closeMonthLater = None
-		self.winLoss = None
-		self.movAvg = []
-		self.bollingerBand = BollingerBand(0,0)		
+		self.percentChange = None		
+		self.winLoss = None		
 
 	def __parseCsvLine(self, csvLine):
 		csvData = csvLine.split(',')
@@ -41,14 +38,7 @@ class PriceData:
 	def closeIsBelow(self, x):
 		return self.close != 0 and self.close < x
 
-	def oneMonthCloseIsAbove(self, x):
-		return self.closeMonthLater != 0 and self.closeMonthLater > x
-
-	def oneMonthCloseIsBelow(self, x):
-		return self.closeMonthLater != 0 and self.closeMonthLater < x
-
 	def toString(self):
 		return "{0}\t{1}\t{2}%\t{3}".format(format(self.date, "%Y-%m-%d"), 
 											format(self.close, '0.2f'), 
-											format(self.percentChange, '0.2f'),
-											format(self.closeMonthLater, '0.2f'))
+											format(self.percentChange, '0.2f'))
