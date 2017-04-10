@@ -8,12 +8,14 @@ class PriceData:
 		'150day':150,
 		'200day':200,
 		'250day':250,
-		'300day':300
+		'300day':300,
+		'400day':400,
 	}
 	def __init__(self, csvLine):
 		self.__parseCsvLine(csvLine)
 		self.change = None
-		self.percentChange = 0	
+		self.percentChange = 0
+		self.movavg = dict()
 
 	def __parseCsvLine(self, csvLine):
 		csvData = csvLine.split(',')
@@ -38,6 +40,7 @@ class PriceData:
 		return self.close != 0 and self.close < x
 
 	def toString(self):
-		return "{0}\t{1}\t{2}%\n".format(format(self.date, "%Y-%m-%d"), 
-											format(self.close, '0.2f'), 
-											format(self.percentChange, '0.2f'))
+		s = "{0}\t{1}\t{2}%\n".format(format(self.date, "%Y-%m-%d"), 
+									  format(self.close, '0.2f'), 
+									  format(self.percentChange, '0.2f'))
+		return s
