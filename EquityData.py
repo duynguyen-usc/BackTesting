@@ -5,7 +5,7 @@ class EquityData:
 	def __init__(self, csvFile):		
 		self.data = []
 		self.__parseCsvFile(csvFile)		
-		self.__lastIndex = len(self.data) - 1
+		self.__lastIdx = len(self.data) - 1
 		self.__interDayCalculations()		
 
 	def __parseCsvFile(self, csvFile):
@@ -19,36 +19,35 @@ class EquityData:
 			self.__calcChange(idx)
 			self.__calcMovAvgs(idx)
 
-	def __calcChange(self, index):
-		if(index < self.__lastIndex):
-			yesterdaysClose = self.data[index + 1].close
-			self.data[index].change = self.data[index].close - yesterdaysClose
-			self.data[index].percentChange = (self.data[index].change / yesterdaysClose) * 100
+	def __calcChange(self, idx):
+		if(idx < self.__lastIdx):
+			prevClose = self.data[idx + 1].close
+			self.data[idx].change = self.data[idx].close - prevClose
+			self.data[idx].percentChange = (self.data[idx].change / prevClose) * 100
 
 	def __calcMovAvgs(self, idx):
 		for p in PriceData.periods:
 			offset =  idx + PriceData.periods[p]
-			print(offset)
 			self.data[idx].movavg[p] = self.__getAverage(idx, offset)
 
-	def __getMax(self, indexStart, indexEnd):		
-		if(indexEnd < self.__lastIndex):
-			return numpy.max([self.data[i].close for i in range(indexStart, indexEnd)])
+	def __getMax(self, idxStart, idxEnd):		
+		if(idxEnd < self.__lastIdx):
+			return numpy.max([self.data[i].close for i in range(idxStart, idxEnd)])
 		return 0
 
-	def __getMin(self, indexStart, indexEnd):		
-		if(indexEnd < self.__lastIndex):
-			return numpy.min([self.data[i].close for i in range(indexStart, indexEnd)])
+	def __getMin(self, idxStart, idxEnd):		
+		if(idxEnd < self.__lastIdx):
+			return numpy.min([self.data[i].close for i in range(idxStart, idxEnd)])
 		return 0
 
-	def __getAverage(self, indexStart, indexEnd):		
-		if(indexEnd < self.__lastIndex):
-			return sum(self.data[i].close for i in range(indexStart, indexEnd)) / (indexEnd - indexStart)
+	def __getAverage(self, idxStart, idxEnd):		
+		if(idxEnd < self.__lastIdx):
+			return sum(self.data[i].close for i in range(idxStart, idxEnd)) / (idxEnd - idxStart)
 		return 0
 
-	def __calcStdDev(self, indexStart, indexEnd):		
-		if(indexEnd < self.__lastIndex):
-			return numpy.std([self.data[i].close for i in range(indexStart, indexEnd)])
+	def __calcStdDev(self, idxStart, idxEnd):		
+		if(idxEnd < self.__lastIdx):
+			return numpy.std([self.data[i].close for i in range(idxStart, idxEnd)])
 		return 0
 
 	def toString(self):
