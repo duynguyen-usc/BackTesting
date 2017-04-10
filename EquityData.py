@@ -46,11 +46,6 @@ class EquityData:
 			return sum(self.__allData[i].close for i in range(indexStart, indexEnd)) / (indexEnd - indexStart)
 		return 0
 
-	def getBandAverage(self, indexStart, indexEnd):		
-		if(indexEnd < self.__lastIndex):
-			return sum(self.__allData[i].bandWidth for i in range(indexStart, indexEnd)) / (indexEnd - indexStart)
-		return 0
-
 	def calcStdDev(self, indexStart, indexEnd):		
 		if(indexEnd < self.__lastIndex):
 			return numpy.std([self.__allData[i].close for i in range(indexStart, indexEnd)])
