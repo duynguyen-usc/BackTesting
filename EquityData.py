@@ -21,7 +21,7 @@ class EquityData:
 
 	def __interDayCalculations(self):
 		for idx, day in enumerate(self.data):
-			print("Computing {0}".format(idx))
+			print("idx: {0}".format(idx))
 			self.__calcChange(idx)
 			self.__calcMovAvgs(idx)
 			self.__calcBolBand(idx)
@@ -68,7 +68,7 @@ class EquityData:
 		mn = self.__getMin(idxStart, idxEnd)
 		return (val < mn or val > mx)
 
-	def trend(self, period):		
+	def __trend(self, period):		
 		daysabove = 0
 		daysbelow = 0
 		for day in self.data:
@@ -80,8 +80,12 @@ class EquityData:
 					daysbelow += 1
 		pctAbove = Compute.percent(daysabove, daysabove + daysbelow)
 		pctBelow = Compute.percent(daysbelow, daysabove + daysbelow)
-		print("days above {0}: {1} ({2}%)".format(period, daysabove, pctAbove))
-		print("days below {0}: {1} ({2}%)".format(period, daysbelow, pctBelow))
+		print("Above {0}: ({1}%)".format(period, pctAbove))
+		print("Below {0}: ({1}%)\n".format(period, pctBelow))
+
+	def trend(self):
+		for p in PriceData.periods:		
+			self.__trend(p)	
 
 	def toString(self): 
 		s = ''
@@ -94,8 +98,7 @@ def main():
 	os.chdir(path)
 	
 	spx = EquityData('Data/SPX.csv')
-	# print(spx.toString())
-	spx.trend('200day')
+	spx.trend()	
 
 if __name__ == "__main__":
     main()
