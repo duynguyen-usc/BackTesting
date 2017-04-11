@@ -12,8 +12,6 @@ def main():
 	
 	spx = EquityData('Data/SPX.csv')
 	print(spx.toString())
-	
 
 if __name__ == "__main__":
     main()
-

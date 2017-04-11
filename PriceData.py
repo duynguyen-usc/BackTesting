@@ -40,18 +40,6 @@ class PriceData:
 		# self.adjClose = float(csvData[5])
 		# self.volume = float(csvData[6])
 
-	def percentChangeIsAbove(self, x):
-		return self.percentChange != None and self.percentChange > x
-
-	def percentChangeIsBelow(self, x):
-		return self.percentChange != None and self.percentChange < x
-
-	def closeIsAbove(self, x):
-		return self.close != 0 and self.close > x
-
-	def closeIsBelow(self, x):
-		return self.close != 0 and self.close < x
-
 	def toString(self):
 		s = "{0}\t{1}\t{2}%\t{3}\n".format(format(self.date, "%Y-%m-%d"), 
 									  		format(self.close, '0.2f'), 
