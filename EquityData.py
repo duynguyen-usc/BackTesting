@@ -17,6 +17,7 @@ class EquityData:
 
 	def __interDayCalculations(self):
 		for idx, day in enumerate(self.data):
+			print("Computing {0}".format(idx))
 			self.__calcChange(idx)
 			self.__calcMovAvgs(idx)
 			self.__calcBolBand(idx)
@@ -27,7 +28,7 @@ class EquityData:
 			self.data[idx].change = self.data[idx].close - prevClose
 			self.data[idx].percentChange = (self.data[idx].change / prevClose) * 100
 
-	def __calcMovAvgs(self, idx):
+	def __calcMovAvgs(self, idx):		
 		for p in PriceData.periods:
 			offset =  idx + PriceData.periods[p]
 			self.data[idx].movavg[p] = self.__getAverage(idx, offset)
