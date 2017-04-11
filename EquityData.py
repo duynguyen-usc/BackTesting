@@ -2,6 +2,9 @@ import os
 import numpy as np
 from PriceData import PriceData
 
+# class Result:
+# 	def __init__(self):
+
 class Compute:
 	def percent(val, total):
 		return format(100 * val / total, "0.2f")
@@ -95,10 +98,24 @@ class EquityData:
 
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))
-	os.chdir(path)
-	
+	os.chdir(path)	
 	spx = EquityData('Data/SPX.csv')
-	spx.trend()	
+
+	wins = 0
+	loss = 0
+	pctdown = 0.07
+	holdperiod = 20
+	for idx, day in enumerate(spx.data):
+		offset = idx - holdperiod
+		if (offset >= 0):
+			if (day.close * (1 - pctdown) <= spx.data[offset].close):
+				wins += 1
+			else: 
+				loss += 1
+	pctWin = Compute.percent(wins, wins + loss)
+	pctLoss = Compute.percent(loss, wins + loss)
+	print("Win: {0}%".format(pctWin))
+	print("Loss: {0}%".format(pctLoss))
 
 if __name__ == "__main__":
     main()
