@@ -2,6 +2,10 @@ import os
 import numpy as np
 from PriceData import PriceData
 
+class Compute:
+	def percent(val, total):
+		return format(100 * val / total, "0.2f")
+
 class EquityData:	
 	def __init__(self, csvFile):		
 		self.data = []
@@ -64,18 +68,20 @@ class EquityData:
 		mn = self.__getMin(idxStart, idxEnd)
 		return (val < mn or val > mx)
 
-	def trend(self, priceDataPeriod):		
+	def trend(self, period):		
 		daysabove = 0
 		daysbelow = 0
 		for day in self.data:
-			ma = day.movavg[priceDataPeriod]
+			ma = day.movavg[period]
 			if (ma > 0):
 				if(day.close > ma):
 					daysabove += 1
 				else:
-					daysbelow += 1		
-		print("days above = {0}".format(daysabove))
-		print("days below = {0}".format(daysbelow))
+					daysbelow += 1
+		pctAbove = Compute.percent(daysabove, daysabove + daysbelow)
+		pctBelow = Compute.percent(daysbelow, daysabove + daysbelow)
+		print("days above {0}: {1} ({2}%)".format(period, daysabove, pctAbove))
+		print("days below {0}: {1} ({2}%)".format(period, daysbelow, pctBelow))
 
 	def toString(self): 
 		s = ''
