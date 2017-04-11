@@ -1,3 +1,4 @@
+import os
 import numpy as np
 from PriceData import PriceData
 
@@ -31,7 +32,7 @@ class EquityData:
 			offset =  idx + PriceData.periods[p]
 			self.data[idx].movavg[p] = self.__getAverage(idx, offset)
 
-	def __calcBolBand(self, idx):
+	def __calcBolBand(self, idx):		
 		p = '20day'
 		midline = self.data[idx].movavg[p]
 		stddev = self.__calcStdDev(idx, idx + PriceData.periods[p])
@@ -62,8 +63,32 @@ class EquityData:
 		mn = self.__getMin(idxStart, idxEnd)
 		return (val < mn or val > mx)
 
-	def toString(self):
+	def trend(self, priceDataPeriod):		
+		daysabove = 0
+		daysbelow = 0
+		for day in self.data:
+			ma = day.movavg[priceDataPeriod]
+			if (ma > 0):
+				if(day.close > ma):
+					daysabove += 1
+				else:
+					daysbelow += 1		
+		print("days above = {0}".format(daysabove))
+		print("days below = {0}".format(daysbelow))
+
+	def toString(self): 
 		s = ''
 		for day in reversed(self.data):
 			s += day.toString()
 		return s
+
+def main():
+	path = os.path.dirname(os.path.realpath(__file__))
+	os.chdir(path)
+	
+	spx = EquityData('Data/SPX.csv')
+	# print(spx.toString())
+	spx.trend('200day')
+
+if __name__ == "__main__":
+    main()
