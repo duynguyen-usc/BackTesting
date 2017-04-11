@@ -57,6 +57,11 @@ class EquityData:
 			return np.std([self.data[i].close for i in range(idxStart, idxEnd)])
 		return 0
 
+	def touches(self, val, idxStart, idxEnd):
+		mx = self.__getMax(idxStart, idxEnd)
+		mn = self.__getMin(idxStart, idxEnd)
+		return (val < mn or val > mx)
+
 	def toString(self):
 		s = ''
 		for day in reversed(self.data):
