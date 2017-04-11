@@ -15,7 +15,7 @@ class PriceData:
 		self.__parseCsvLine(csvLine)
 		self.change = None
 		self.percentChange = 0
-		self.movavg = dict()
+		self.movavg = {}
 
 	def __parseCsvLine(self, csvLine):
 		csvData = csvLine.split(',')

@@ -1,4 +1,4 @@
-import numpy
+import numpy as np
 from PriceData import PriceData
 
 class EquityData:	
@@ -32,12 +32,12 @@ class EquityData:
 
 	def __getMax(self, idxStart, idxEnd):		
 		if(idxEnd < self.__lastIdx):
-			return numpy.max([self.data[i].close for i in range(idxStart, idxEnd)])
+			return np.max([self.data[i].close for i in range(idxStart, idxEnd)])
 		return 0
 
 	def __getMin(self, idxStart, idxEnd):		
 		if(idxEnd < self.__lastIdx):
-			return numpy.min([self.data[i].close for i in range(idxStart, idxEnd)])
+			return np.min([self.data[i].close for i in range(idxStart, idxEnd)])
 		return 0
 
 	def __getAverage(self, idxStart, idxEnd):		
@@ -47,7 +47,7 @@ class EquityData:
 
 	def __calcStdDev(self, idxStart, idxEnd):		
 		if(idxEnd < self.__lastIdx):
-			return numpy.std([self.data[i].close for i in range(idxStart, idxEnd)])
+			return np.std([self.data[i].close for i in range(idxStart, idxEnd)])
 		return 0
 
 	def toString(self):
