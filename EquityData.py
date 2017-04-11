@@ -18,6 +18,7 @@ class EquityData:
 		for idx, day in enumerate(self.data):
 			self.__calcChange(idx)
 			self.__calcMovAvgs(idx)
+			self.__calcBolBand(idx)
 
 	def __calcChange(self, idx):
 		if(idx < self.__lastIdx):
@@ -29,6 +30,12 @@ class EquityData:
 		for p in PriceData.periods:
 			offset =  idx + PriceData.periods[p]
 			self.data[idx].movavg[p] = self.__getAverage(idx, offset)
+
+	def __calcBolBand(self, idx):
+		p = '20day'
+		midline = self.data[idx].movavg[p]
+		stddev = self.__calcStdDev(idx, idx + PriceData.periods[p])
+		self.data[idx].bollingerband.calculate(midline, stddev)
 
 	def __getMax(self, idxStart, idxEnd):		
 		if(idxEnd < self.__lastIdx):

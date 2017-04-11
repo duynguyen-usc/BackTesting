@@ -1,5 +1,17 @@
 from datetime import datetime
-from BollingerBand import BollingerBand	
+
+class BollingerBand:
+	def __init__(self):
+		self.midLine = None
+		self.upperBand = None
+		self.lowerBand = None
+		self.bandWidth = None
+
+	def calculate(self, movAvgMidline, stddeviation):
+		self.midLine = movAvgMidline
+		self.upperBand = 2 * stddeviation + self.midLine
+		self.lowerBand = -2 * stddeviation + self.midLine
+		self.bandWidth = self.upperBand - self.lowerBand
 
 class PriceData:
 	periods = {
@@ -16,6 +28,7 @@ class PriceData:
 		self.change = None
 		self.percentChange = 0
 		self.movavg = {}
+		self.bollingerband = BollingerBand()
 
 	def __parseCsvLine(self, csvLine):
 		csvData = csvLine.split(',')
@@ -40,7 +53,8 @@ class PriceData:
 		return self.close != 0 and self.close < x
 
 	def toString(self):
-		s = "{0}\t{1}\t{2}%\n".format(format(self.date, "%Y-%m-%d"), 
-									  format(self.close, '0.2f'), 
-									  format(self.percentChange, '0.2f'))
+		s = "{0}\t{1}\t{2}%\t{3}\n".format(format(self.date, "%Y-%m-%d"), 
+									  		format(self.close, '0.2f'), 
+											format(self.percentChange, '0.2f'),
+											format(self.bollingerband.bandWidth))
 		return s
