@@ -27,7 +27,8 @@ class EquityData:
 			print("idx: {0}".format(idx))
 			self.__calcChange(idx)
 			self.__calcMovAvgs(idx)
-			self.__calcBolBand(idx)
+			self.__calcBolBand(idx)			
+		print("\n")
 
 	def __calcChange(self, idx):
 		if(idx < self.__lastIdx):
@@ -86,9 +87,31 @@ class EquityData:
 		print("Above {0}: ({1}%)".format(period, pctAbove))
 		print("Below {0}: ({1}%)\n".format(period, pctBelow))
 
+	def __pctDown(self, pctdown, holdperiod):
+		wins = 0
+		loss = 0
+		for idx, day in enumerate(self.data):
+			offset = idx - holdperiod
+			strike = day.close * (1 - pctdown) 
+			if (offset >= 0):
+				if (strike <= self.data[offset].close):
+					wins += 1
+				else: 
+					loss += 1
+		pctWin = Compute.percent(wins, wins + loss)
+		pctLoss = Compute.percent(loss, wins + loss)
+		print("Win: {0}%".format(pctWin))
+		print("Loss: {0}%\n".format(pctLoss))
+
 	def trend(self):
 		for p in PriceData.periods:		
-			self.__trend(p)	
+			self.__trend(p)
+
+	def pctDown(self):
+		pcts = [0.03, 0.05, 0.07, 0.08, 0.09, 0.10]
+		holdperiod = 20
+		for pct in pcts:
+			self.__pctDown(pct, holdperiod)
 
 	def toString(self): 
 		s = ''
@@ -100,22 +123,7 @@ def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)	
 	spx = EquityData('Data/SPX.csv')
-
-	wins = 0
-	loss = 0
-	pctdown = 0.07
-	holdperiod = 20
-	for idx, day in enumerate(spx.data):
-		offset = idx - holdperiod
-		if (offset >= 0):
-			if (day.close * (1 - pctdown) <= spx.data[offset].close):
-				wins += 1
-			else: 
-				loss += 1
-	pctWin = Compute.percent(wins, wins + loss)
-	pctLoss = Compute.percent(loss, wins + loss)
-	print("Win: {0}%".format(pctWin))
-	print("Loss: {0}%".format(pctLoss))
+	spx.pctDown()
 
 if __name__ == "__main__":
     main()
