@@ -30,7 +30,10 @@ class Compute:
 	def percent(val, total):
 		return format(100 * val / total, "0.2f")
 
-class EquityData:	
+class EquityData:
+	
+	HOLD_PERIOD = 20
+
 	def __init__(self, csvFile):		
 		self.data = []
 		self.__parseCsvFile(csvFile)		
@@ -109,7 +112,19 @@ class EquityData:
 		for idx, day in enumerate(self.data):
 			offset = idx - holdperiod
 			strike = day.close * (1 - pctdown) 
-			if (offset >= 0):
+			if (offset >= 0 and day.close > day.movavg['200day']):
+				if (strike <= self.data[offset].close):
+					result.addwin()
+				else: 
+					result.addloss()
+		result.print()
+
+	def __movavgdown(self, ma, holdperiod):
+		result = Result()
+		for idx, day in enumerate(self.data):
+			offset = idx - holdperiod
+			strike = day.movavg[ma]
+			if (offset >= 0 and day.close > strike):
 				if (strike <= self.data[offset].close):
 					result.addwin()
 				else: 
@@ -121,11 +136,15 @@ class EquityData:
 			self.__trend(p)
 
 	def pctDown(self):
-		pcts = [0.01, 0.03, 0.05, 0.07, 0.08, 0.09]
-		holdperiod = 40
+		pcts = [0.01, 0.03, 0.05, 0.07, 0.08, 0.09]		
 		for pct in pcts:
-			print("{0}% down {1} day hold".format(round(pct * 100, 0), holdperiod))
-			self.__pctDown(pct, holdperiod)
+			print("strike: {0}% down; {1} day hold".format(round(pct * 100, 0), self.HOLD_PERIOD))
+			self.__pctDown(pct, self.HOLD_PERIOD)
+
+	def movavgdown(self):		
+		for p in PriceData.periods:
+			print("Strike: {0}; {1} day hold".format(p, self.HOLD_PERIOD))
+			self.__movavgdown(p, self.HOLD_PERIOD)
 
 	def toString(self): 
 		s = ''
@@ -138,7 +157,8 @@ def main():
 	os.chdir(path)	
 	spx = EquityData('Data/SPX.csv')
 	spx.trend()
-	# spx.pctDown()
+	spx.pctDown()
+	spx.movavgdown()
 
 if __name__ == "__main__":
     main()
