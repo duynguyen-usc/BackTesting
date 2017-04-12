@@ -48,8 +48,7 @@ class EquityData:
 			print("idx: {0}".format(idx))
 			self.__calcChange(idx)
 			self.__calcMovAvgs(idx)
-			self.__calcBolBand(idx)			
-		print("\n")
+			self.__calcBolBand(idx)
 
 	def __calcChange(self, idx):
 		if(idx < self.__lastIdx):
