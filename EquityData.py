@@ -2,8 +2,25 @@ import os
 import numpy as np
 from PriceData import PriceData
 
-# class Result:
-# 	def __init__(self):
+class Result:
+	def __init__(self):
+		self.wins = 0
+		self.loss = 0
+
+	def __total(self):
+		return self.wins + self.loss
+
+	def addwin(self):
+		self.wins += 1
+
+	def addloss(self):
+		self.loss += 1
+
+	def pctwin(self):
+		return Compute.percent(self.wins, self.__total())
+
+	def pctloss(self): 
+		return Compute.percent(self.loss, self.__total())
 
 class Compute:
 	def percent(val, total):
