@@ -22,6 +22,10 @@ class Result:
 	def pctloss(self): 
 		return Compute.percent(self.loss, self.__total())
 
+	def print(self):
+		print("Win: {0}%".format(self.pctwin()))
+		print("Loss: {0}%\n".format(self.pctloss()))
+
 class Compute:
 	def percent(val, total):
 		return format(100 * val / total, "0.2f")
@@ -105,29 +109,26 @@ class EquityData:
 		print("Below {0}: ({1}%)\n".format(period, pctBelow))
 
 	def __pctDown(self, pctdown, holdperiod):
-		wins = 0
-		loss = 0
+		result = Result()
 		for idx, day in enumerate(self.data):
 			offset = idx - holdperiod
 			strike = day.close * (1 - pctdown) 
 			if (offset >= 0):
 				if (strike <= self.data[offset].close):
-					wins += 1
+					result.addwin()
 				else: 
-					loss += 1
-		pctWin = Compute.percent(wins, wins + loss)
-		pctLoss = Compute.percent(loss, wins + loss)
-		print("Win: {0}%".format(pctWin))
-		print("Loss: {0}%\n".format(pctLoss))
+					result.addloss()
+		result.print()
 
 	def trend(self):
 		for p in PriceData.periods:		
 			self.__trend(p)
 
 	def pctDown(self):
-		pcts = [0.03, 0.05, 0.07, 0.08, 0.09, 0.10]
+		pcts = [0.01, 0.03, 0.05, 0.07, 0.08, 0.09]
 		holdperiod = 20
 		for pct in pcts:
+			print("{0}% down {1} day hold".format(round(pct * 100, 0), holdperiod))
 			self.__pctDown(pct, holdperiod)
 
 	def toString(self): 
