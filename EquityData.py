@@ -94,19 +94,16 @@ class EquityData:
 		return (val < mn or val > mx)
 
 	def __trend(self, period):		
-		daysabove = 0
-		daysbelow = 0
+		result = Result()
 		for day in self.data:
 			ma = day.movavg[period]
 			if (ma > 0):
 				if(day.close > ma):
-					daysabove += 1
+					result.addwin()
 				else:
-					daysbelow += 1
-		pctAbove = Compute.percent(daysabove, daysabove + daysbelow)
-		pctBelow = Compute.percent(daysbelow, daysabove + daysbelow)
-		print("Above {0}: ({1}%)".format(period, pctAbove))
-		print("Below {0}: ({1}%)\n".format(period, pctBelow))
+					result.addloss()
+		print("Above {0}: {1}%".format(period, result.pctwin()))
+		print("Below {0}: {1}%\n".format(period, result.pctloss()))
 
 	def __pctDown(self, pctdown, holdperiod):
 		result = Result()
@@ -126,7 +123,7 @@ class EquityData:
 
 	def pctDown(self):
 		pcts = [0.01, 0.03, 0.05, 0.07, 0.08, 0.09]
-		holdperiod = 20
+		holdperiod = 40
 		for pct in pcts:
 			print("{0}% down {1} day hold".format(round(pct * 100, 0), holdperiod))
 			self.__pctDown(pct, holdperiod)
@@ -141,7 +138,8 @@ def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)	
 	spx = EquityData('Data/SPX.csv')
-	spx.pctDown()
+	spx.trend()
+	# spx.pctDown()
 
 if __name__ == "__main__":
     main()
