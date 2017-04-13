@@ -26,6 +26,20 @@ class Result:
 		print("Win: {0}%".format(self.pctwin()))
 		print("Loss: {0}%\n".format(self.pctloss()))
 
+class ResultTable:
+	def __init__(self, cname):
+		self.hrow = cname + "\t"
+		self.wrow = "W\t"
+		self.lrow = "L\t"
+
+	def add(self, h, w, l):
+		self.hrow += "{0}\t".format(h)
+		self.wrow += "{0}\t".format(w)
+		self.lrow += "{0}\t".format(l)
+
+	def print(self):
+		print("{0}\n{1}\n{2}".format(self.hrow, self.wrow, self.lrow))
+
 class Compute:
 	def percent(val, total):
 		return format(100 * val / total, "0.2f")
@@ -135,15 +149,13 @@ class EquityData:
 		return result
 
 	def trend(self):
-		hrow = "\nTrend\t"
-		wrow = "Above\t"
-		lrow = "Below\t"
+		rt = ResultTable("Trend")
+		rt.wrow = "Above\t"
+		rt.lrow = "Below\t"
 		for p in PriceData.periods:
 			r = self.__trend(p)
-			hrow += "{0}\t".format(p)
-			wrow += "{0}\t".format(r.pctwin())
-			lrow += "{0}\t".format(r.pctloss())
-		print("{0}\n{1}\n{2}".format(hrow, wrow, lrow))
+			rt.add(p, r.pctwin(), r.pctloss())			
+		rt.print()
 
 	def pctDown(self):		
 		pcts = [0.05, 0.07, 0.09]		
@@ -179,8 +191,8 @@ def main():
 	os.chdir(path)	
 	spx = EquityData('Data/SPX.csv')
 	spx.trend()
-	spx.pctDown()
-	spx.movavgdown()
+	# spx.pctDown()
+	# spx.movavgdown()
 
 if __name__ == "__main__":
     main()
