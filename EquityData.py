@@ -176,7 +176,7 @@ class EquityData:
 			print("\nPctDown; Holding Period = {0}".format(hp))
 			for pct in pcts:
 				r = self.__pctDown(pct, hp)
-				rt.add(round(pct * 100, 0), r.pctwin(), r.pctloss())
+				rt.add("{0}%".format(format(round(pct * 100), '0.2f')), r.pctwin(), r.pctloss())
 			rt.print()
 
 	def movavgdown(self):
@@ -194,7 +194,7 @@ def main():
 	spx = EquityData('Data/SPX.csv')
 	spx.trend()
 	spx.pctDown()
-	spx.movavgdown()
+	# spx.movavgdown()
 
 if __name__ == "__main__":
     main()
