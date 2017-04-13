@@ -159,12 +159,6 @@ class EquityData:
 			print("Strike: {0}; {1} day hold".format(p, self.HOLD_PERIOD))
 			print(self.__movavgdown(p, self.HOLD_PERIOD))
 
-	def toString(self): 
-		s = ''
-		for day in reversed(self.data):
-			s += day.toString()
-		return s
-
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)	
