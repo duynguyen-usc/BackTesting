@@ -32,7 +32,7 @@ class Compute:
 
 class EquityData:
 	
-	H_PERIODS = [15, 20, 25, 30, 35]
+	H_PERIODS = [10, 15, 20, 25, 30, 35]
 
 	def __init__(self, csvFile):		
 		self.data = []
@@ -146,7 +146,7 @@ class EquityData:
 		print("{0}\n{1}\n{2}".format(hrow, wrow, lrow))
 
 	def pctDown(self):		
-		pcts = [0.01, 0.03, 0.05, 0.07, 0.08, 0.09]		
+		pcts = [0.05, 0.07, 0.09]		
 		for hp in self.H_PERIODS:
 			hrow = "D\t"
 			wrow = "W\t"
@@ -179,7 +179,7 @@ def main():
 	os.chdir(path)	
 	spx = EquityData('Data/SPX.csv')
 	spx.trend()
-	# spx.pctDown()
+	spx.pctDown()
 	spx.movavgdown()
 
 if __name__ == "__main__":
