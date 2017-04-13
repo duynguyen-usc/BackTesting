@@ -41,6 +41,11 @@ class ResultTable:
 		print("{0}\n{1}\n{2}".format(self.hrow, self.wrow, self.lrow))
 
 class Compute:
+
+	PERCENT_5 = 0.05
+	PERCENT_7 = 0.07
+	PERCENT_9 = 0.09
+
 	def percent(val, total):
 		return format(100 * val / total, "0.2f")
 
@@ -139,7 +144,7 @@ class EquityData:
 			offset = idx - holdperiod
 			strike = day.movavg[ma]			
 			if (offset >= 0 and strike > 0 and day.close > strike):
-				strikemin = 0.95 * day.close				
+				strikemin = (1 - Compute.PERCENT_7) * day.close
 				if (strike > strikemin):
 					strike = strikemin
 				if (strike <= self.data[offset].close):
@@ -158,7 +163,7 @@ class EquityData:
 		rt.print()
 
 	def pctDown(self):		
-		pcts = [0.05, 0.07, 0.09]		
+		pcts = [Compute.PERCENT_5, Compute.PERCENT_7, Compute.PERCENT_9]
 		for hp in self.H_PERIODS:
 			rt = ResultTable("D")			
 			print("\nPctDown; Holding Period = {0}".format(hp))
@@ -175,7 +180,7 @@ class EquityData:
 				r = self.__movavgdown(p, hp)
 				rt.add(p, r.pctwin(), r.pctloss())				
 			rt.print()
-			
+
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)	
