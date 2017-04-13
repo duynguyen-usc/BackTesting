@@ -154,10 +154,17 @@ class EquityData:
 			lrow += "{0}\t".format(r.pctloss())
 		print("{0}\n{1}\n{2}".format(hrow, wrow, lrow))
 
-	def movavgdown(self):		
-		for p in PriceData.periods:
-			print("Strike: {0}; {1} day hold".format(p, self.HOLD_PERIOD))
-			print(self.__movavgdown(p, self.HOLD_PERIOD))
+	def movavgdown(self):
+		hrow = "MA\t"
+		wrow = "W\t"
+		lrow = "L\t"
+		print("\nMovAvgDown; Holding Period = {0}".format(self.HOLD_PERIOD))	
+		for p in PriceData.periods:			
+			r = self.__movavgdown(p, self.HOLD_PERIOD)
+			hrow += "{0}\t".format(p)
+			wrow += "{0}\t".format(r.pctwin())
+			lrow += "{0}\t".format(r.pctloss())
+		print("{0}\n{1}\n{2}".format(hrow, wrow, lrow))
 
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))
@@ -165,7 +172,7 @@ def main():
 	spx = EquityData('Data/SPX.csv')
 	spx.trend()
 	spx.pctDown()
-	# spx.movavgdown()
+	spx.movavgdown()
 
 if __name__ == "__main__":
     main()
