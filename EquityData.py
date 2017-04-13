@@ -32,7 +32,7 @@ class Compute:
 
 class EquityData:
 	
-	HOLD_PERIOD = 20
+	HOLD_PERIOD = 25
 
 	def __init__(self, csvFile):		
 		self.data = []
@@ -105,7 +105,6 @@ class EquityData:
 				else:
 					result.addloss()
 		return result
-		
 
 	def __pctDown(self, pctdown, holdperiod):
 		result = Result()
@@ -147,7 +146,7 @@ class EquityData:
 		wrow = "W\t"
 		lrow = "L\t"
 		pcts = [0.01, 0.03, 0.05, 0.07, 0.08, 0.09]
-		print("\nHolding Period = {0}".format(self.HOLD_PERIOD))
+		print("\nPctDown; Holding Period = {0}".format(self.HOLD_PERIOD))
 		for pct in pcts:
 			r = self.__pctDown(pct, self.HOLD_PERIOD)
 			hrow += "{0}%\t".format(round(pct * 100, 0))
