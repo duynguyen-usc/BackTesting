@@ -15,10 +15,10 @@ class BollingerBand:
 
 class PriceData:
 	periods = {
-		'20day':20,
-		# '50day':50,
-		# '100day':150,
-		'200day':200,		
+		# '20day':20,
+		'50day':50,
+		'100day':150,
+		'200day':200
 		# '300day':300		
 	}
 	def __init__(self, csvLine):

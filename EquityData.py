@@ -32,7 +32,7 @@ class Compute:
 
 class EquityData:
 	
-	HOLD_PERIOD = 20
+	H_PERIODS = [20, 25, 30, 35, 40]
 
 	def __init__(self, csvFile):		
 		self.data = []
@@ -146,9 +146,8 @@ class EquityData:
 		print("{0}\n{1}\n{2}".format(hrow, wrow, lrow))
 
 	def pctDown(self):		
-		pcts = [0.01, 0.03, 0.05, 0.07, 0.08, 0.09]
-		holdingperiods = [20, 25, 30, 35, 40]
-		for hp in holdingperiods:
+		pcts = [0.01, 0.03, 0.05, 0.07, 0.08, 0.09]		
+		for hp in self.H_PERIODS:
 			hrow = "D\t"
 			wrow = "W\t"
 			lrow = "L\t"
@@ -161,26 +160,27 @@ class EquityData:
 			print("{0}\n{1}\n{2}".format(hrow, wrow, lrow))
 
 	def movavgdown(self):
-		hrow = "MA\t"
-		wrow = "W\t"
-		lrow = "L\t"
-		print("\nMovAvgDown; Holding Period = {0}".format(self.HOLD_PERIOD))	
-		for p in PriceData.periods:			
-			r = self.__movavgdown(p, self.HOLD_PERIOD)
-			hrow += "{0}\t".format(p)
-			wrow += "{0}\t".format(r.pctwin())
-			lrow += "{0}\t".format(r.pctloss())
-			# wrow += "{0}\t".format(r.wins)
-			# lrow += "{0}\t".format(r.loss)
-		print("{0}\n{1}\n{2}".format(hrow, wrow, lrow))
+		for hp in self.H_PERIODS:
+			hrow = "MA\t"
+			wrow = "W\t"
+			lrow = "L\t"
+			print("\nMovAvgDown; Holding Period = {0}".format(hp))	
+			for p in PriceData.periods:			
+				r = self.__movavgdown(p, hp)
+				hrow += "{0}\t".format(p)
+				wrow += "{0}\t".format(r.pctwin())
+				lrow += "{0}\t".format(r.pctloss())
+				# wrow += "{0}\t".format(r.wins)
+				# lrow += "{0}\t".format(r.loss)
+			print("{0}\n{1}\n{2}".format(hrow, wrow, lrow))
 
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)	
 	spx = EquityData('Data/SPX.csv')
 	# spx.trend()
-	spx.pctDown()
-	# spx.movavgdown()
+	# spx.pctDown()
+	spx.movavgdown()
 
 if __name__ == "__main__":
     main()
