@@ -46,12 +46,19 @@ class Compute:
 	PERCENT_7 = 0.07
 	PERCENT_9 = 0.09
 
+	WEEKS_2 = 10
+	WEEKS_3 = 15
+	WEEKS_4 = 20
+	WEEKS_5 = 25
+	WEEKS_6 = 30
+	WEEKS_7 = 35
+
 	def percent(val, total):
 		return format(100 * val / total, "0.2f")
 
 class EquityData:
 	
-	H_PERIODS = [10, 15, 20, 25, 30, 35]
+	H_PERIODS = [10, 15, 20, 25, 30, 35, 40, 50, 60, 70]
 
 	def __init__(self, csvFile):		
 		self.data = []
