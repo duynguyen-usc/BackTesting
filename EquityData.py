@@ -160,39 +160,29 @@ class EquityData:
 	def pctDown(self):		
 		pcts = [0.05, 0.07, 0.09]		
 		for hp in self.H_PERIODS:
-			hrow = "D\t"
-			wrow = "W\t"
-			lrow = "L\t"
+			rt = ResultTable("D")			
 			print("\nPctDown; Holding Period = {0}".format(hp))
 			for pct in pcts:
 				r = self.__pctDown(pct, hp)
-				hrow += "{0}%\t".format(round(pct * 100, 0))
-				wrow += "{0}\t".format(r.pctwin())
-				lrow += "{0}\t".format(r.pctloss())
-			print("{0}\n{1}\n{2}".format(hrow, wrow, lrow))
+				rt.add(round(pct * 100, 0), r.pctwin(), r.pctloss())
+			rt.print()
 
 	def movavgdown(self):
 		for hp in self.H_PERIODS:
-			hrow = "MA\t"
-			wrow = "W\t"
-			lrow = "L\t"
+			rt = ResultTable("MA")
 			print("\nMovAvgDown; Holding Period = {0}".format(hp))	
 			for p in PriceData.periods:			
 				r = self.__movavgdown(p, hp)
-				hrow += "{0}\t".format(p)
-				wrow += "{0}\t".format(r.pctwin())
-				lrow += "{0}\t".format(r.pctloss())
-				# wrow += "{0}\t".format(r.wins)
-				# lrow += "{0}\t".format(r.loss)
-			print("{0}\n{1}\n{2}".format(hrow, wrow, lrow))
-
+				rt.add(p, r.pctwin(), r.pctloss())				
+			rt.print()
+			
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)	
 	spx = EquityData('Data/SPX.csv')
 	spx.trend()
-	# spx.pctDown()
-	# spx.movavgdown()
+	spx.pctDown()
+	spx.movavgdown()
 
 if __name__ == "__main__":
     main()
