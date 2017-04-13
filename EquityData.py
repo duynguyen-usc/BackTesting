@@ -145,18 +145,20 @@ class EquityData:
 			lrow += "{0}\t".format(r.pctloss())
 		print("{0}\n{1}\n{2}".format(hrow, wrow, lrow))
 
-	def pctDown(self):
-		hrow = "D\t"
-		wrow = "W\t"
-		lrow = "L\t"
+	def pctDown(self):		
 		pcts = [0.01, 0.03, 0.05, 0.07, 0.08, 0.09]
-		print("\nPctDown; Holding Period = {0}".format(self.HOLD_PERIOD))
-		for pct in pcts:
-			r = self.__pctDown(pct, self.HOLD_PERIOD)
-			hrow += "{0}%\t".format(round(pct * 100, 0))
-			wrow += "{0}\t".format(r.pctwin())
-			lrow += "{0}\t".format(r.pctloss())
-		print("{0}\n{1}\n{2}".format(hrow, wrow, lrow))
+		holdingperiods = [20, 25, 30, 35, 40]
+		for hp in holdingperiods:
+			hrow = "D\t"
+			wrow = "W\t"
+			lrow = "L\t"
+			print("\nPctDown; Holding Period = {0}".format(hp))
+			for pct in pcts:
+				r = self.__pctDown(pct, hp)
+				hrow += "{0}%\t".format(round(pct * 100, 0))
+				wrow += "{0}\t".format(r.pctwin())
+				lrow += "{0}\t".format(r.pctloss())
+			print("{0}\n{1}\n{2}".format(hrow, wrow, lrow))
 
 	def movavgdown(self):
 		hrow = "MA\t"
@@ -176,9 +178,9 @@ def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)	
 	spx = EquityData('Data/SPX.csv')
-	spx.trend()
+	# spx.trend()
 	spx.pctDown()
-	spx.movavgdown()
+	# spx.movavgdown()
 
 if __name__ == "__main__":
     main()
