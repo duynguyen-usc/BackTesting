@@ -104,8 +104,8 @@ class EquityData:
 					result.addwin()
 				else:
 					result.addloss()
-		print("Above {0}: {1}%".format(period, result.pctwin()))
-		print("Below {0}: {1}%\n".format(period, result.pctloss()))
+		return result
+		
 
 	def __pctDown(self, pctdown, holdperiod):
 		result = Result()
@@ -117,7 +117,7 @@ class EquityData:
 					result.addwin()
 				else: 
 					result.addloss()
-		result.print()
+		return result
 
 	def __movavgdown(self, ma, holdperiod):
 		result = Result()
@@ -129,22 +129,29 @@ class EquityData:
 					result.addwin()
 				else: 
 					result.addloss()
-		result.print()
+		return result
 
 	def trend(self):
-		for p in PriceData.periods:		
-			self.__trend(p)
+		hrow = "\nTrend\t"
+		wrow = "Above\t"
+		lrow = "Below\t"		
+		for p in PriceData.periods:
+			r = self.__trend(p)
+			hrow += "{0}\t".format(p)
+			wrow += r.pctwin() + "\t"
+			lrow += r.pctloss() + "\t"
+		print("{0}\n{1}\n{2}".format(hrow, wrow, lrow))
 
 	def pctDown(self):
 		pcts = [0.01, 0.03, 0.05, 0.07, 0.08, 0.09]		
 		for pct in pcts:
 			print("strike: {0}% down; {1} day hold".format(round(pct * 100, 0), self.HOLD_PERIOD))
-			self.__pctDown(pct, self.HOLD_PERIOD)
+			print(self.__pctDown(pct, self.HOLD_PERIOD))
 
 	def movavgdown(self):		
 		for p in PriceData.periods:
 			print("Strike: {0}; {1} day hold".format(p, self.HOLD_PERIOD))
-			self.__movavgdown(p, self.HOLD_PERIOD)
+			print(self.__movavgdown(p, self.HOLD_PERIOD))
 
 	def toString(self): 
 		s = ''
@@ -157,8 +164,8 @@ def main():
 	os.chdir(path)	
 	spx = EquityData('Data/SPX.csv')
 	spx.trend()
-	spx.pctDown()
-	spx.movavgdown()
+	# spx.pctDown()
+	# spx.movavgdown()
 
 if __name__ == "__main__":
     main()
