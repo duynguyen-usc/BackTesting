@@ -122,11 +122,11 @@ class EquityData:
 		result = Result()
 		for idx, day in enumerate(self.data):			
 			offset = idx - holdperiod
-			strike = day.movavg[ma]
-			strikemin = 0.03 * day.close
-			if (strike > strikemin):
-				strike = strikemin
-			if (offset >= 0 and day.close > strike):
+			strike = day.movavg[ma]			
+			if (offset >= 0 and strike > 0 and day.close > strike):
+				strikemin = 0.95 * day.close				
+				if (strike > strikemin):
+					strike = strikemin
 				if (strike <= self.data[offset].close):
 					result.addwin()
 				else: 
@@ -167,6 +167,8 @@ class EquityData:
 			hrow += "{0}\t".format(p)
 			wrow += "{0}\t".format(r.pctwin())
 			lrow += "{0}\t".format(r.pctloss())
+			# wrow += "{0}\t".format(r.wins)
+			# lrow += "{0}\t".format(r.loss)
 		print("{0}\n{1}\n{2}".format(hrow, wrow, lrow))
 
 def main():
