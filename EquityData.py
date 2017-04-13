@@ -32,7 +32,7 @@ class Compute:
 
 class EquityData:
 	
-	HOLD_PERIOD = 25
+	HOLD_PERIOD = 20
 
 	def __init__(self, csvFile):		
 		self.data = []
@@ -120,9 +120,12 @@ class EquityData:
 
 	def __movavgdown(self, ma, holdperiod):
 		result = Result()
-		for idx, day in enumerate(self.data):
+		for idx, day in enumerate(self.data):			
 			offset = idx - holdperiod
 			strike = day.movavg[ma]
+			strikemin = 0.03 * day.close
+			if (strike > strikemin):
+				strike = strikemin
 			if (offset >= 0 and day.close > strike):
 				if (strike <= self.data[offset].close):
 					result.addwin()
