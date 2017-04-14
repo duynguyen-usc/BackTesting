@@ -6,6 +6,7 @@ class Result:
 	def __init__(self):
 		self.wins = 0
 		self.loss = 0
+		self.touches = 0		
 
 	def __total(self):
 		return self.wins + self.loss
@@ -16,11 +17,17 @@ class Result:
 	def addloss(self):
 		self.loss += 1
 
+	def addtouch(self):
+		self.touches += 1
+
 	def pctwin(self):
 		return Compute.percent(self.wins, self.__total())
 
 	def pctloss(self): 
 		return Compute.percent(self.loss, self.__total())
+
+	def pcttouch(self):
+		return Compute.percent(self.touches, self.__total())
 
 	def print(self):
 		print("Win: {0}%".format(self.pctwin()))
@@ -31,14 +38,16 @@ class ResultTable:
 		self.hrow = cname + "\t"
 		self.wrow = "W\t"
 		self.lrow = "L\t"
+		self.trow = "T\t"
 
-	def add(self, h, w, l):
+	def add(self, h, w, l, t):
 		self.hrow += "{0}\t".format(h)
 		self.wrow += "{0}\t".format(w)
 		self.lrow += "{0}\t".format(l)
+		self.trow += "{0}\t".format(t)
 
 	def print(self):
-		print("{0}\n{1}\n{2}".format(self.hrow, self.wrow, self.lrow))
+		print("{0}\n{1}\n{2}\n{3}".format(self.hrow, self.wrow, self.lrow, self.trow))
 
 class Compute:
 
@@ -46,19 +55,12 @@ class Compute:
 	PERCENT_7 = 0.07
 	PERCENT_9 = 0.09
 
-	WEEKS_2 = 10
-	WEEKS_3 = 15
-	WEEKS_4 = 20
-	WEEKS_5 = 25
-	WEEKS_6 = 30
-	WEEKS_7 = 35
-
 	def percent(val, total):
 		return format(100 * val / total, "0.2f")
 
 class EquityData:
 	
-	H_PERIODS = [10, 15, 20, 25, 30, 35, 40, 50, 60, 70]
+	H_PERIODS = [20, 25]
 
 	def __init__(self, csvFile):		
 		self.data = []
@@ -143,21 +145,25 @@ class EquityData:
 					result.addwin()
 				else: 
 					result.addloss()
+				if (self.__touchesPutStrike(strike, offset, idx)):
+					result.addtouch()
 		return result
 
-	def __movavgdown(self, ma, holdperiod):
+	def __movavgdown(self, ma, holdperiod, min_pct_down):
 		result = Result()
 		for idx, day in enumerate(self.data):			
 			offset = idx - holdperiod
 			strike = day.movavg[ma]			
 			if (offset >= 0 and strike > 0 and day.close > strike):
-				strikemin = (1 - Compute.PERCENT_7) * day.close
+				strikemin = (1 - min_pct_down) * day.close
 				if (strike > strikemin):
 					strike = strikemin
 				if (strike <= self.data[offset].close):
 					result.addwin()
 				else: 
 					result.addloss()
+				if (self.__touchesPutStrike(strike, offset, idx)):
+					result.addtouch()
 		return result
 
 	def trend(self):
@@ -172,11 +178,12 @@ class EquityData:
 	def pctDown(self):		
 		pcts = [Compute.PERCENT_5, Compute.PERCENT_7, Compute.PERCENT_9]
 		for hp in self.H_PERIODS:
-			rt = ResultTable("D")			
+			rt = ResultTable("PD")			
 			print("\nPctDown; Holding Period = {0}".format(hp))
 			for pct in pcts:
 				r = self.__pctDown(pct, hp)
-				rt.add("{0}%".format(format(round(pct * 100), '0.2f')), r.pctwin(), r.pctloss())
+				rt.add("{0}%".format(format(round(pct * 100), '0.2f')), 
+					r.pctwin(), r.pctloss(), r.pcttouch())
 			rt.print()
 
 	def movavgdown(self):
@@ -184,17 +191,17 @@ class EquityData:
 			rt = ResultTable("MA")
 			print("\nMovAvgDown; Holding Period = {0}".format(hp))	
 			for p in PriceData.periods:			
-				r = self.__movavgdown(p, hp)
-				rt.add(p, r.pctwin(), r.pctloss())				
+				r = self.__movavgdown(p, hp, Compute.PERCENT_7)
+				rt.add(p, r.pctwin(), r.pctloss(), r.pcttouch())				
 			rt.print()
 
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)	
 	spx = EquityData('Data/SPX.csv')
-	spx.trend()
+	# spx.trend()
 	spx.pctDown()
-	# spx.movavgdown()
+	spx.movavgdown()
 
 if __name__ == "__main__":
     main()
