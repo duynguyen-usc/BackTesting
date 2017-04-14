@@ -145,8 +145,11 @@ class EquityData:
 		result = Result()
 		for idx, day in enumerate(self.data):
 			offset = idx - holdperiod
-			strike = day.close * (1 - pctdown) 
-			if (offset >= 0 and day.close > day.movavg['200day']):
+			strike = day.close * (1 - pctdown)
+			daysdown = 0
+			if (offset >= 0 and idx + daysdown < self.__lastIdx and 
+				day.close > day.movavg['200day'] and 
+				self.__daysdown(idx, daysdown, 0)):
 				if (strike <= self.data[offset].close):
 					result.addwin()
 				else: 
@@ -207,7 +210,7 @@ def main():
 	spx = EquityData('Data/SPX.csv')
 	# spx.trend()
 	spx.pctDown()
-	spx.movavgdown()
+	# spx.movavgdown()
 
 if __name__ == "__main__":
     main()
