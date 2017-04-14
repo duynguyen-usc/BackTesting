@@ -124,6 +124,12 @@ class EquityData:
 	def __touchesCallStrike(self, strike, idxStart, idxEnd):		
 		return strike < self.__getMin(idxStart, idxEnd)
 
+	def __daysdown(self, idx, daysdown, pctdownlimit):
+		for i in range(idx, idx + daysdown):
+			if (self.data[i].percentChange > pctdownlimit):
+				return False
+		return True
+
 	def __trend(self, period):		
 		result = Result()
 		for day in self.data:
