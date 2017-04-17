@@ -46,9 +46,9 @@ class ResultTable:
 
 	def add(self, h, result):
 		self.hrow += "{0}\t".format(h)		
-		self.wrow += "{0}\t".format(result.wins) 
-		self.lrow += "{0}\t".format(result.loss)
-		self.trow += "{0}\t".format(result.touches)
+		self.wrow += "{0}\t".format(format(result.wins, '0.2f')) 
+		self.lrow += "{0}\t".format(format(result.loss, '0.2f'))
+		self.trow += "{0}\t".format(format(result.touches, '0.2f'))
 		self.pctwrow += "{0}\t".format(result.pctwin())
 		self.pctlrow += "{0}\t".format(result.pctloss())
 		self.pcttrow += "{0}\t".format(result.pcttouch())
@@ -207,7 +207,8 @@ class EquityData:
 			for pct in pcts:
 				r = self.__pctDown(pct, hp)
 				rt.add("{0}%".format(format(round(pct * 100), '0.2f')), r)
-			rt.pctprint()
+			# rt.pctprint()
+			rt.print()
 
 	def movavgdown(self):
 		for hp in self.H_PERIODS:
@@ -222,9 +223,9 @@ def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)	
 	spx = EquityData('Data/SPX.csv')
-	spx.trend()
+	# spx.trend()
 	spx.pctDown()
-	spx.movavgdown()
+	# spx.movavgdown()
 
 if __name__ == "__main__":
     main()
