@@ -40,11 +40,14 @@ class ResultTable:
 		self.lrow = "L\t"
 		self.trow = "T\t"
 
-	def add(self, h, w, l, t):
+	def add(self, h, result):
 		self.hrow += "{0}\t".format(h)
-		self.wrow += "{0}\t".format(w)
-		self.lrow += "{0}\t".format(l)
-		self.trow += "{0}\t".format(t)
+		self.wrow += "{0}\t".format(result.pctwin()) 
+		self.lrow += "{0}\t".format(result.pctloss()) 
+		self.trow += "{0}\t".format(result.pcttouch())
+
+	def wlprint(self):
+		print("{0}\n{1}\n{2}".format(self.hrow, self.wrow, self.lrow))
 
 	def print(self):
 		print("{0}\n{1}\n{2}\n{3}".format(self.hrow, self.wrow, self.lrow, self.trow))
@@ -146,10 +149,11 @@ class EquityData:
 		for idx, day in enumerate(self.data):
 			offset = idx - holdperiod
 			strike = day.close * (1 - pctdown)
-			daysdown = 0
+			daysdown = 4
+			downmag = -0.50
 			if (offset >= 0 and idx + daysdown < self.__lastIdx and 
 				day.close > day.movavg['200day'] and 
-				self.__daysdown(idx, daysdown, 0)):
+				self.__daysdown(idx, daysdown, downmag)):
 				if (strike <= self.data[offset].close):
 					result.addwin()
 				else: 
@@ -181,8 +185,8 @@ class EquityData:
 		rt.lrow = "Below\t"
 		for p in PriceData.periods:
 			r = self.__trend(p)
-			rt.add(p, r.pctwin(), r.pctloss())			
-		rt.print()
+			rt.add(p, r)
+		rt.wlprint()
 
 	def pctDown(self):		
 		pcts = [Compute.PERCENT_5, Compute.PERCENT_7, Compute.PERCENT_9]
@@ -191,8 +195,7 @@ class EquityData:
 			print("\nPctDown; Holding Period = {0}".format(hp))
 			for pct in pcts:
 				r = self.__pctDown(pct, hp)
-				rt.add("{0}%".format(format(round(pct * 100), '0.2f')), 
-					r.pctwin(), r.pctloss(), r.pcttouch())
+				rt.add("{0}%".format(format(round(pct * 100), '0.2f')), r)
 			rt.print()
 
 	def movavgdown(self):
@@ -201,16 +204,16 @@ class EquityData:
 			print("\nMovAvgDown; Holding Period = {0}".format(hp))	
 			for p in PriceData.periods:			
 				r = self.__movavgdown(p, hp, Compute.PERCENT_7)
-				rt.add(p, r.pctwin(), r.pctloss(), r.pcttouch())				
+				rt.add(p, r)
 			rt.print()
 
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)	
 	spx = EquityData('Data/SPX.csv')
-	# spx.trend()
+	spx.trend()
 	spx.pctDown()
-	# spx.movavgdown()
+	spx.movavgdown()
 
 if __name__ == "__main__":
     main()
