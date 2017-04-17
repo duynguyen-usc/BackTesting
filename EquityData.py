@@ -36,18 +36,29 @@ class Result:
 class ResultTable:
 	def __init__(self, cname):
 		self.hrow = cname + "\t"
+		self.pctwrow = "W\t"
+		self.pctlrow = "L\t"
+		self.pcttrow = "T\t"
 		self.wrow = "W\t"
 		self.lrow = "L\t"
 		self.trow = "T\t"
 
+
 	def add(self, h, result):
-		self.hrow += "{0}\t".format(h)
-		self.wrow += "{0}\t".format(result.pctwin()) 
-		self.lrow += "{0}\t".format(result.pctloss()) 
-		self.trow += "{0}\t".format(result.pcttouch())
+		self.hrow += "{0}\t".format(h)		
+		self.wrow += "{0}\t".format(result.wins) 
+		self.lrow += "{0}\t".format(result.loss)
+		self.trow += "{0}\t".format(result.touches)
+		self.pctwrow += "{0}\t".format(result.pctwin())
+		self.pctlrow += "{0}\t".format(result.pctloss())
+		self.pcttrow += "{0}\t".format(result.pcttouch())
+		
 
 	def wlprint(self):
 		print("{0}\n{1}\n{2}".format(self.hrow, self.wrow, self.lrow))
+
+	def pctprint(self):
+		print("{0}\n{1}\n{2}\n{3}".format(self.hrow, self.pctwrow, self.pctlrow, self.pcttrow))
 
 	def print(self):
 		print("{0}\n{1}\n{2}\n{3}".format(self.hrow, self.wrow, self.lrow, self.trow))
@@ -196,7 +207,7 @@ class EquityData:
 			for pct in pcts:
 				r = self.__pctDown(pct, hp)
 				rt.add("{0}%".format(format(round(pct * 100), '0.2f')), r)
-			rt.print()
+			rt.pctprint()
 
 	def movavgdown(self):
 		for hp in self.H_PERIODS:
@@ -205,7 +216,7 @@ class EquityData:
 			for p in PriceData.periods:			
 				r = self.__movavgdown(p, hp, Compute.PERCENT_7)
 				rt.add(p, r)
-			rt.print()
+			rt.pctprint()
 
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))
