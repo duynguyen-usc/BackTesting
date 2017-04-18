@@ -96,7 +96,7 @@ class Compute:
 
 class EquityData:
 	
-	H_PERIODS = [20, 25]
+	EXP = [20, 25]
 	PCT_DOWN = [7, 9]
 
 	def __init__(self, csvFile):		
@@ -238,7 +238,7 @@ class EquityData:
 		rt.wlprint()
 
 	def pctDown(self):
-		for hp in self.H_PERIODS:
+		for hp in self.EXP:
 			rt = ResultTable("PD")			
 			print("\nPctDown; Holding Period = {0}".format(hp))
 			for pct in self.PCT_DOWN:
@@ -248,7 +248,7 @@ class EquityData:
 			# rt.print()
 
 	def movavgdown(self):
-		for hp in self.H_PERIODS:
+		for hp in self.EXP:
 			rt = ResultTable("MA")
 			print("\nMovAvgDown; Holding Period = {0}".format(hp))	
 			for p in PriceData.periods:			
