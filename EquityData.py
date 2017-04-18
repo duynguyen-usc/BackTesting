@@ -79,7 +79,7 @@ class ResultTable:
 			self.hrow += "{0}\t".format(self.hdr[idx])
 			self.wrow += "{0}\t".format(format(r.wins, '0.2f'))
 			self.lrow += "{0}\t".format(format(r.loss, '0.2f'))
-			self.trow += "{0}\t".format(format(r.touches, '0.2f'))
+			self.trow += "{0}\t".format(format(r.touch, '0.2f'))
 		print("{0}\n{1}\n{2}\n{3}".format(self.hrow, self.wrow, self.lrow, self.trow))
 
 	def wlprint(self):
@@ -91,16 +91,13 @@ class ResultTable:
 
 class Compute:
 
-	PERCENT_5 = 0.05
-	PERCENT_7 = 0.07
-	PERCENT_9 = 0.09
-
 	def percent(val, total):
 		return format(100 * val / total, "0.2f")
 
 class EquityData:
 	
 	H_PERIODS = [20, 25]
+	PCT_DOWN = [7, 9]
 
 	def __init__(self, csvFile):		
 		self.data = []
@@ -185,7 +182,7 @@ class EquityData:
 		result = Result()
 		for idx, day in enumerate(self.data):
 			offset = idx - holdperiod
-			strike = day.close * (1 - pctdown)
+			strike = day.close * (1 - (pctdown/100))
 			daysdown = 0
 			downmag = 0
 			if (offset >= 0 and idx + daysdown < self.__lastIdx and 
@@ -199,10 +196,10 @@ class EquityData:
 				if (self.__touchesPutStrike(strike, offset, idx)):
 					result.addtouch()
 
-				if (self.__touchesPutStrike(strike * 1.03, offset, idx)):
+				if (self.__touchesPutStrike(strike * 1.03, offset, offset + 5)):
 					result.addtouch3pct()
 
-				if (self.__touchesPutStrike(strike * 1.05, offset, idx)):
+				if (self.__touchesPutStrike(strike * 1.05, offset, offset + 5)):
 					result.addtouch5pct()
 		return result
 
@@ -223,10 +220,10 @@ class EquityData:
 				if (self.__touchesPutStrike(strike, offset, idx)):
 					result.addtouch()
 
-				if (self.__touchesPutStrike(strike * 1.03, offset, idx)):
+				if (self.__touchesPutStrike(strike * 1.03, offset, offset + 5)):
 					result.addtouch3pct()
 
-				if (self.__touchesPutStrike(strike * 1.05, offset, idx)):
+				if (self.__touchesPutStrike(strike * 1.05, offset, offset + 5)):
 					result.addtouch5pct()
 
 		return result
@@ -240,14 +237,13 @@ class EquityData:
 			rt.add(p, r)
 		rt.wlprint()
 
-	def pctDown(self):		
-		pcts = [Compute.PERCENT_5, Compute.PERCENT_7, Compute.PERCENT_9]
+	def pctDown(self):
 		for hp in self.H_PERIODS:
 			rt = ResultTable("PD")			
 			print("\nPctDown; Holding Period = {0}".format(hp))
-			for pct in pcts:
+			for pct in self.PCT_DOWN:
 				r = self.__pctDown(pct, hp)
-				rt.add("{0}%".format(format(round(pct * 100), '0.2f')), r)
+				rt.add("{0}%".format(format(round(pct), '0.2f')), r)
 			rt.pctprint()
 			# rt.print()
 
