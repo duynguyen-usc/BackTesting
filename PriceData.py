@@ -13,6 +13,14 @@ class BollingerBand:
 		self.lowerBand = -2 * stddeviation + self.midLine
 		self.bandWidth = self.upperBand - self.lowerBand
 
+	def toString(self):
+		fmt = '0.2f'
+		ub = format(self.upperBand, fmt)
+		lb = format(self.lowerBand, fmt)
+		ml = format(self.midLine, fmt)
+		bw = format(self.bandWidth, fmt)
+		return "{0}\t{1}\t{2}\t{3}".format(ub, ml, lb, bw)
+
 class PriceData:
 	periods = {
 		'20day':20,

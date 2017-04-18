@@ -256,13 +256,18 @@ class EquityData:
 				rt.add(p, r)
 			rt.pctprint()
 
+	def bandwidth(self):
+		for day in reversed(self.data):
+			print(day.bollingerband.toString())
+
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)	
 	spx = EquityData('Data/SPX.csv')
 	# spx.trend()
-	spx.pctDown()
+	# spx.pctDown()
 	# spx.movavgdown()
+	spx.bandwidth()
 
 if __name__ == "__main__":
     main()
