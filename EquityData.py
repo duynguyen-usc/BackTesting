@@ -57,9 +57,9 @@ class ResultTable:
 	def print(self):
 		for idx, r in enumerate(self.rslt):
 			self.hrow += "{0}\t".format(self.hdr[idx])
-			self.wrow += "{0}\t".format(r.wins)
-			self.lrow += "{0}\t".format(r.loss)
-			self.trow += "{0}\t".format(r.touches)
+			self.wrow += "{0}\t".format(format(r.wins, '0.2f'))
+			self.lrow += "{0}\t".format(format(r.loss, '0.2f'))
+			self.trow += "{0}\t".format(format(r.touches, '0.2f'))
 		print("{0}\n{1}\n{2}\n{3}".format(self.hrow, self.wrow, self.lrow, self.trow))
 
 	def wlprint(self):
@@ -229,8 +229,8 @@ def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)	
 	spx = EquityData('Data/SPX.csv')
-	spx.trend()
-	# spx.pctDown()
+	# spx.trend()
+	spx.pctDown()
 	# spx.movavgdown()
 
 if __name__ == "__main__":
