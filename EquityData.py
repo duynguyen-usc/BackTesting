@@ -54,6 +54,21 @@ class ResultTable:
 			self.trow += "{0}\t".format(r.pcttouch())
 		print("{0}\n{1}\n{2}\n{3}".format(self.hrow, self.wrow, self.lrow, self.trow))
 
+	def print(self):
+		for idx, r in enumerate(self.rslt):
+			self.hrow += "{0}\t".format(self.hdr[idx])
+			self.wrow += "{0}\t".format(r.wins)
+			self.lrow += "{0}\t".format(r.loss)
+			self.trow += "{0}\t".format(r.touches)
+		print("{0}\n{1}\n{2}\n{3}".format(self.hrow, self.wrow, self.lrow, self.trow))
+
+	def wlprint(self):
+		for idx, r in enumerate(self.rslt):
+			self.hrow += "{0}\t".format(self.hdr[idx])
+			self.wrow += "{0}\t".format(r.wins)
+			self.lrow += "{0}\t".format(r.loss)			
+		print("{0}\n{1}\n{2}".format(self.hrow, self.wrow, self.lrow))
+
 class Compute:
 
 	PERCENT_5 = 0.05
@@ -198,8 +213,8 @@ class EquityData:
 			for pct in pcts:
 				r = self.__pctDown(pct, hp)
 				rt.add("{0}%".format(format(round(pct * 100), '0.2f')), r)
-			rt.pctprint()
-			# rt.print()
+			# rt.pctprint()
+			rt.print()
 
 	def movavgdown(self):
 		for hp in self.H_PERIODS:
@@ -214,8 +229,8 @@ def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)	
 	spx = EquityData('Data/SPX.csv')
-	# spx.trend()
-	spx.pctDown()
+	spx.trend()
+	# spx.pctDown()
 	# spx.movavgdown()
 
 if __name__ == "__main__":
