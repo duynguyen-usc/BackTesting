@@ -166,8 +166,8 @@ class EquityData:
 		for idx, day in enumerate(self.data):
 			offset = idx - holdperiod
 			strike = day.close * (1 - pctdown)
-			daysdown = 4
-			downmag = -0.50
+			daysdown = 0
+			downmag = 0
 			if (offset >= 0 and idx + daysdown < self.__lastIdx and 
 				day.close > day.movavg['200day'] and 
 				self.__daysdown(idx, daysdown, downmag)):
@@ -213,8 +213,8 @@ class EquityData:
 			for pct in pcts:
 				r = self.__pctDown(pct, hp)
 				rt.add("{0}%".format(format(round(pct * 100), '0.2f')), r)
-			# rt.pctprint()
-			rt.print()
+			rt.pctprint()
+			# rt.print()
 
 	def movavgdown(self):
 		for hp in self.H_PERIODS:
