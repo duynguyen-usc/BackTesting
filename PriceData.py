@@ -15,7 +15,7 @@ class BollingerBand:
 
 class PriceData:
 	periods = {
-		# '20day':20,
+		'20day':20,
 		# '50day':50,
 		'100day':100,
 		'200day':200,
