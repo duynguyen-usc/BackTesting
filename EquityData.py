@@ -37,6 +37,12 @@ class Result:
 	def pcttouch(self):
 		return Compute.percent(self.touch, self.__total())
 
+	def pcttouch3pct(self):
+		return Compute.percent(self.touch3pct, self.__total())
+
+	def pcttouch5pct(self):
+		return Compute.percent(self.touch5pct, self.__total())
+
 	def print(self):
 		print("Win: {0}%".format(self.pctwin()))
 		print("Loss: {0}%\n".format(self.pctloss()))
@@ -49,6 +55,8 @@ class ResultTable:
 		self.wrow = "W\t"
 		self.lrow = "L\t"
 		self.trow = "T\t"
+		self.t3row = "T3\t"
+		self.t5row = "T5\t"
 		
 	def add(self, h, r):
 		self.hdr.append(h)
@@ -60,7 +68,11 @@ class ResultTable:
 			self.wrow += "{0}\t".format(r.pctwin())
 			self.lrow += "{0}\t".format(r.pctloss())
 			self.trow += "{0}\t".format(r.pcttouch())
-		print("{0}\n{1}\n{2}\n{3}".format(self.hrow, self.wrow, self.lrow, self.trow))
+			self.t3row += "{0}\t".format(r.pcttouch3pct())
+			self.t5row += "{0}\t".format(r.pcttouch5pct())
+		print("{0}\n{1}\n{2}\n{3}\n{4}\n{5}".format(self.hrow, self.wrow, 
+													self.lrow, self.trow,
+													self.t3row, self.t5row))
 
 	def print(self):
 		for idx, r in enumerate(self.rslt):
