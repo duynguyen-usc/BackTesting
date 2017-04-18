@@ -6,7 +6,9 @@ class Result:
 	def __init__(self):
 		self.wins = 0
 		self.loss = 0
-		self.touches = 0		
+		self.touch = 0
+		self.touch3pct = 0
+		self.touch5pct = 0		
 
 	def __total(self):
 		return self.wins + self.loss
@@ -17,8 +19,14 @@ class Result:
 	def addloss(self):
 		self.loss += 1
 
+	def addtouch5pct(self):
+		self.touch5pct += 1
+
+	def addtouch3pct(self):
+		self.touch3pct += 1
+
 	def addtouch(self):
-		self.touches += 1
+		self.touch += 1	
 
 	def pctwin(self):
 		return Compute.percent(self.wins, self.__total())
@@ -27,7 +35,7 @@ class Result:
 		return Compute.percent(self.loss, self.__total())
 
 	def pcttouch(self):
-		return Compute.percent(self.touches, self.__total())
+		return Compute.percent(self.touch, self.__total())
 
 	def print(self):
 		print("Win: {0}%".format(self.pctwin()))
@@ -175,8 +183,15 @@ class EquityData:
 					result.addwin()
 				else: 
 					result.addloss()
+				
 				if (self.__touchesPutStrike(strike, offset, idx)):
 					result.addtouch()
+
+				if (self.__touchesPutStrike(strike * 1.03, offset, idx)):
+					result.addtouch3pct()
+
+				if (self.__touchesPutStrike(strike * 1.05, offset, idx)):
+					result.addtouch5pct()
 		return result
 
 	def __movavgdown(self, ma, holdperiod, min_pct_down):
@@ -192,8 +207,16 @@ class EquityData:
 					result.addwin()
 				else: 
 					result.addloss()
+				
 				if (self.__touchesPutStrike(strike, offset, idx)):
 					result.addtouch()
+
+				if (self.__touchesPutStrike(strike * 1.03, offset, idx)):
+					result.addtouch3pct()
+
+				if (self.__touchesPutStrike(strike * 1.05, offset, idx)):
+					result.addtouch5pct()
+
 		return result
 
 	def trend(self):
