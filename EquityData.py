@@ -7,6 +7,7 @@ class EquityData:
 	
 	EXP = [20, 25]
 	PCT_DOWN = [7, 9]
+	BOLBAND_P = '20day'
 
 	def __init__(self, csvFile):		
 		self.data = []
@@ -39,10 +40,13 @@ class EquityData:
 			self.data[idx].movavg[p] = self.__getAverage(idx, offset)
 
 	def __calcBolBand(self, idx):		
-		p = '20day'
-		midline = self.data[idx].movavg[p]
-		stddev = self.__calcStdDev(idx, idx + PriceData.periods[p])
+		midline = self.data[idx].movavg[self.BOLBAND_P]
+		stddev = self.__calcStdDev(idx, idx + PriceData.periods[self.BOLBAND_P])
 		self.data[idx].bollingerband.calculate(midline, stddev)
+
+	def __calcBandAvg(self, idx):
+		return
+
 
 	def __getMax(self, idxStart, idxEnd):		
 		if(idxEnd < self.__lastIdx):
