@@ -19,9 +19,8 @@ class BollingerBand:
 		ub = format(self.upperBand, fmt)
 		lb = format(self.lowerBand, fmt)
 		ml = format(self.midLine, fmt)
-		bw = format(self.bandwidth, fmt)
-		ba = format(self.bandavg, fmt)
-		return "{0}\t{1}\t{2}\t{3}\t{4}".format(ub, ml, lb, bw, ba)		
+		bw = format(self.bandwidth, fmt)		
+		return "{0}\t{1}\t{2}\t{3}".format(ub, ml, lb, bw)		
 
 	def getbandwidth(self):
 		return self.bandwidth
@@ -50,3 +49,8 @@ class PriceData:
 		self.close = float(csvData[4])
 		# self.adjClose = float(csvData[5])
 		# self.volume = float(csvData[6])
+
+	def toString(self):
+		fmt = '0.2f'
+		cl = format(self.close, fmt)
+		return "{0}\t{1}\t{2}".format(self.date, cl, self.bollingerband.toString())
