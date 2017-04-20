@@ -2,24 +2,26 @@ from datetime import datetime
 
 class BollingerBand:
 	def __init__(self):
-		self.midLine = None
-		self.upperBand = None
-		self.lowerBand = None
-		self.bandWidth = None
+		self.midLine = 0
+		self.upperBand = 0
+		self.lowerBand = 0
+		self.bandwidth = 0
+		self.bandavg = 0
 
 	def calculate(self, movAvgMidline, stddeviation):
 		self.midLine = movAvgMidline
 		self.upperBand = 2 * stddeviation + self.midLine
 		self.lowerBand = -2 * stddeviation + self.midLine
-		self.bandWidth = self.upperBand - self.lowerBand
+		self.bandwidth = self.upperBand - self.lowerBand
 
 	def toString(self):
 		fmt = '0.2f'
 		ub = format(self.upperBand, fmt)
 		lb = format(self.lowerBand, fmt)
 		ml = format(self.midLine, fmt)
-		bw = format(self.bandWidth, fmt)
-		return "{0}\t{1}\t{2}\t{3}".format(ub, ml, lb, bw)
+		bw = format(self.bandwidth, fmt)
+		ba = format(self.bandavg, fmt)
+		return "{0}\t{1}\t{2}\t{3}\t{4}".format(ub, ml, lb, bw, ba)
 
 class PriceData:
 	periods = {

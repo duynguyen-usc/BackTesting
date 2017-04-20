@@ -27,6 +27,7 @@ class EquityData:
 			self.__calcChange(idx)
 			self.__calcMovAvgs(idx)
 			self.__calcBolBand(idx)
+			self.__calcBandAvg(idx)
 
 	def __calcChange(self, idx):
 		if(idx < self.__lastIdx):
@@ -45,8 +46,19 @@ class EquityData:
 		self.data[idx].bollingerband.calculate(midline, stddev)
 
 	def __calcBandAvg(self, idx):
-		return
-
+		bsum = 0
+		bcount = 0
+		idxend = idx + PriceData.periods[self.BOLBAND_P]
+		for i in range(idx, idxend):
+			if(i < self.__lastIdx):
+				bw = self.data[i].bollingerband.bandwidth
+				if(bw > 0):
+					bcount += 1
+					bsum += bw
+		if(bcount > 0):
+			self.data[idx].bollingerband.bandavg = bsum / bcount
+		else: 
+			self.data[idx].bollingerband.bandavg = 0
 
 	def __getMax(self, idxStart, idxEnd):		
 		if(idxEnd < self.__lastIdx):
