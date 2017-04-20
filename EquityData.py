@@ -26,8 +26,7 @@ class EquityData:
 			print("idx: {0}".format(idx))
 			self.__calcChange(idx)
 			self.__calcMovAvgs(idx)
-			self.__calcBolBand(idx)
-			self.__calcBandAvg(idx)
+			self.__calcBolBand(idx)			
 
 	def __calcChange(self, idx):
 		if(idx < self.__lastIdx):
@@ -45,20 +44,20 @@ class EquityData:
 		stddev = self.__calcStdDev(idx, idx + PriceData.periods[self.BOLBAND_P])
 		self.data[idx].bollingerband.calculate(midline, stddev)
 
-	def __calcBandAvg(self, idx):
+	def __calcBandAvg(self, idx):		
 		bsum = 0
 		bcount = 0
 		idxend = idx + PriceData.periods[self.BOLBAND_P]
-		for i in range(idx, idxend):
-			if(i < self.__lastIdx):
-				bw = self.data[i].bollingerband.bandwidth
-				if(bw > 0):
+		for i in range(idx, idxend):			
+			if(i < self.__lastIdx):				
+				bw = self.data[i].bollingerband.bandwidth				
+				if(bw > 0):					
 					bcount += 1
 					bsum += bw
 		if(bcount > 0):
-			self.data[idx].bollingerband.bandavg = bsum / bcount
-		else: 
-			self.data[idx].bollingerband.bandavg = 0
+			return bsum / bcount
+		return 0
+		
 
 	def __getMax(self, idxStart, idxEnd):		
 		if(idxEnd < self.__lastIdx):
@@ -181,16 +180,19 @@ class EquityData:
 			rt.pctprint()
 
 	def bandwidth(self):
-		for day in reversed(self.data):
-			print(day.bollingerband.toString())
+		for idx, day in enumerate(self.data):
+			self.data[idx].bollingerband.bandavg = self.__calcBandAvg(idx)
+			print(self.data[idx].bollingerband.toString())
+
+
 
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)	
 	spx = EquityData('Data/SPX.csv')
-	spx.trend()
-	spx.pctDown()
-	spx.movavgdown()
+	# spx.trend()
+	# spx.pctDown()
+	# spx.movavgdown()
 	spx.bandwidth()
 
 if __name__ == "__main__":

@@ -21,7 +21,10 @@ class BollingerBand:
 		ml = format(self.midLine, fmt)
 		bw = format(self.bandwidth, fmt)
 		ba = format(self.bandavg, fmt)
-		return "{0}\t{1}\t{2}\t{3}\t{4}".format(ub, ml, lb, bw, ba)
+		return "{0}\t{1}\t{2}\t{3}\t{4}".format(ub, ml, lb, bw, ba)		
+
+	def getbandwidth(self):
+		return self.bandwidth
 
 class PriceData:
 	periods = {
