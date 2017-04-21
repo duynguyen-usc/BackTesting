@@ -156,7 +156,7 @@ class EquityData:
 		for idx, day in enumerate(self.data):
 			offset = idx - hp
 			ba = self.__calcBandAvg(idx)			
-			strike = (1 - pctdown) * day.close
+			strike = (1 - pctdown/100) * day.close
 			if(offset >= 0 and strike > 0 and day.close > strike and 				
 				ba > 0 and day.bollingerband.bandwidth > ba):				
 				# print("{0}\t{1}".format(day.toString(), ba))
@@ -164,6 +164,15 @@ class EquityData:
 					result.addwin()
 				else: 
 					result.addloss()
+
+				if (self.__touchesPutStrike(strike, offset, idx)):
+					result.addtouch()
+
+				if (self.__touchesPutStrike(strike * 1.03, offset, offset + 5)):
+					result.addtouch3pct()
+
+				if (self.__touchesPutStrike(strike * 1.05, offset, offset + 5)):
+					result.addtouch5pct()
 		return result
 
 	def trend(self):
@@ -197,9 +206,10 @@ class EquityData:
 	def bandwidth(self):		
 		for hp in self.EXP:
 			rt = ResultTable("BW")
-			print("\nBandWidth; Holding Period = {0}".format(hp))			
-			r = self.__bandwidth(hp, 0.07)
-			rt.add('20day', r)
+			print("\nBandWidth; Holding Period = {0}".format(hp))
+			for pct in self.PCT_DOWN:
+				r = self.__bandwidth(hp, pct)
+				rt.add(pct, r)
 			rt.pctprint()			
 
 def main():
