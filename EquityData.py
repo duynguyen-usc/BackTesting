@@ -6,7 +6,7 @@ from Result import Result, ResultTable
 class EquityData:
 	
 	EXP = [20, 25]
-	PCT_DOWN = [7, 9]
+	PCT_DOWN = [-7, -9]
 	BOLBAND_P = '20day'
 
 	def __init__(self, csvFile):		
@@ -102,11 +102,11 @@ class EquityData:
 					result.addloss()
 		return result
 
-	def __pctDown(self, pctdown, holdperiod):
+	def __pct(self, pct, holdperiod):
 		result = Result()
 		for idx, day in enumerate(self.data):
 			offset = idx - holdperiod
-			strike = day.close * (1 - (pctdown/100))
+			strike = day.close * (1 + (pct/100))
 			daysdown = 0
 			downmag = 0
 			if (offset >= 0 and idx + daysdown < self.__lastIdx and 
@@ -189,7 +189,7 @@ class EquityData:
 			rt = ResultTable("PD")			
 			print("\nPctDown; Holding Period = {0}".format(hp))
 			for pct in self.PCT_DOWN:
-				r = self.__pctDown(pct, hp)
+				r = self.__pct(pct, hp)
 				rt.add("{0}%".format(format(round(pct), '0.2f')), r)
 			rt.pctprint()
 			# rt.print()
@@ -217,9 +217,9 @@ def main():
 	os.chdir(path)	
 	spx = EquityData('Data/SPX.csv')
 	# spx.trend()
-	# spx.pctDown()
+	spx.pctDown()
 	# spx.movavgdown()
-	spx.bandwidth()
+	# spx.bandwidth()
 
 if __name__ == "__main__":
     main()
