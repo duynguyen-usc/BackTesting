@@ -5,8 +5,8 @@ from Result import Result, ResultTable
 
 class EquityData:
 	
-	EXP = [20, 25]
-	PCT_DOWN = [-7, -9]
+	EXP = [15, 20, 25, 30, 35, 40]
+	PCT_DOWN = [-4, -5, -7]
 	BOLBAND_P = '20day'
 
 	def __init__(self, csvFile):		
