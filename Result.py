@@ -1,6 +1,6 @@
-class Compute:
+class Math:
 
-	def percent(val, total):
+	def percent(val, total):		
 		return format(100 * val / total, "0.2f")
 
 class Result:
