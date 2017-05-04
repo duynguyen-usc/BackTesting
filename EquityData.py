@@ -127,54 +127,6 @@ class EquityData:
 					result.addtouch5pct()
 		return result
 
-	def __movavgdown(self, ma, holdperiod, min_pct_down):
-		result = Result()
-		for idx, day in enumerate(self.data):			
-			offset = idx - holdperiod
-			strike = day.movavg[ma]			
-			if (offset >= 0 and strike > 0 and day.close > strike):
-				strikemin = (1 - min_pct_down) * day.close
-				if (strike > strikemin):
-					strike = strikemin
-				if (strike <= self.data[offset].close):
-					result.addwin()
-				else: 
-					result.addloss()
-				
-				if (self.__touchesPutStrike(strike, offset, idx)):
-					result.addtouch()
-
-				if (self.__touchesPutStrike(strike * 1.03, offset, offset + 5)):
-					result.addtouch3pct()
-
-				if (self.__touchesPutStrike(strike * 1.05, offset, offset + 5)):
-					result.addtouch5pct()
-		return result
-
-	def __bandwidth(self, hp, pctdown):
-		result = Result()
-		for idx, day in enumerate(self.data):
-			offset = idx - hp
-			ba = self.__calcBandAvg(idx)			
-			strike = (1 - pctdown/100) * day.close
-			if(offset >= 0 and strike > 0 and day.close > strike and 				
-				ba > 0 and day.bollingerband.bandwidth > ba):				
-				# print("{0}\t{1}".format(day.toString(), ba))
-				if (strike <= self.data[offset].close):
-					result.addwin()
-				else: 
-					result.addloss()
-
-				if (self.__touchesPutStrike(strike, offset, idx)):
-					result.addtouch()
-
-				if (self.__touchesPutStrike(strike * 1.03, offset, offset + 5)):
-					result.addtouch3pct()
-
-				if (self.__touchesPutStrike(strike * 1.05, offset, offset + 5)):
-					result.addtouch5pct()
-		return result
-
 	def trend(self):
 		rt = ResultTable("Trend")
 		rt.wrow = "Above\t"
@@ -192,34 +144,13 @@ class EquityData:
 				r = self.__pct(pct, hp)
 				rt.add("{0}%".format(format(round(pct), '0.2f')), r)
 			rt.pctprint()
-			# rt.print()
-
-	def movavgdown(self):
-		for hp in self.EXP:
-			rt = ResultTable("MA")
-			print("\nMovAvgDown; Holding Period = {0}".format(hp))	
-			for p in PriceData.periods:			
-				r = self.__movavgdown(p, hp, 0.07)
-				rt.add(p, r)
-			rt.pctprint()
-
-	def bandwidth(self):		
-		for hp in self.EXP:
-			rt = ResultTable("BW")
-			print("\nBandWidth; Holding Period = {0}".format(hp))
-			for pct in self.PCT_DOWN:
-				r = self.__bandwidth(hp, pct)
-				rt.add(pct, r)
-			rt.pctprint()			
 
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)	
 	spx = EquityData('Data/SPX.csv')
-	# spx.trend()
-	spx.pctDown()
-	# spx.movavgdown()
-	# spx.bandwidth()
+	spx.trend()
+	# spx.pctDown()	
 
 if __name__ == "__main__":
     main()
