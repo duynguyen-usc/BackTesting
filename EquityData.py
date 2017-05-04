@@ -5,8 +5,7 @@ from Result import Result, ResultTable
 
 class EquityData:
 	
-	EXP = [15, 20, 25, 30, 35, 40]
-	PCT_DOWN = [-4, -5, -7]
+	EXP = [15, 20, 25, 30, 35, 40]	
 	BOLBAND_P = '20day'
 
 	def __init__(self, csvFile):		
@@ -79,18 +78,6 @@ class EquityData:
 			return np.std([self.data[i].close for i in range(idxStart, idxEnd)])
 		return 0
 
-	def __touchesPutStrike(self, strike, idxStart, idxEnd):		
-		return strike > self.__getMin(idxStart, idxEnd)
-
-	def __touchesCallStrike(self, strike, idxStart, idxEnd):		
-		return strike < self.__getMin(idxStart, idxEnd)
-
-	def __daysdown(self, idx, daysdown, pctdownlimit):
-		for i in range(idx, idx + daysdown):
-			if (self.data[i].percentChange > pctdownlimit):
-				return False
-		return True
-
 	def __trend(self, period):		
 		result = Result()
 		for day in self.data:
@@ -110,21 +97,11 @@ class EquityData:
 			daysdown = 0
 			downmag = 0
 			if (offset >= 0 and idx + daysdown < self.__lastIdx and 
-				day.close > day.movavg['200day'] and 
-				self.__daysdown(idx, daysdown, downmag)):
+				day.close > day.movavg['200day']):
 				if (strike <= self.data[offset].close):
 					result.addwin()
 				else: 
 					result.addloss()
-				
-				if (self.__touchesPutStrike(strike, offset, idx)):
-					result.addtouch()
-
-				if (self.__touchesPutStrike(strike * 1.03, offset, offset + 5)):
-					result.addtouch3pct()
-
-				if (self.__touchesPutStrike(strike * 1.05, offset, offset + 5)):
-					result.addtouch5pct()
 		return result
 
 	def trend(self):
@@ -137,10 +114,11 @@ class EquityData:
 		rt.wlprint()
 
 	def pctDown(self):
+		pctdown = [-4, -5, -7]
 		for hp in self.EXP:
 			rt = ResultTable("PD")			
 			print("\nPctDown; Holding Period = {0}".format(hp))
-			for pct in self.PCT_DOWN:
+			for pct in pctdown:
 				r = self.__pct(pct, hp)
 				rt.add("{0}%".format(format(round(pct), '0.2f')), r)
 			rt.pctprint()
@@ -150,7 +128,7 @@ def main():
 	os.chdir(path)	
 	spx = EquityData('Data/SPX.csv')
 	spx.trend()
-	# spx.pctDown()	
+	spx.pctDown()	
 
 if __name__ == "__main__":
     main()

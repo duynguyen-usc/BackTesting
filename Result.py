@@ -30,19 +30,19 @@ class Result:
 		self.touch += 1	
 
 	def pctwin(self):
-		return Compute.percent(self.wins, self.__total())
+		return Math.percent(self.wins, self.__total())
 
 	def pctloss(self): 
-		return Compute.percent(self.loss, self.__total())
+		return Math.percent(self.loss, self.__total())
 
 	def pcttouch(self):
-		return Compute.percent(self.touch, self.__total())
+		return Math.percent(self.touch, self.__total())
 
 	def pcttouch3pct(self):
-		return Compute.percent(self.touch3pct, self.__total())
+		return Math.percent(self.touch3pct, self.__total())
 
 	def pcttouch5pct(self):
-		return Compute.percent(self.touch5pct, self.__total())
+		return Math.percent(self.touch5pct, self.__total())
 
 	def print(self):
 		print("Win: {0}%".format(self.pctwin()))
