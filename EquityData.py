@@ -5,7 +5,6 @@ from Result import Result, ResultTable
 
 class EquityData:
 	
-	EXP = [15, 20, 25, 30, 35, 40]	
 	BOLBAND_P = '20day'
 
 	def __init__(self, csvFile):		
@@ -78,57 +77,36 @@ class EquityData:
 			return np.std([self.data[i].close for i in range(idxStart, idxEnd)])
 		return 0
 
-	def __trend(self, period):		
-		result = Result()
-		for day in self.data:
-			ma = day.movavg[period]
-			if (ma > 0):
-				if(day.close > ma):
-					result.addwin()
-				else:
-					result.addloss()
-		return result
-
-	def __pct(self, pct, holdperiod):
+	def __runStudy(self, pct, holdperiod):
 		result = Result()
 		for idx, day in enumerate(self.data):
 			offset = idx - holdperiod
-			strike = day.close * (1 + (pct/100))
-			daysdown = 0
-			downmag = 0
-			if (offset >= 0 and idx + daysdown < self.__lastIdx and 
-				day.close > day.movavg['200day']):
+			strike = day.close * (1 + (pct/100))			
+			if (offset >= 0 and day.close > day.movavg['200day']):
+				
 				if (strike <= self.data[offset].close):
 					result.addwin()
 				else: 
 					result.addloss()
+
 		return result
 
-	def trend(self):
-		rt = ResultTable("Trend")
-		rt.wrow = "Above\t"
-		rt.lrow = "Below\t"
-		for p in PriceData.periods:
-			r = self.__trend(p)
-			rt.add(p, r)
-		rt.wlprint()
-
-	def pctDown(self):
+	def study(self):
 		pctdown = [-4, -5, -7]
-		for hp in self.EXP:
+		hps = [15, 20, 25, 30, 35, 40]	
+		for hp in hps:
 			rt = ResultTable("PD")			
-			print("\nPctDown; Holding Period = {0}".format(hp))
+			print("\nHolding Period = {0}".format(hp))
 			for pct in pctdown:
-				r = self.__pct(pct, hp)
+				r = self.__runStudy(pct, hp)
 				rt.add("{0}%".format(format(round(pct), '0.2f')), r)
 			rt.pctprint()
 
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)	
-	spx = EquityData('Data/SPX.csv')
-	spx.trend()
-	spx.pctDown()	
+	spx = EquityData('Data/SPX.csv')	
+	spx.study()	
 
 if __name__ == "__main__":
     main()
