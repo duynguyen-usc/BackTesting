@@ -77,18 +77,19 @@ class EquityData:
 			return np.std([self.data[i].close for i in range(idxStart, idxEnd)])
 		return 0
 
+	def __entryCriteria(self, d):
+		return d.close > d.movavg['200day']
+
 	def __runStudy(self, pct, holdperiod):
 		result = Result()
 		for idx, day in enumerate(self.data):
 			offset = idx - holdperiod
 			strike = day.close * (1 + (pct/100))			
-			if (offset >= 0 and day.close > day.movavg['200day']):
-				
+			if (offset >= 0 and self.__entryCriteria(day)):
 				if (strike <= self.data[offset].close):
 					result.addwin()
 				else: 
 					result.addloss()
-
 		return result
 
 	def study(self):
@@ -97,9 +98,8 @@ class EquityData:
 		for hp in hps:
 			rt = ResultTable("PD")			
 			print("\nHolding Period = {0}".format(hp))
-			for pct in pctdown:
-				r = self.__runStudy(pct, hp)
-				rt.add("{0}%".format(format(round(pct), '0.2f')), r)
+			for pct in pctdown:				
+				rt.add("{0}%".format(format(round(pct), '0.2f')),  self.__runStudy(pct, hp))
 			rt.pctprint()
 
 def main():
