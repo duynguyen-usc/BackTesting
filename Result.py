@@ -39,10 +39,8 @@ class ResultTable:
 		self.rslt = []
 		self.hrow = cname + "\t"
 		self.wrow = "W\t"
-		self.lrow = "L\t"
-		self.trow = "T\t"
-		self.t3row = "T3\t"
-		self.t5row = "T5\t"
+		self.lrow = "L\t"		
+		
 		
 	def add(self, h, r):
 		self.hdr.append(h)
@@ -52,21 +50,17 @@ class ResultTable:
 		for idx, r in enumerate(self.rslt):
 			self.hrow += "{0}\t".format(self.hdr[idx])
 			self.wrow += "{0}\t".format(r.pctwin())
-			self.lrow += "{0}\t".format(r.pctloss())
-			self.trow += "{0}\t".format(r.pcttouch())
-			self.t3row += "{0}\t".format(r.pcttouch3pct())
-			self.t5row += "{0}\t".format(r.pcttouch5pct())
-		print("{0}\n{1}\n{2}\n{3}\n{4}\n{5}".format(self.hrow, self.wrow, 
-													self.lrow, self.trow,
-													self.t3row, self.t5row))
+			self.lrow += "{0}\t".format(r.pctloss())			
+		print("{0}\n{1}\n{2}\n{3}\n{4}\n{5}".format(self.hrow, 
+													self.wrow, 
+													self.lrow))
 
 	def print(self):
 		for idx, r in enumerate(self.rslt):
 			self.hrow += "{0}\t".format(self.hdr[idx])
 			self.wrow += "{0}\t".format(format(r.wins, '0.2f'))
-			self.lrow += "{0}\t".format(format(r.loss, '0.2f'))
-			self.trow += "{0}\t".format(format(r.touch, '0.2f'))
-		print("{0}\n{1}\n{2}\n{3}".format(self.hrow, self.wrow, self.lrow, self.trow))
+			self.lrow += "{0}\t".format(format(r.loss, '0.2f'))			
+		print("{0}\n{1}\n{2}\n{3}".format(self.hrow, self.wrow, self.lrow))
 
 	def wlprint(self):
 		for idx, r in enumerate(self.rslt):
