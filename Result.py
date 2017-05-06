@@ -1,3 +1,9 @@
+class OptStructure:
+	SHORT_VERTICAL_CALL = 0
+	SHORT_VERTICAL_PUT = 1
+	LONG_VERTICAL_CALL = 3
+	LONG_VERTICAL_PUT = 4
+
 class Math:
 
 	def percent(val, total):		
@@ -7,9 +13,6 @@ class Result:
 	def __init__(self):
 		self.wins = 0
 		self.loss = 0
-		self.touch = 0
-		self.touch3pct = 0
-		self.touch5pct = 0		
 
 	def __total(self):
 		return self.wins + self.loss
@@ -20,29 +23,11 @@ class Result:
 	def addloss(self):
 		self.loss += 1
 
-	def addtouch5pct(self):
-		self.touch5pct += 1
-
-	def addtouch3pct(self):
-		self.touch3pct += 1
-
-	def addtouch(self):
-		self.touch += 1	
-
 	def pctwin(self):
 		return Math.percent(self.wins, self.__total())
 
 	def pctloss(self): 
-		return Math.percent(self.loss, self.__total())
-
-	def pcttouch(self):
-		return Math.percent(self.touch, self.__total())
-
-	def pcttouch3pct(self):
-		return Math.percent(self.touch3pct, self.__total())
-
-	def pcttouch5pct(self):
-		return Math.percent(self.touch5pct, self.__total())
+		return Math.percent(self.loss, self.__total())	
 
 	def print(self):
 		print("Win: {0}%".format(self.pctwin()))
