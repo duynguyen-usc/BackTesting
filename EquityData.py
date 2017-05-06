@@ -84,7 +84,7 @@ class EquityData:
 		result = Result()
 		for idx, day in enumerate(self.data):
 			offset = idx - holdperiod
-			strike = day.close * (1 + (pct/100))			
+			strike = day.close * (1 + (pct/100))			 
 			if (offset >= 0 and self.__entryCriteria(day)):
 				if (strike <= self.data[offset].close):
 					result.addwin()
