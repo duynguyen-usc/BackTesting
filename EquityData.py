@@ -80,7 +80,7 @@ class EquityData:
 	def __entryCriteria(self, d):
 		return d.close > d.movavg['200day']
 
-	def __runStudy(self, pct, holdperiod):
+	def __putStudy(self, pct, holdperiod):
 		result = Result()
 		for idx, day in enumerate(self.data):
 			offset = idx - holdperiod
@@ -92,21 +92,21 @@ class EquityData:
 					result.addloss()
 		return result
 
-	def study(self):
+	def putstudy(self):
 		pctdown = [-4, -5, -7]
 		hps = [15, 20, 25, 30, 35, 40]	
 		for hp in hps:
 			rt = ResultTable("PD")			
 			print("\nHolding Period = {0}".format(hp))
 			for pct in pctdown:				
-				rt.add("{0}%".format(format(round(pct), '0.2f')),  self.__runStudy(pct, hp))
+				rt.add("{0}%".format(format(round(pct), '0.2f')),  self.__putStudy(pct, hp))
 			rt.pctprint()
 
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)	
 	spx = EquityData('Data/SPX.csv')	
-	spx.study()	
+	spx.putstudy()	
 
 if __name__ == "__main__":
     main()
