@@ -122,11 +122,7 @@ class EquityData:
 				rt.add("{0}%".format(format(round(pct), '0.2f')), 
 					self.__runstudy(pct, hp, OptStructure.SHORT_VERTICAL_CALL))
 			rt.pctprint()
-
-
-
-
-
+			
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)	
