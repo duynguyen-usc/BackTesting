@@ -101,27 +101,38 @@ class EquityData:
 					result.addloss()
 		return result
 
-	def study(self):
+	def shortputstudy(self):
 		pctdown = [-4, -5, -7]
-		pctup = [1, 2, 3]
 		hps = [15, 20, 25, 30, 35, 40]	
-		for hp in hps:
-			rt = ResultTable("PD")			
+		for hp in hps:			
+			rt = ResultTable("PD")
 			print("\nHolding Period = {0}".format(hp))
 			for pct in pctdown:				
 				rt.add("{0}%".format(format(round(pct), '0.2f')),  
 					self.__runstudy(pct, hp, OptStructure.SHORT_VERTICAL_PUT))
 			rt.pctprint()
+
+	def shortcallstudy(self):
+		pctup = [1, 2, 3]
+		hps =[1, 3, 5, 10]
+		for hp in hps:
+			rt = ResultTable('PU')			
+			print("\nHolding Period = {0}".format(hp))
 			for pct in pctup:
 				rt.add("{0}%".format(format(round(pct), '0.2f')), 
 					self.__runstudy(pct, hp, OptStructure.SHORT_VERTICAL_CALL))
 			rt.pctprint()
 
+
+
+
+
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)	
 	spx = EquityData('Data/SPX.csv')	
-	spx.study()	
+	spx.shortputstudy()
+	spx.shortcallstudy()
 
 if __name__ == "__main__":
     main()

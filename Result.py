@@ -51,17 +51,18 @@ class ResultTable:
 			self.hrow += "{0}\t".format(self.hdr[idx])
 			self.wrow += "{0}\t".format(r.pctwin())
 			self.lrow += "{0}\t".format(r.pctloss())			
-		print("{0}\n{1}\n{2}".format(self.hrow, self.wrow, self.lrow))
+		print("\n{0}\n{1}\n{2}".format(self.hrow, self.wrow, self.lrow))
+		
 	def print(self):
 		for idx, r in enumerate(self.rslt):
 			self.hrow += "{0}\t".format(self.hdr[idx])
 			self.wrow += "{0}\t".format(format(r.wins, '0.2f'))
 			self.lrow += "{0}\t".format(format(r.loss, '0.2f'))			
-		print("{0}\n{1}\n{2}\n{3}".format(self.hrow, self.wrow, self.lrow))
+		print("\n{0}\n{1}\n{2}\n{3}".format(self.hrow, self.wrow, self.lrow))
 
 	def wlprint(self):
 		for idx, r in enumerate(self.rslt):
 			self.hrow += "{0}\t".format(self.hdr[idx])
 			self.wrow += "{0}\t".format(r.wins)
 			self.lrow += "{0}\t".format(r.loss)			
-		print("{0}\n{1}\n{2}".format(self.hrow, self.wrow, self.lrow))
+		print("\n{0}\n{1}\n{2}".format(self.hrow, self.wrow, self.lrow))
