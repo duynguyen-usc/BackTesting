@@ -86,16 +86,19 @@ class EquityData:
 	def __entryCriteria(self, d):
 		return d.close > d.movavg['200day']
 
+	def __isWin(self, optstruct, strike, expclose):
+		if ((optstruct == OptStructure.SHORT_VERTICAL_PUT and strike <= expclose) or
+		   (optstruct == OptStructure.SHORT_VERTICAL_CALL and strike >= expclose)):
+			return True
+		return False
+
 	def __runstudy(self, pct, holdperiod, optstruct):
 		result = Result()
 		for idx, day in enumerate(self.data):
 			offset = idx - holdperiod
 			strike = day.close * (1 + (pct/100))			 
 			if (offset >= 0 and self.__entryCriteria(day)):
-				if ((optstruct == OptStructure.SHORT_VERTICAL_PUT and 
-					 strike <= self.data[offset].close) or 
-					 (optstruct == OptStructure.SHORT_VERTICAL_CALL and 
-					 strike >= self.data[offset].close)):
+				if (self.__isWin(optstruct, strike, self.data[offset].close)):
 					result.addwin()
 				else: 
 					result.addloss()
