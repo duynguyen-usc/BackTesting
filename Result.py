@@ -1,15 +1,18 @@
-class Compute:
+class OptStructure:
+	SHORT_VERTICAL_CALL = 0
+	SHORT_VERTICAL_PUT = 1
+	LONG_VERTICAL_CALL = 3
+	LONG_VERTICAL_PUT = 4
 
-	def percent(val, total):
+class Math:
+
+	def percent(val, total):		
 		return format(100 * val / total, "0.2f")
 
 class Result:
 	def __init__(self):
 		self.wins = 0
 		self.loss = 0
-		self.touch = 0
-		self.touch3pct = 0
-		self.touch5pct = 0		
 
 	def __total(self):
 		return self.wins + self.loss
@@ -20,29 +23,11 @@ class Result:
 	def addloss(self):
 		self.loss += 1
 
-	def addtouch5pct(self):
-		self.touch5pct += 1
-
-	def addtouch3pct(self):
-		self.touch3pct += 1
-
-	def addtouch(self):
-		self.touch += 1	
-
 	def pctwin(self):
-		return Compute.percent(self.wins, self.__total())
+		return Math.percent(self.wins, self.__total())
 
 	def pctloss(self): 
-		return Compute.percent(self.loss, self.__total())
-
-	def pcttouch(self):
-		return Compute.percent(self.touch, self.__total())
-
-	def pcttouch3pct(self):
-		return Compute.percent(self.touch3pct, self.__total())
-
-	def pcttouch5pct(self):
-		return Compute.percent(self.touch5pct, self.__total())
+		return Math.percent(self.loss, self.__total())	
 
 	def print(self):
 		print("Win: {0}%".format(self.pctwin()))
@@ -54,10 +39,8 @@ class ResultTable:
 		self.rslt = []
 		self.hrow = cname + "\t"
 		self.wrow = "W\t"
-		self.lrow = "L\t"
-		self.trow = "T\t"
-		self.t3row = "T3\t"
-		self.t5row = "T5\t"
+		self.lrow = "L\t"		
+		
 		
 	def add(self, h, r):
 		self.hdr.append(h)
@@ -67,25 +50,19 @@ class ResultTable:
 		for idx, r in enumerate(self.rslt):
 			self.hrow += "{0}\t".format(self.hdr[idx])
 			self.wrow += "{0}\t".format(r.pctwin())
-			self.lrow += "{0}\t".format(r.pctloss())
-			self.trow += "{0}\t".format(r.pcttouch())
-			self.t3row += "{0}\t".format(r.pcttouch3pct())
-			self.t5row += "{0}\t".format(r.pcttouch5pct())
-		print("{0}\n{1}\n{2}\n{3}\n{4}\n{5}".format(self.hrow, self.wrow, 
-													self.lrow, self.trow,
-													self.t3row, self.t5row))
-
+			self.lrow += "{0}\t".format(r.pctloss())			
+		print("\n{0}\n{1}\n{2}".format(self.hrow, self.wrow, self.lrow))
+		
 	def print(self):
 		for idx, r in enumerate(self.rslt):
 			self.hrow += "{0}\t".format(self.hdr[idx])
 			self.wrow += "{0}\t".format(format(r.wins, '0.2f'))
-			self.lrow += "{0}\t".format(format(r.loss, '0.2f'))
-			self.trow += "{0}\t".format(format(r.touch, '0.2f'))
-		print("{0}\n{1}\n{2}\n{3}".format(self.hrow, self.wrow, self.lrow, self.trow))
+			self.lrow += "{0}\t".format(format(r.loss, '0.2f'))			
+		print("\n{0}\n{1}\n{2}\n{3}".format(self.hrow, self.wrow, self.lrow))
 
 	def wlprint(self):
 		for idx, r in enumerate(self.rslt):
 			self.hrow += "{0}\t".format(self.hdr[idx])
 			self.wrow += "{0}\t".format(r.wins)
 			self.lrow += "{0}\t".format(r.loss)			
-		print("{0}\n{1}\n{2}".format(self.hrow, self.wrow, self.lrow))
+		print("\n{0}\n{1}\n{2}".format(self.hrow, self.wrow, self.lrow))

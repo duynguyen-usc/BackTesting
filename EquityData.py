@@ -3,10 +3,14 @@ import numpy as np
 from PriceData import PriceData
 from Result import Result, ResultTable
 
+class OptStructure:
+	SHORT_VERTICAL_CALL = 0
+	SHORT_VERTICAL_PUT = 1
+	LONG_VERTICAL_CALL = 3
+	LONG_VERTICAL_PUT = 4
+
 class EquityData:
 	
-	EXP = [15, 20, 25, 30, 35, 40]
-	PCT_DOWN = [-4, -5, -7]
 	BOLBAND_P = '20day'
 
 	def __init__(self, csvFile):		
@@ -79,147 +83,49 @@ class EquityData:
 			return np.std([self.data[i].close for i in range(idxStart, idxEnd)])
 		return 0
 
-	def __touchesPutStrike(self, strike, idxStart, idxEnd):		
-		return strike > self.__getMin(idxStart, idxEnd)
+	def __entryCriteria(self, d):
+		return d.close > d.movavg['200day']
 
-	def __touchesCallStrike(self, strike, idxStart, idxEnd):		
-		return strike < self.__getMin(idxStart, idxEnd)
+	def __isWin(self, optstruct, strike, expclose):
+		if ((optstruct == OptStructure.SHORT_VERTICAL_PUT and strike <= expclose) or
+		   (optstruct == OptStructure.SHORT_VERTICAL_CALL and strike >= expclose)):
+			return True
+		return False
 
-	def __daysdown(self, idx, daysdown, pctdownlimit):
-		for i in range(idx, idx + daysdown):
-			if (self.data[i].percentChange > pctdownlimit):
-				return False
-		return True
-
-	def __trend(self, period):		
-		result = Result()
-		for day in self.data:
-			ma = day.movavg[period]
-			if (ma > 0):
-				if(day.close > ma):
-					result.addwin()
-				else:
-					result.addloss()
-		return result
-
-	def __pct(self, pct, holdperiod):
+	def __runstudy(self, pct, holdperiod, optstruct):
 		result = Result()
 		for idx, day in enumerate(self.data):
 			offset = idx - holdperiod
-			strike = day.close * (1 + (pct/100))
-			daysdown = 0
-			downmag = 0
-			if (offset >= 0 and idx + daysdown < self.__lastIdx and 
-				day.close > day.movavg['200day'] and 
-				self.__daysdown(idx, daysdown, downmag)):
-				if (strike <= self.data[offset].close):
+			strike = day.close * (1 + (pct/100))			 
+			if (offset >= 0 and self.__entryCriteria(day)):
+				if (self.__isWin(optstruct, strike, self.data[offset].close)):
 					result.addwin()
 				else: 
 					result.addloss()
-				
-				if (self.__touchesPutStrike(strike, offset, idx)):
-					result.addtouch()
-
-				if (self.__touchesPutStrike(strike * 1.03, offset, offset + 5)):
-					result.addtouch3pct()
-
-				if (self.__touchesPutStrike(strike * 1.05, offset, offset + 5)):
-					result.addtouch5pct()
 		return result
 
-	def __movavgdown(self, ma, holdperiod, min_pct_down):
-		result = Result()
-		for idx, day in enumerate(self.data):			
-			offset = idx - holdperiod
-			strike = day.movavg[ma]			
-			if (offset >= 0 and strike > 0 and day.close > strike):
-				strikemin = (1 - min_pct_down) * day.close
-				if (strike > strikemin):
-					strike = strikemin
-				if (strike <= self.data[offset].close):
-					result.addwin()
-				else: 
-					result.addloss()
-				
-				if (self.__touchesPutStrike(strike, offset, idx)):
-					result.addtouch()
-
-				if (self.__touchesPutStrike(strike * 1.03, offset, offset + 5)):
-					result.addtouch3pct()
-
-				if (self.__touchesPutStrike(strike * 1.05, offset, offset + 5)):
-					result.addtouch5pct()
-		return result
-
-	def __bandwidth(self, hp, pctdown):
-		result = Result()
-		for idx, day in enumerate(self.data):
-			offset = idx - hp
-			ba = self.__calcBandAvg(idx)			
-			strike = (1 - pctdown/100) * day.close
-			if(offset >= 0 and strike > 0 and day.close > strike and 				
-				ba > 0 and day.bollingerband.bandwidth > ba):				
-				# print("{0}\t{1}".format(day.toString(), ba))
-				if (strike <= self.data[offset].close):
-					result.addwin()
-				else: 
-					result.addloss()
-
-				if (self.__touchesPutStrike(strike, offset, idx)):
-					result.addtouch()
-
-				if (self.__touchesPutStrike(strike * 1.03, offset, offset + 5)):
-					result.addtouch3pct()
-
-				if (self.__touchesPutStrike(strike * 1.05, offset, offset + 5)):
-					result.addtouch5pct()
-		return result
-
-	def trend(self):
-		rt = ResultTable("Trend")
-		rt.wrow = "Above\t"
-		rt.lrow = "Below\t"
-		for p in PriceData.periods:
-			r = self.__trend(p)
-			rt.add(p, r)
-		rt.wlprint()
-
-	def pctDown(self):
-		for hp in self.EXP:
-			rt = ResultTable("PD")			
-			print("\nPctDown; Holding Period = {0}".format(hp))
-			for pct in self.PCT_DOWN:
-				r = self.__pct(pct, hp)
-				rt.add("{0}%".format(format(round(pct), '0.2f')), r)
+	def runstudy(self, studytitle, pct, hps, optstruct):
+		for hp in hps:
+			rt = ResultTable(studytitle)
+			print("\nHolding Period = {0}".format(hp))
+			for p in pct:
+				rt.add("{0}%".format(format(round(p), '0.2f')), 
+					self.__runstudy(p, hp, optstruct))
 			rt.pctprint()
-			# rt.print()
-
-	def movavgdown(self):
-		for hp in self.EXP:
-			rt = ResultTable("MA")
-			print("\nMovAvgDown; Holding Period = {0}".format(hp))	
-			for p in PriceData.periods:			
-				r = self.__movavgdown(p, hp, 0.07)
-				rt.add(p, r)
-			rt.pctprint()
-
-	def bandwidth(self):		
-		for hp in self.EXP:
-			rt = ResultTable("BW")
-			print("\nBandWidth; Holding Period = {0}".format(hp))
-			for pct in self.PCT_DOWN:
-				r = self.__bandwidth(hp, pct)
-				rt.add(pct, r)
-			rt.pctprint()			
 
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))
-	os.chdir(path)	
+	os.chdir(path)
+
 	spx = EquityData('Data/SPX.csv')
-	# spx.trend()
-	spx.pctDown()
-	# spx.movavgdown()
-	# spx.bandwidth()
+
+	put_pct = [-5, -7, -9]
+	put_hps = [15, 20, 25]
+	spx.runstudy('VP', put_pct, put_hps, OptStructure.SHORT_VERTICAL_PUT)
+
+	call_pct = [1, 2, 3]
+	call_hps = [1, 2, 3]
+	spx.runstudy('VC', call_pct, call_hps, OptStructure.SHORT_VERTICAL_CALL)
 
 if __name__ == "__main__":
     main()
