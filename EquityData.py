@@ -124,7 +124,7 @@ def main():
 	spx.runstudy('VP', put_pct, put_hps, OptStructure.SHORT_VERTICAL_PUT)
 
 	call_pct = [1, 2, 3]
-	call_hps = [1, 3, 5]
+	call_hps = [1, 2, 3]
 	spx.runstudy('VC', call_pct, call_hps, OptStructure.SHORT_VERTICAL_CALL)
 
 if __name__ == "__main__":
