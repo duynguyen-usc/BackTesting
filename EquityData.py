@@ -87,7 +87,7 @@ class EquityData:
 		for i in range(idx, idx + days):
 			if((i > self.__lastIdx) or 
 			   (self.data[i].change == None) or 
-			   (change < 0 and self.data[i].change > change) or
+			   (change <= 0 and self.data[i].change > change) or
 			   (change > 0 and self.data[i].change < change)):
 				return False
 		return True
@@ -95,7 +95,7 @@ class EquityData:
 	def __entryCriteria(self, d, optstruct, idx):
 		uptrend = d.close > d.movavg['200day']
 		if (optstruct == OptStructure.SHORT_VERTICAL_PUT):
-			return uptrend and self.__consecutiveDaysChange(idx, 1, -0.50)
+			return uptrend and self.__consecutiveDaysChange(idx, 1, 0)
 
 		if (optstruct == OptStructure.SHORT_VERTICAL_CALL):
 			return uptrend and self.__consecutiveDaysChange(idx, 2, 1)
@@ -127,7 +127,7 @@ class EquityData:
 			for p in pct:
 				rt.add("{0}%".format(format(round(p), '0.2f')), 
 					self.__runstudy(p, hp, optstruct))
-			rt.pctprint()
+			rt.print()
 
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))
