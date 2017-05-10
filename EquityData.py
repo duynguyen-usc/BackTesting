@@ -86,13 +86,21 @@ class EquityData:
 	def __consecutiveDaysChange(self, idx, days, change):
 		for i in range(idx, idx + days):
 			if((i > self.__lastIdx) or 
+			   (self.data[i].change == None) or 
 			   (change < 0 and self.data[i].change > change) or
 			   (change > 0 and self.data[i].change < change)):
 				return False
 		return True
 
-	def __entryCriteria(self, d):
-		return d.close > d.movavg['200day']
+	def __entryCriteria(self, d, optstruct, idx):
+		uptrend = d.close > d.movavg['200day']
+		if (optstruct == OptStructure.SHORT_VERTICAL_PUT):
+			return uptrend and self.__consecutiveDaysChange(idx, 1, -0.50)
+
+		if (optstruct == OptStructure.SHORT_VERTICAL_CALL):
+			return uptrend and self.__consecutiveDaysChange(idx, 2, 1)
+
+		return False
 
 	def __isWin(self, optstruct, strike, expclose):
 		if ((optstruct == OptStructure.SHORT_VERTICAL_PUT and strike <= expclose) or
@@ -105,7 +113,7 @@ class EquityData:
 		for idx, day in enumerate(self.data):
 			offset = idx - holdperiod
 			strike = day.close * (1 + (pct/100))			 
-			if (offset >= 0 and self.__entryCriteria(day)):
+			if (offset >= 0 and self.__entryCriteria(day, optstruct, idx)):
 				if (self.__isWin(optstruct, strike, self.data[offset].close)):
 					result.addwin()
 				else: 
@@ -131,9 +139,9 @@ def main():
 	put_hps = [15, 20, 25]
 	spx.runstudy('VP', put_pct, put_hps, OptStructure.SHORT_VERTICAL_PUT)
 
-	call_pct = [1, 2, 3]
-	call_hps = [1, 2, 3]
-	spx.runstudy('VC', call_pct, call_hps, OptStructure.SHORT_VERTICAL_CALL)
+	# call_pct = [1, 2, 3]
+	# call_hps = [1, 2, 3]
+	# spx.runstudy('VC', call_pct, call_hps, OptStructure.SHORT_VERTICAL_CALL)
 
 if __name__ == "__main__":
     main()
