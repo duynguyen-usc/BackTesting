@@ -3,6 +3,12 @@ import numpy as np
 from PriceData import PriceData
 from Result import Result, ResultTable
 
+class OptStructure:
+	SHORT_VERTICAL_CALL = 0
+	SHORT_VERTICAL_PUT = 1
+	LONG_VERTICAL_CALL = 3
+	LONG_VERTICAL_PUT = 4
+
 class EquityData:
 	
 	BOLBAND_P = '20day'
@@ -80,33 +86,42 @@ class EquityData:
 	def __entryCriteria(self, d):
 		return d.close > d.movavg['200day']
 
-	def __putStudy(self, pct, holdperiod):
+	def __runstudy(self, pct, holdperiod, optstruct):
 		result = Result()
 		for idx, day in enumerate(self.data):
 			offset = idx - holdperiod
 			strike = day.close * (1 + (pct/100))			 
 			if (offset >= 0 and self.__entryCriteria(day)):
-				if (strike <= self.data[offset].close):
+				if ((optstruct == OptStructure.SHORT_VERTICAL_PUT and 
+					 strike <= self.data[offset].close) or 
+					 (optstruct == OptStructure.SHORT_VERTICAL_CALL and 
+					 strike >= self.data[offset].close)):
 					result.addwin()
 				else: 
 					result.addloss()
 		return result
 
-	def putstudy(self):
+	def study(self):
 		pctdown = [-4, -5, -7]
+		pctup = [1, 2, 3]
 		hps = [15, 20, 25, 30, 35, 40]	
 		for hp in hps:
 			rt = ResultTable("PD")			
 			print("\nHolding Period = {0}".format(hp))
 			for pct in pctdown:				
-				rt.add("{0}%".format(format(round(pct), '0.2f')),  self.__putStudy(pct, hp))
+				rt.add("{0}%".format(format(round(pct), '0.2f')),  
+					self.__runstudy(pct, hp, OptStructure.SHORT_VERTICAL_PUT))
+			rt.pctprint()
+			for pct in pctup:
+				rt.add("{0}%".format(format(round(pct), '0.2f')), 
+					self.__runstudy(pct, hp, OptStructure.SHORT_VERTICAL_CALL))
 			rt.pctprint()
 
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)	
 	spx = EquityData('Data/SPX.csv')	
-	spx.putstudy()	
+	spx.study()	
 
 if __name__ == "__main__":
     main()
