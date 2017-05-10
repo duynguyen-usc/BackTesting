@@ -83,6 +83,14 @@ class EquityData:
 			return np.std([self.data[i].close for i in range(idxStart, idxEnd)])
 		return 0
 
+	def __consecutiveDaysChange(self, idx, days, change):
+		for i in range(idx, idx + days):
+			if((i > self.__lastIdx) or 
+			   (change < 0 and self.data[i].change > change) or
+			   (change > 0 and self.data[i].change < change)):
+				return False
+		return True
+
 	def __entryCriteria(self, d):
 		return d.close > d.movavg['200day']
 
