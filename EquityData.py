@@ -26,11 +26,11 @@ class EquityData:
 				self.data.append((PriceData(csvline)))
 
 	def __interDayCalculations(self):
-		for idx, day in enumerate(self.data):
-			print("idx: {0}".format(idx))
+		for idx, day in enumerate(self.data):			
 			self.__calcChange(idx)
 			self.__calcMovAvgs(idx)
-			self.__calcBolBand(idx)			
+			self.__calcBolBand(idx)
+			print("idx: {0} {1:.2f}".format(idx, day.change))
 
 	def __calcChange(self, idx):
 		if(idx < self.__lastIdx):
@@ -135,13 +135,13 @@ def main():
 
 	spx = EquityData('Data/SPX.csv')
 
-	put_pct = [-5, -7, -9]
-	put_hps = [15, 20, 25]
-	spx.runstudy('Put ', put_pct, put_hps, OptStructure.SHORT_VERTICAL_PUT)
+	# put_pct = [-5, -7, -9]
+	# put_hps = [15, 20, 25]
+	# spx.runstudy('Put ', put_pct, put_hps, OptStructure.SHORT_VERTICAL_PUT)
 
-	# call_pct = [1, 2, 3]
-	# call_hps = [1, 2, 3]
-	# spx.runstudy('Call', call_pct, call_hps, OptStructure.SHORT_VERTICAL_CALL)
+	call_pct = [1, 2, 3]
+	call_hps = [1, 2, 3]
+	spx.runstudy('Call', call_pct, call_hps, OptStructure.SHORT_VERTICAL_CALL)
 
 if __name__ == "__main__":
     main()

@@ -35,7 +35,7 @@ class PriceData:
 	}
 	def __init__(self, csvLine):
 		self.__parseCsvLine(csvLine)
-		self.change = None
+		self.change = 0
 		self.percentChange = 0
 		self.movavg = {}
 		self.bollingerband = BollingerBand()
