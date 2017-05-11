@@ -38,28 +38,17 @@ class ResultTable:
 		self.hdr = []
 		self.rslt = []
 		self.hrow = cname + "\t"
-		self.wrow = "W\t"
-		self.lrow = "L\t"		
+		self.wrow = "Win \t"
+		self.lrow = "Loss\t"		
 		
 		
 	def add(self, h, r):
 		self.hdr.append(h)
 		self.rslt.append(r)		
 
-	def pctprint(self):		
+	def print(self):		
 		for idx, r in enumerate(self.rslt):
-			self.hrow += "{0}\t".format(self.hdr[idx])
-			self.wrow += "{0}\t".format(r.pctwin())
-			self.lrow += "{0}\t".format(r.pctloss())			
+			self.hrow += "{0}\t[####]\t".format(self.hdr[idx])
+			self.wrow += "{0}\t[{1}]\t".format(r.pctwin(), r.wins)
+			self.lrow += "{0}\t[{1}]\t".format(r.pctloss(), r.loss)
 		print("\n{0}\n{1}\n{2}".format(self.hrow, self.wrow, self.lrow))
-
-	def wlprint(self):
-		for idx, r in enumerate(self.rslt):
-			self.hrow += "{0}\t".format(self.hdr[idx])
-			self.wrow += "{0}\t".format(r.wins)
-			self.lrow += "{0}\t".format(r.loss)			
-		print("\n{0}\n{1}\n{2}".format(self.hrow, self.wrow, self.lrow))
-
-	def print(self):
-		self.pctprint()
-		self.wlprint()

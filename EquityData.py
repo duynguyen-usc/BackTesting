@@ -137,11 +137,11 @@ def main():
 
 	put_pct = [-5, -7, -9]
 	put_hps = [15, 20, 25]
-	spx.runstudy('VP', put_pct, put_hps, OptStructure.SHORT_VERTICAL_PUT)
+	spx.runstudy('Put ', put_pct, put_hps, OptStructure.SHORT_VERTICAL_PUT)
 
 	# call_pct = [1, 2, 3]
 	# call_hps = [1, 2, 3]
-	# spx.runstudy('VC', call_pct, call_hps, OptStructure.SHORT_VERTICAL_CALL)
+	# spx.runstudy('Call', call_pct, call_hps, OptStructure.SHORT_VERTICAL_CALL)
 
 if __name__ == "__main__":
     main()
