@@ -98,7 +98,7 @@ class EquityData:
 			return uptrend and self.__consecutiveDaysChange(idx, 1, 0)
 
 		if (optstruct == OptStructure.SHORT_VERTICAL_CALL):
-			return uptrend and self.__consecutiveDaysChange(idx, 2, 1)
+			return uptrend and self.__consecutiveDaysChange(idx, 3, 0.50)
 
 		return False
 
@@ -125,7 +125,7 @@ class EquityData:
 			rt = ResultTable(studytitle)
 			print("\nHolding Period = {0}".format(hp))
 			for p in pct:
-				rt.add("{0}%".format(format(round(p), '0.2f')), 
+				rt.add("{0:.2f}%".format(p), 
 					self.__runstudy(p, hp, optstruct))
 			rt.print()
 
@@ -139,8 +139,8 @@ def main():
 	# put_hps = [15, 20, 25]
 	# spx.runstudy('Put ', put_pct, put_hps, OptStructure.SHORT_VERTICAL_PUT)
 
-	call_pct = [1, 2, 3]
-	call_hps = [1, 2, 3]
+	call_pct = [0.50]
+	call_hps = [1]
 	spx.runstudy('Call', call_pct, call_hps, OptStructure.SHORT_VERTICAL_CALL)
 
 if __name__ == "__main__":
