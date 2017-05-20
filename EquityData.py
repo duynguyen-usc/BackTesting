@@ -136,7 +136,7 @@ class EquityData:
 			for p in pct:
 				rt.add("{0:.2f}%".format(p), 
 					self.__runstudy(p, hp, optstruct))
-			rt.print()
+			print rt.toString()
 
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))
