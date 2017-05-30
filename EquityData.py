@@ -113,7 +113,9 @@ class EquityData:
 
 	def __isWin(self, optstruct, strike, expclose):
 		if ((optstruct == OptStructure.SHORT_VERTICAL_PUT and strike <= expclose) or
-		   (optstruct == OptStructure.SHORT_VERTICAL_CALL and strike >= expclose)):
+		   (optstruct == OptStructure.SHORT_VERTICAL_CALL and strike >= expclose) or
+		   (optstruct == OptStructure.LONG_VERTICAL_CALL and strike > expclose) or
+		   (optstruct == OptStructure.LONG_VERTICAL_PUT and strike < expclose)):
 			return True
 		return False
 
