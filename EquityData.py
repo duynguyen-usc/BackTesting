@@ -113,7 +113,7 @@ class EquityData:
 			return uptrend and self.__consecutiveDaysChange(idx, 2, 1)
 
 		if (optstruct == OptStructure.LONG_VERTICAL_CALL):
-			return uptrend and self.__multipleDayChange(idx, 2, 1, OptStructure.LONG_VERTICAL_CALL)
+			return self.__multipleDayChange(idx, 2, -3, OptStructure.LONG_VERTICAL_CALL)
 
 		return False
 
@@ -156,8 +156,8 @@ def main():
 	# put_hps = [15, 20, 25]
 	# spx.runstudy('Put ', put_pct, put_hps, OptStructure.SHORT_VERTICAL_PUT)
 
-	call_pct = [0.5, 1, 1.5]
-	call_hps = [5, 10, 20]
+	call_pct = [0.5]
+	call_hps = [10]
 	spx.runstudy('Call', call_pct, call_hps, OptStructure.LONG_VERTICAL_CALL)
 
 if __name__ == "__main__":
