@@ -93,12 +93,15 @@ class EquityData:
 		return True
 
 	def __multipleDayChange(self, idx, days, change, optstruct):
-		if (idx + days < self.__lastIdx):
-			mdc = (self.data[idx].close - self.data[idx + days].close / self.data[idx + days].close)
-			if (optstruct == OptStructure.SHORT_VERTICAL_CALL):				
-				return (mdc * 100) > change 
-			elif(optstruct == OptStructure.SHORT_VERTICAL_PUT):
-				return (mdc * 100) < change 
+		j = idx + days
+		if (j < self.__lastIdx):
+			mdc = 100 * (self.data[idx].close - self.data[j].close) / self.data[j].close
+			if (optstruct == OptStructure.SHORT_VERTICAL_CALL or
+				optstruct == OptStructure.LONG_VERTICAL_PUT):
+				return mdc > change 
+			elif (optstruct == OptStructure.SHORT_VERTICAL_PUT or 
+				  optstruct == OptStructure.LONG_VERTICAL_CALL):
+				return mdc < change
 		return False
 
 	def __entryCriteria(self, d, optstruct, idx):
