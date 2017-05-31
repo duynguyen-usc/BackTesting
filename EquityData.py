@@ -93,8 +93,8 @@ class EquityData:
 		return True
 
 	def __multipleDayChange(self, idx, days, change, optstruct):
-		if (i + days < self.__lastIdx):
-			mdc = (self.data[i].close - self.data[i + days]) / self.data[i + days]			
+		if (idx + days < self.__lastIdx):
+			mdc = (self.data[idx].close - self.data[idx + days].close / self.data[idx + days].close)
 			if (optstruct == OptStructure.SHORT_VERTICAL_CALL):				
 				return (mdc * 100) > change 
 			elif(optstruct == OptStructure.SHORT_VERTICAL_PUT):
@@ -108,6 +108,9 @@ class EquityData:
 
 		if (optstruct == OptStructure.SHORT_VERTICAL_CALL):
 			return uptrend and self.__consecutiveDaysChange(idx, 2, 1)
+
+		if (optstruct == OptStructure.LONG_VERTICAL_CALL):
+			return uptrend and self.__multipleDayChange(idx, 2, 1, OptStructure.LONG_VERTICAL_CALL)
 
 		return False
 
@@ -151,8 +154,8 @@ def main():
 	# spx.runstudy('Put ', put_pct, put_hps, OptStructure.SHORT_VERTICAL_PUT)
 
 	call_pct = [0.5, 1, 1.5]
-	call_hps = [5]
-	spx.runstudy('Call', call_pct, call_hps, OptStructure.SHORT_VERTICAL_CALL)
+	call_hps = [5, 10, 20]
+	spx.runstudy('Call', call_pct, call_hps, OptStructure.LONG_VERTICAL_CALL)
 
 if __name__ == "__main__":
     main()

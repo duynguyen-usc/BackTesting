@@ -12,8 +12,10 @@ class Result:
 	def __total(self):
 		return self.wins + self.loss
 
-	def __percent(self, val, total):		
-		return format(100 * val / total, "0.2f")
+	def __percent(self, val, total):
+		if (total > 0):
+			return format(100 * val / total, "0.2f")
+		return 0
 
 	def addwin(self):
 		self.wins += 1
