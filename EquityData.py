@@ -157,15 +157,15 @@ def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)
 
-	spx = EquityData('Data/SPX.csv')
-	# amzn = EquityData('Data/AMZN.csv')
+	# spx = EquityData('Data/SPX.csv')
+	amzn = EquityData('Data/AMZN.csv')
 	# tsla = EquityData('Data/TSLA.csv')
 
-	put_pct = [-5, -7, -9]
-	put_hps = [15, 20, 25]
+	put_pct = [-10]
+	put_hps = [25]
 	ops = OptStructure.SHORT_VERTICAL_PUT
-	spx.runstudy('Put ', put_pct, put_hps, ops)
-	# amzn.runstudy('Put ', put_pct, put_hps, ops)
+	# spx.runstudy('Put ', put_pct, put_hps, ops)
+	amzn.runstudy('Put ', put_pct, put_hps, ops)
 	# tsla.runstudy('Put ', put_pct, put_hps, ops)
 
 	# call_pct = [0.5]
