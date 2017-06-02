@@ -35,8 +35,12 @@ class EquityData:
 	def __calcChange(self, idx):
 		if(idx < self.__lastIdx):
 			prevClose = self.data[idx + 1].close
-			self.data[idx].change = self.data[idx].close - prevClose
-			self.data[idx].percentChange = (self.data[idx].change / prevClose) * 100
+			if (prevClose > 0):
+				self.data[idx].change = self.data[idx].close - prevClose
+				self.data[idx].percentChange = (self.data[idx].change / prevClose) * 100
+			else: 
+				self.data[idx].change = 0
+				self.data[idx].percentChange = 0
 
 	def __calcMovAvgs(self, idx):		
 		for p in PriceData.periods:
@@ -154,14 +158,19 @@ def main():
 	os.chdir(path)
 
 	spx = EquityData('Data/SPX.csv')
+	# amzn = EquityData('Data/AMZN.csv')
+	# tsla = EquityData('Data/TSLA.csv')
 
-	# put_pct = [-5, -7, -9]
-	# put_hps = [15, 20, 25]
-	# spx.runstudy('Put ', put_pct, put_hps, OptStructure.SHORT_VERTICAL_PUT)
+	put_pct = [-5, -7, -9]
+	put_hps = [15, 20, 25]
+	ops = OptStructure.SHORT_VERTICAL_PUT
+	spx.runstudy('Put ', put_pct, put_hps, ops)
+	# amzn.runstudy('Put ', put_pct, put_hps, ops)
+	# tsla.runstudy('Put ', put_pct, put_hps, ops)
 
-	call_pct = [0.5]
-	call_hps = [10]
-	spx.runstudy('Call', call_pct, call_hps, OptStructure.LONG_VERTICAL_CALL)
+	# call_pct = [0.5]
+	# call_hps = [10]
+	# spx.runstudy('Call', call_pct, call_hps, OptStructure.LONG_VERTICAL_CALL)
 
 if __name__ == "__main__":
     main()
