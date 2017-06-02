@@ -104,6 +104,9 @@ class EquityData:
 				return mdc < change
 		return False
 
+	def __buySignal(self, d):
+		return d.close < d.movavg['20day'] and d.close > d.movavg['50day']
+
 	def __entryCriteria(self, d, optstruct, idx):
 		uptrend = d.close > d.movavg['200day']
 		if (optstruct == OptStructure.SHORT_VERTICAL_PUT):
@@ -113,8 +116,8 @@ class EquityData:
 			return uptrend and self.__consecutiveDaysChange(idx, 2, 1)
 
 		if (optstruct == OptStructure.LONG_VERTICAL_CALL):
-			return self.__multipleDayChange(idx, 2, -3, OptStructure.LONG_VERTICAL_CALL)
-
+			return (self.__multipleDayChange(idx, 5, -3, OptStructure.LONG_VERTICAL_CALL) and
+				   self.__buySignal(d))
 		return False
 
 	def __isWin(self, optstruct, strike, expclose):
