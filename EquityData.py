@@ -154,10 +154,10 @@ class EquityData:
 					self.__studyhp(p, hp, optstruct))
 			print(rt.toString())
 
-	def putVertical(self):
+	def bullPutVertical(self):
 		put_pct = [-7]
 		put_hps = [25]		
-		self.__runstudy('Put Vert', put_pct, put_hps, OptStructure.SHORT_VERTICAL_PUT)
+		self.__runstudy('BuPV', put_pct, put_hps, OptStructure.SHORT_VERTICAL_PUT)
 
 
 def main():
@@ -165,13 +165,13 @@ def main():
 	os.chdir(path)
 
 	spx = EquityData('Data/SPX.csv')
-	spx.putVertical()
+	spx.bullPutVertical()
 
 	amzn = EquityData('Data/AMZN.csv')
-	amzn.putVertical()
+	amzn.bullPutVertical()
 
 	tsla = EquityData('Data/TSLA.csv')
-	tsla.putVertical()
+	tsla.bullPutVertical()
 
 if __name__ == "__main__":
     main()
