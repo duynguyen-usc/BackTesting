@@ -132,7 +132,7 @@ class EquityData:
 			return True
 		return False
 
-	def __runstudy(self, pct, holdperiod, optstruct):
+	def __studyhp(self, pct, holdperiod, optstruct):
 		result = Result()
 		for idx, day in enumerate(self.data):
 			offset = idx - holdperiod
@@ -144,33 +144,29 @@ class EquityData:
 					result.addloss()
 		return result
 
-	def runstudy(self, studytitle, pct, hps, optstruct):
+	def __runstudy(self, studytitle, pct, hps, optstruct):
 		for hp in hps:
 			rt = ResultTable(studytitle)
 			print("\nHolding Period = {0}".format(hp))
 			for p in pct:
 				rt.add("{0:.2f}%".format(p), 
-					self.__runstudy(p, hp, optstruct))
+					self.__studyhp(p, hp, optstruct))
 			print(rt.toString())
+
+	def putVertical(self):
+		put_pct = [-7]
+		put_hps = [25]		
+		self.__runstudy('Put Vert', put_pct, put_hps, OptStructure.SHORT_VERTICAL_PUT)
+
 
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)
 
-	# spx = EquityData('Data/SPX.csv')
-	amzn = EquityData('Data/AMZN.csv')
+	spx = EquityData('Data/SPX.csv')
+	# amzn = EquityData('Data/AMZN.csv')
 	# tsla = EquityData('Data/TSLA.csv')
-
-	put_pct = [-10]
-	put_hps = [25]
-	ops = OptStructure.SHORT_VERTICAL_PUT
-	# spx.runstudy('Put ', put_pct, put_hps, ops)
-	amzn.runstudy('Put ', put_pct, put_hps, ops)
-	# tsla.runstudy('Put ', put_pct, put_hps, ops)
-
-	# call_pct = [0.5]
-	# call_hps = [10]
-	# spx.runstudy('Call', call_pct, call_hps, OptStructure.LONG_VERTICAL_CALL)
+	spx.putVertical()
 
 if __name__ == "__main__":
     main()
