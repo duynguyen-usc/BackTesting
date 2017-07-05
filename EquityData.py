@@ -17,7 +17,8 @@ class EquityData:
 		self.data = []
 		self.__parseCsvFile(csvFile)		
 		self.__lastIdx = len(self.data) - 1
-		self.__interDayCalculations()		
+		self.__interDayCalculations()
+		print("\n" + csvFile)
 
 	def __parseCsvFile(self, csvFile):
 		data = [line.rstrip('\n') for line in open(csvFile)]
@@ -30,13 +31,17 @@ class EquityData:
 			self.__calcChange(idx)
 			self.__calcMovAvgs(idx)
 			self.__calcBolBand(idx)
-			print("idx: {0} {1:.2f}".format(idx, day.change))
+			# print("idx: {0} {1:.2f}".format(idx, day.change))
 
 	def __calcChange(self, idx):
 		if(idx < self.__lastIdx):
 			prevClose = self.data[idx + 1].close
-			self.data[idx].change = self.data[idx].close - prevClose
-			self.data[idx].percentChange = (self.data[idx].change / prevClose) * 100
+			if (prevClose > 0):
+				self.data[idx].change = self.data[idx].close - prevClose
+				self.data[idx].percentChange = (self.data[idx].change / prevClose) * 100
+			else: 
+				self.data[idx].change = 0
+				self.data[idx].percentChange = 0
 
 	def __calcMovAvgs(self, idx):		
 		for p in PriceData.periods:
@@ -104,6 +109,9 @@ class EquityData:
 				return mdc < change
 		return False
 
+	def __buySignal(self, d):
+		return d.close < d.movavg['20day'] and d.close > d.movavg['50day']
+
 	def __entryCriteria(self, d, optstruct, idx):
 		uptrend = d.close > d.movavg['200day']
 		if (optstruct == OptStructure.SHORT_VERTICAL_PUT):
@@ -113,8 +121,8 @@ class EquityData:
 			return uptrend and self.__consecutiveDaysChange(idx, 2, 1)
 
 		if (optstruct == OptStructure.LONG_VERTICAL_CALL):
-			return self.__multipleDayChange(idx, 2, -3, OptStructure.LONG_VERTICAL_CALL)
-
+			return (self.__multipleDayChange(idx, 5, -3, OptStructure.LONG_VERTICAL_CALL) and
+				   self.__buySignal(d))
 		return False
 
 	def __isWin(self, optstruct, strike, expclose):
@@ -125,7 +133,7 @@ class EquityData:
 			return True
 		return False
 
-	def __runstudy(self, pct, holdperiod, optstruct):
+	def __studyhp(self, pct, holdperiod, optstruct):
 		result = Result()
 		for idx, day in enumerate(self.data):
 			offset = idx - holdperiod
@@ -137,28 +145,33 @@ class EquityData:
 					result.addloss()
 		return result
 
-	def runstudy(self, studytitle, pct, hps, optstruct):
+	def __runstudy(self, studytitle, pct, hps, optstruct):
 		for hp in hps:
 			rt = ResultTable(studytitle)
 			print("\nHolding Period = {0}".format(hp))
 			for p in pct:
 				rt.add("{0:.2f}%".format(p), 
-					self.__runstudy(p, hp, optstruct))
+					self.__studyhp(p, hp, optstruct))
 			print(rt.toString())
+
+	def bullPutVertical(self):
+		put_pct = [-7]
+		put_hps = [25]		
+		self.__runstudy('BuPV', put_pct, put_hps, OptStructure.SHORT_VERTICAL_PUT)
+
 
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)
 
 	spx = EquityData('Data/SPX.csv')
+	spx.bullPutVertical()
 
-	# put_pct = [-5, -7, -9]
-	# put_hps = [15, 20, 25]
-	# spx.runstudy('Put ', put_pct, put_hps, OptStructure.SHORT_VERTICAL_PUT)
+	amzn = EquityData('Data/AMZN.csv')
+	amzn.bullPutVertical()
 
-	call_pct = [0.5]
-	call_hps = [10]
-	spx.runstudy('Call', call_pct, call_hps, OptStructure.LONG_VERTICAL_CALL)
+	tsla = EquityData('Data/TSLA.csv')
+	tsla.bullPutVertical()
 
 if __name__ == "__main__":
     main()

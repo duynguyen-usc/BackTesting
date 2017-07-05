@@ -28,10 +28,10 @@ class BollingerBand:
 class PriceData:
 	periods = {
 		'20day':20,
-		# '50day':50,
+		'50day':50,
 		'100day':100,
 		'200day':200,
-		'300day':300		
+		#'300day':300		
 	}
 	def __init__(self, csvLine):
 		self.__parseCsvLine(csvLine)
@@ -46,9 +46,15 @@ class PriceData:
 		# self.open = float(csvData[1])
 		# self.high = float(csvData[2])
 		# self.low = float(csvData[3])
-		self.close = float(csvData[4])
+		self.close = self.__getValue(csvData[4])
 		# self.adjClose = float(csvData[5])
 		# self.volume = float(csvData[6])
+
+	def __getValue(self, csvData):
+		try:
+			return float(csvData)
+		except ValueError:
+			return 0
 
 	def toString(self):
 		fmt = '0.2f'
