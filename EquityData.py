@@ -17,7 +17,8 @@ class EquityData:
 		self.data = []
 		self.__parseCsvFile(csvFile)		
 		self.__lastIdx = len(self.data) - 1
-		self.__interDayCalculations()		
+		self.__interDayCalculations()
+		print("\n" + csvFile)
 
 	def __parseCsvFile(self, csvFile):
 		data = [line.rstrip('\n') for line in open(csvFile)]
@@ -30,7 +31,7 @@ class EquityData:
 			self.__calcChange(idx)
 			self.__calcMovAvgs(idx)
 			self.__calcBolBand(idx)
-			print("idx: {0} {1:.2f}".format(idx, day.change))
+			# print("idx: {0} {1:.2f}".format(idx, day.change))
 
 	def __calcChange(self, idx):
 		if(idx < self.__lastIdx):
@@ -164,9 +165,13 @@ def main():
 	os.chdir(path)
 
 	spx = EquityData('Data/SPX.csv')
-	# amzn = EquityData('Data/AMZN.csv')
-	# tsla = EquityData('Data/TSLA.csv')
 	spx.putVertical()
+
+	amzn = EquityData('Data/AMZN.csv')
+	amzn.putVertical()
+
+	tsla = EquityData('Data/TSLA.csv')
+	tsla.putVertical()
 
 if __name__ == "__main__":
     main()
