@@ -31,7 +31,7 @@ class PriceData:
 		'50day':50,
 		'100day':100,
 		'200day':200,
-		#'300day':300		
+		'300day':300		
 	}
 	def __init__(self, csvLine):
 		self.__parseCsvLine(csvLine)

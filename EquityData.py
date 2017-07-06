@@ -30,7 +30,7 @@ class EquityData:
 		for idx, day in enumerate(self.data):			
 			self.__calcChange(idx)
 			self.__calcMovAvgs(idx)
-			self.__calcBolBand(idx)
+			#self.__calcBolBand(idx)
 			# print("idx: {0} {1:.2f}".format(idx, day.change))
 
 	def __calcChange(self, idx):
@@ -129,7 +129,7 @@ class EquityData:
 					self.__studyhp(p, hp, optstruct))
 			print(rt.toString())
 
-	def bullPutVertical(self):
+	def ShortPutVertical(self):
 		put_pct = [-7]
 		put_hps = [25]		
 		self.__runstudy('BuPV', put_pct, put_hps, OptStructure.SHORT_VERTICAL_PUT)
