@@ -1,18 +1,8 @@
 import os
 import numpy as np
+from Option import Option
 from PriceData import PriceData
 from Result import Result, ResultTable
-
-def enum(**named_values):
-	return type('Enum', (), named_values)
-
-pos = enum(SHORT = 0, 
-		   LONG = 1)
-
-optype = enum(SHORT_VERTICAL_PUT = 0, 
-			  LONG_VERTICAL_PUT = 1,
-			  SHORT_VERTICAL_CALL = 2, 			   
-			  LONG_VERTICAL_CALL = 3)
 
 class EquityData:
 	BOLBAND_P = '20day'
@@ -71,7 +61,6 @@ class EquityData:
 			return bsum / bcount
 		return 0
 		
-
 	def __getMax(self, idxStart, idxEnd):		
 		if(idxEnd < self.__lastIdx):
 			return np.max([self.data[i].close for i in range(idxStart, idxEnd)])
@@ -143,8 +132,9 @@ def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)
 
-	spx = EquityData('Data/SPX.csv')
-	spx.bullPut()
+	# spx = EquityData('Data/SPX.csv')
+	# spx.bullPut()
+	print(Option.VERTICAL_PUT)
 
 if __name__ == "__main__":
     main()
