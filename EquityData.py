@@ -3,14 +3,18 @@ import numpy as np
 from PriceData import PriceData
 from Result import Result, ResultTable
 
-class OptStructure:
-	SHORT_VERTICAL_CALL = 0
-	SHORT_VERTICAL_PUT = 1
-	LONG_VERTICAL_CALL = 3
-	LONG_VERTICAL_PUT = 4
+def enum(**named_values):
+	return type('Enum', (), named_values)
+
+pos = enum(SHORT = 0, 
+		   LONG = 1)
+
+optype = enum(SHORT_VERTICAL_PUT = 0, 
+			  LONG_VERTICAL_PUT = 1,
+			  SHORT_VERTICAL_CALL = 2, 			   
+			  LONG_VERTICAL_CALL = 3)
 
 class EquityData:
-	
 	BOLBAND_P = '20day'
 
 	def __init__(self, csvFile):		
@@ -99,12 +103,12 @@ class EquityData:
 	
 	def __entryCriteria(self, d, optstruct, idx):
 		uptrend = d.close > d.movavg['200day']
-		if (optstruct == OptStructure.SHORT_VERTICAL_PUT):
+		if (optstruct == optype.SHORT_VERTICAL_PUT):
 			return uptrend and self.__consecutiveDaysChange(idx, 1, 0)		
 		return False
 
 	def __isWin(self, optstruct, strike, expclose):
-		if (optstruct == OptStructure.SHORT_VERTICAL_PUT and strike <= expclose):
+		if (optstruct == optype.SHORT_VERTICAL_PUT and strike <= expclose):
 			return True
 		return False
 
@@ -129,10 +133,10 @@ class EquityData:
 					self.__studyhp(p, hp, optstruct))
 			print(rt.toString())
 
-	def ShortPutVertical(self):
+	def bullPut(self):
 		put_pct = [-7]
 		put_hps = [25]		
-		self.__runstudy('BuPV', put_pct, put_hps, OptStructure.SHORT_VERTICAL_PUT)
+		self.__runstudy('BuPV', put_pct, put_hps, optype.SHORT_VERTICAL_PUT)
 
 
 def main():
@@ -140,7 +144,7 @@ def main():
 	os.chdir(path)
 
 	spx = EquityData('Data/SPX.csv')
-	spx.bullPutVertical()
+	spx.bullPut()
 
 if __name__ == "__main__":
     main()
