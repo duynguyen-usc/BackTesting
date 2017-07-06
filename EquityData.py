@@ -96,40 +96,15 @@ class EquityData:
 			   (change > 0 and self.data[i].change < change)):
 				return False
 		return True
-
-	def __multipleDayChange(self, idx, days, change, optstruct):
-		j = idx + days
-		if (j < self.__lastIdx):
-			mdc = 100 * (self.data[idx].close - self.data[j].close) / self.data[j].close
-			if (optstruct == OptStructure.SHORT_VERTICAL_CALL or
-				optstruct == OptStructure.LONG_VERTICAL_PUT):
-				return mdc > change 
-			elif (optstruct == OptStructure.SHORT_VERTICAL_PUT or 
-				  optstruct == OptStructure.LONG_VERTICAL_CALL):
-				return mdc < change
-		return False
-
-	def __buySignal(self, d):
-		return d.close < d.movavg['20day'] and d.close > d.movavg['50day']
-
+	
 	def __entryCriteria(self, d, optstruct, idx):
 		uptrend = d.close > d.movavg['200day']
 		if (optstruct == OptStructure.SHORT_VERTICAL_PUT):
-			return uptrend and self.__consecutiveDaysChange(idx, 1, 0)
-
-		if (optstruct == OptStructure.SHORT_VERTICAL_CALL):
-			return uptrend and self.__consecutiveDaysChange(idx, 2, 1)
-
-		if (optstruct == OptStructure.LONG_VERTICAL_CALL):
-			return (self.__multipleDayChange(idx, 5, -3, OptStructure.LONG_VERTICAL_CALL) and
-				   self.__buySignal(d))
+			return uptrend and self.__consecutiveDaysChange(idx, 1, 0)		
 		return False
 
 	def __isWin(self, optstruct, strike, expclose):
-		if ((optstruct == OptStructure.SHORT_VERTICAL_PUT and strike <= expclose) or
-		   (optstruct == OptStructure.SHORT_VERTICAL_CALL and strike >= expclose) or
-		   (optstruct == OptStructure.LONG_VERTICAL_CALL and strike > expclose) or
-		   (optstruct == OptStructure.LONG_VERTICAL_PUT and strike < expclose)):
+		if (optstruct == OptStructure.SHORT_VERTICAL_PUT and strike <= expclose):
 			return True
 		return False
 
@@ -166,12 +141,6 @@ def main():
 
 	spx = EquityData('Data/SPX.csv')
 	spx.bullPutVertical()
-
-	amzn = EquityData('Data/AMZN.csv')
-	amzn.bullPutVertical()
-
-	tsla = EquityData('Data/TSLA.csv')
-	tsla.bullPutVertical()
 
 if __name__ == "__main__":
     main()
