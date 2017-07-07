@@ -96,11 +96,6 @@ class EquityData:
 			return uptrend and self.__consecutiveDaysChange(idx, 1, 0)		
 		return False
 
-	def __isWin(self, optstruct, strike, expclose):
-		if (optstruct == optype.SHORT_VERTICAL_PUT and strike <= expclose):
-			return True
-		return False
-
 	def __studyhp(self, pct, holdperiod, optstruct):
 		result = Result()
 		for idx, day in enumerate(self.data):

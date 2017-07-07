@@ -30,7 +30,7 @@ class Option:
 			else:
 				self.longstrike = self.shortstrike + self.SPREAD
 		else:
-			if (self.pos == self.SHORT)
+			if (self.pos == self.SHORT):
 				self.shortstrike = self.longstrike + self.SPREAD
 			else:
 				self.shortstrike = self.longstrike - self.SPREAD
