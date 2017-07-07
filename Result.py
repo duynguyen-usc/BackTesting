@@ -1,9 +1,3 @@
-class OptStructure:
-	SHORT_VERTICAL_CALL = 0
-	SHORT_VERTICAL_PUT = 1
-	LONG_VERTICAL_CALL = 3
-	LONG_VERTICAL_PUT = 4
-
 class Result:
 	def __init__(self):
 		self.wins = 0
