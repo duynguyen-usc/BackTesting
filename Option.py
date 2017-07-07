@@ -3,7 +3,9 @@ class Option:
 	SHORT = 0
 	LONG = 1	
 	VERTICAL_PUT = 2
-	VERTICAL_CALL = 3	
+	VERTICAL_CALL = 3
+
+	SPREAD = 20
 
 	def __init__(self, pos, opt):
 		self.__setposition(pos)
