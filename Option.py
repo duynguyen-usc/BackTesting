@@ -23,8 +23,17 @@ class Option:
 			raise ValueError('optionstructure not valid')
 		self.structure = o
 
-	def spread(self):
-		return abs(self.shortstrike - self.longstrike)
+	def __setspread(self):
+		if (self.longstrike == None):
+			if (self.pos == self.SHORT):
+				self.longstrike = self.shortstrike - self.SPREAD
+			else:
+				self.longstrike = self.shortstrike + self.SPREAD
+		else:
+			if (self.pos == self.SHORT)
+				self.shortstrike = self.longstrike + self.SPREAD
+			else:
+				self.shortstrike = self.longstrike - self.SPREAD
 
 	def isWin(self, expclose):
 		if (self.pos == self.SHORT and self.structure == self.VERTICAL_PUT):
