@@ -37,11 +37,15 @@ class Option:
 			else:
 				self.shortstrike = self.longstrike - self.SPREAD
 
+	def __roundStrike(x, base=5):
+	    return int(base * round(float(x) / base))
+
 	def __setStrikes(self):
 		if(self.__isShortPutVertical()):
-			self.shortstrike = self.d.close * (1 - self.PCT_DOWN)		
+			self.shortstrike = self.__roundStrike(self.d.close * (1 - self.PCT_DOWN))
 		else:
-			self.longstrike = self.d.close * (1 + self.PCT_UP)
+			self.longstrike = self.__roundStrike(self.d.close * (1 + self.PCT_UP))
+		
 		self.__setspread()
 
 	def __isShortPutVertical(self):
