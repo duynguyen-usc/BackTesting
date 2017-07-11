@@ -11,7 +11,6 @@ class EquityData:
 		self.data = []
 		self.__parseCsvFile(csvFile)		
 		self.__lastIdx = len(self.data) - 1
-		self.__interDayCalculations()
 
 	def __parseCsvFile(self, csvFile):
 		data = [line.rstrip('\n') for line in open(csvFile)]
@@ -23,8 +22,8 @@ class EquityData:
 		for idx, day in enumerate(self.data):			
 			self.__calcChange(idx)
 			# self.__calcMovAvgs(idx)
-			#self.__calcBolBand(idx)
-			print("idx: {0} {1:.2f}".format(idx, day.change))
+			# self.__calcBolBand(idx)
+			# print("idx: {0} {1:.2f}".format(idx, day.change))
 
 	def __calcChange(self, idx):
 		if(idx < self.__lastIdx):
@@ -79,12 +78,20 @@ class EquityData:
 		if(idxEnd < self.__lastIdx):
 			return np.std([self.data[i].close for i in range(idxStart, idxEnd)])
 		return 0
+	
+
+	def bullput(self, holdperiod):
+		result = Result()
+		for idx, day in enumerate(self.data):
+			offset = idx - holdperiod
+			putspread = Option(Option.SHORT, Option.VERTICAL_PUT)
+			putspread.shortstrike = 
+
 
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)
-
-	spx = EquityData('Data/SPX.csv')
+	# spx = EquityData('Data/SPX.csv')
 
 if __name__ == "__main__":
     main()
