@@ -11,6 +11,8 @@ class Option:
 
 	def __init__(self, pos, opt, daydata):		
 		self.d = daydata # PriceData
+		self.longstrike = None
+		self.shortstrike = None
 		self.__setposition(pos)
 		self.__setoptstructure(opt)
 		self.__setStrikes()
@@ -37,12 +39,13 @@ class Option:
 			else:
 				self.shortstrike = self.longstrike - self.SPREAD
 
-	def __roundStrike(x, base=5):
-	    return int(base * round(float(x) / base))
+	def __roundStrike(self, x, base=5):		
+		return int(base * round(float(x) / base))
 
 	def __setStrikes(self):
 		if(self.__isShortPutVertical()):
-			self.shortstrike = self.__roundStrike(self.d.close * (1 - self.PCT_DOWN))
+			x = self.d.close * (1 - self.PCT_DOWN)			
+			self.shortstrike = self.__roundStrike(x)
 		else:
 			self.longstrike = self.__roundStrike(self.d.close * (1 + self.PCT_UP))
 		
@@ -79,3 +82,7 @@ class Option:
 				return expclose >= self.longstrike
 			else:
 				return expclose <= self.longstrike
+
+	def toString(self):
+		strOpt = "{0}/{1}".format(self.shortstrike, self.longstrike)		
+		return strOpt

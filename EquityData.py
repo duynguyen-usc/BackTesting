@@ -78,20 +78,17 @@ class EquityData:
 		if(idxEnd < self.__lastIdx):
 			return np.std([self.data[i].close for i in range(idxStart, idxEnd)])
 		return 0
-	
 
-	def bullput(self, holdperiod):
-		result = Result()
+	def bullput(self):		
 		for idx, day in enumerate(self.data):
-			offset = idx - holdperiod
-			putspread = Option(Option.SHORT, Option.VERTICAL_PUT)
-			putspread.shortstrike = 
-
+			putoption = Option(Option.SHORT, Option.VERTICAL_PUT, day)
+			print(putoption.toString())
 
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)
-	# spx = EquityData('Data/SPX.csv')
+	spx = EquityData('Data/SPX.csv')
+	spx.bullput()
 
 if __name__ == "__main__":
     main()
