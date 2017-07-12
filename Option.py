@@ -5,7 +5,6 @@ class Option:
 	VERTICAL_PUT = 2
 	VERTICAL_CALL = 3
 
-	SPREAD = 20
 	PCT_DOWN = 0.07
 	PCT_UP = 0.015
 
@@ -28,16 +27,20 @@ class Option:
 		self.structure = o
 
 	def __setspread(self):
+		if (self.d.close >= 100): 
+			spread = 20 
+		else: 
+			spread = 5
 		if (self.longstrike == None):
 			if (self.pos == self.SHORT):
-				self.longstrike = self.shortstrike - self.SPREAD
+				self.longstrike = self.shortstrike - spread
 			else:
-				self.longstrike = self.shortstrike + self.SPREAD
-		else:
+				self.longstrike = self.shortstrike + spread
+		else:			
 			if (self.pos == self.SHORT):
-				self.shortstrike = self.longstrike + self.SPREAD
+				self.shortstrike = self.longstrike + spread
 			else:
-				self.shortstrike = self.longstrike - self.SPREAD
+				self.shortstrike = self.longstrike - spread
 
 	def __roundStrike(self, x, base=5):		
 		return int(base * round(float(x) / base))
