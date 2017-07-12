@@ -84,7 +84,8 @@ class EquityData:
 		r = Result()		
 		for idx, day in enumerate(self.data):
 			if (day.close > 0 and (idx + self.HOLD_PERIOD) < self.__lastIdx):
-				putoption = Option(Option.SHORT_VERTICAL_PUT, day)
+				expday = self.data[idx + self.HOLD_PERIOD]
+				putoption = Option(Option.SHORT_VERTICAL_PUT, day, expday)
 				print(putoption.toString())
 		
 

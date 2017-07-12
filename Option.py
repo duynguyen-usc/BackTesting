@@ -6,9 +6,9 @@ class Option:
 	PCT_DOWN = 0.07
 	PCT_UP = 0.015
 
-	def __init__(self, optstruct, today):		
+	def __init__(self, optstruct, today, expday):		
 		self.today = today # PriceData
-		#self.expday = expday # PriceData
+		self.expday = expday # PriceData
 		self.longstrike = None
 		self.shortstrike = None		
 		self.__setoptstructure(optstruct)
