@@ -66,7 +66,7 @@ class Option:
 	def __isLongCallVertical(self):
 		return (self.pos == self.LONG and self.structure == self.VERTICAL_CALL)
 
-	def isWin(self, expclose):
+	def __isWin(self, expclose):
 		if (self.__isShortPutVertical()):
 			return expclose > self.shortstrike
 
@@ -85,6 +85,7 @@ class Option:
 				return expclose >= self.longstrike
 			else:
 				return expclose <= self.longstrike
+		return False
 
 	def toString(self):
 		strOpt = "{0}/{1}".format(self.shortstrike, self.longstrike)		
