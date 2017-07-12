@@ -46,9 +46,8 @@ class Option:
 		return int(base * round(float(x) / base))
 
 	def __setStrikes(self):
-		if(self.__isShortPutVertical()):
-			x = self.d.close * (1 - self.PCT_DOWN)			
-			self.shortstrike = self.__roundStrike(x)
+		if(self.__isShortPutVertical()):						
+			self.shortstrike = self.__roundStrike(self.d.close * (1 - self.PCT_DOWN))
 		else:
 			self.longstrike = self.__roundStrike(self.d.close * (1 + self.PCT_UP))
 		
@@ -79,7 +78,7 @@ class Option:
 		elif (self.__isLongCallVertical()):
 			return expclose > longstrike
 
-	def isMaxLoss(self, expclose):
+	def __isMaxLoss(self, expclose):
 		if(not self.isWin(expclose)):
 			if (self.pos == self.SHORT):
 				return expclose >= self.longstrike

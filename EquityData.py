@@ -2,7 +2,7 @@ import os
 import numpy as np
 from Option import Option
 from PriceData import PriceData
-from Result import Result, ResultTable
+from Result import Result
 
 class EquityData:
 	BOLBAND_P = '20day'
@@ -79,10 +79,12 @@ class EquityData:
 			return np.std([self.data[i].close for i in range(idxStart, idxEnd)])
 		return 0
 
-	def bullput(self):		
+	def bullput(self):
+		r = Result()		
 		for idx, day in enumerate(self.data):
 			putoption = Option(Option.SHORT, Option.VERTICAL_PUT, day)
 			print(putoption.toString())
+		
 
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))
