@@ -8,6 +8,7 @@ class Option:
 
 	def __init__(self, optstruct, today):		
 		self.today = today # PriceData
+		#self.expday = expday # PriceData
 		self.longstrike = None
 		self.shortstrike = None		
 		self.__setoptstructure(optstruct)

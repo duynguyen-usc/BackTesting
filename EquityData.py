@@ -6,6 +6,7 @@ from Result import Result
 
 class EquityData:
 	BOLBAND_P = '20day'
+	HOLD_PERIOD = 25
 
 	def __init__(self, csvFile):		
 		self.data = []
@@ -82,8 +83,9 @@ class EquityData:
 	def bullput(self):
 		r = Result()		
 		for idx, day in enumerate(self.data):
-			putoption = Option(Option.SHORT_VERTICAL_PUT, day)
-			print(putoption.toString())
+			if (day.close > 0 and (idx + self.HOLD_PERIOD) < self.__lastIdx):
+				putoption = Option(Option.SHORT_VERTICAL_PUT, day)
+				print(putoption.toString())
 		
 
 def main():
