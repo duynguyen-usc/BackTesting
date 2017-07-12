@@ -51,5 +51,7 @@ class Option:
 		return False
 
 	def toString(self):
-		strOpt = "{0}/{1}".format(self.shortstrike, self.longstrike)		
+		strOpt = "{0}\t".format(self.today.date.strftime('%Y-%m-%d'))
+		strOpt += "{0}\t".format(self.today.close)		
+		strOpt += "-{0}/{1}\t".format(self.shortstrike, self.longstrike)
 		return strOpt
