@@ -10,12 +10,12 @@ class Option:
 		self.today = today # PriceData
 		self.longstrike = None
 		self.shortstrike = None		
-		self.__setoptstructure(opt)
+		self.__setoptstructure(optstruct)
 		self.__setStrikes()
 
 	def __setoptstructure(self, optstruct):
 		if(optstruct not in (self.SHORT_VERTICAL_PUT, 
-					 		 self.VERTICAL_CALL)):
+					 		 self.LONG_VERTICAL_CALL)):
 			raise ValueError('optionstructure not valid')
 		self.structure = optstruct
 
@@ -40,8 +40,7 @@ class Option:
 	def __isWin(self, expclose):
 		if (self.__isBullPut()):
 			return expclose > self.shortstrike
-		return False
-		
+		return False		
 
 	def __isMaxLoss(self, expclose):
 		if(not self.isWin(expclose)):

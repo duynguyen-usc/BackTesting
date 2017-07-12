@@ -82,7 +82,7 @@ class EquityData:
 	def bullput(self):
 		r = Result()		
 		for idx, day in enumerate(self.data):
-			putoption = Option(Option.SHORT, Option.VERTICAL_PUT, day)
+			putoption = Option(Option.SHORT_VERTICAL_PUT, day)
 			print(putoption.toString())
 		
 
