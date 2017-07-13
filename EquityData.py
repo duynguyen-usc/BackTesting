@@ -90,7 +90,7 @@ class EquityData:
 			if (day.close > 0 and expidx > 0):				
 				put = Option(Option.SHORT_VERTICAL_PUT, day, self.data[expidx])
 				self.results.addStat(put.result)
-				#print(put.toString())
+				print(put.toString())
 
 	def toString(self):
 		print(self.results.toString())

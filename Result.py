@@ -21,10 +21,10 @@ class Result:
 		self.maxGain += r.maxGain
 
 	def toString(self):
-		tr = "W:\t{0}({1}%)\n".format(self.win, self.__percent(self.win))
-		tr += "MG:\t{0}({1}%)\n".format(self.maxGain, self.__percent(self.maxGain))
-		tr += "L:\t{0}({1}%)\n".format(self.loss, self.__percent(self.loss))
-		tr += "ML:\t{0}({1}%)\n".format(self.maxLoss, self.__percent(self.maxLoss))
+		tr = "W:\t{1}%\t({0})\n".format(self.win, self.__percent(self.win))
+		tr += "MG:\t{1}%\t({0})\n".format(self.maxGain, self.__percent(self.maxGain))
+		tr += "L:\t{1}%\t({0})\n".format(self.loss, self.__percent(self.loss))
+		tr += "ML:\t{1}%\t({0})\n".format(self.maxLoss, self.__percent(self.maxLoss))
 		return tr
 		
 
