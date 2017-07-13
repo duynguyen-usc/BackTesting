@@ -7,13 +7,15 @@ from Result import Result
 class EquityData:
 	BOLBAND_P = '20day'
 	HOLD_PERIOD = 25
+	MONTH = 25
+	TWO_WEEKS = 10	
 
 	def __init__(self, csvFile):		
 		self.data = []
 		self.results = Result()
 		self.__parseCsvFile(csvFile)		
 		self.__lastIdx = len(self.data) - 1
-
+		self.__interDayCalculations()
 		self.__bullput()
 		
 
@@ -26,7 +28,7 @@ class EquityData:
 	def __interDayCalculations(self):
 		for idx, day in enumerate(self.data):			
 			self.__calcChange(idx)
-			# self.__calcMovAvgs(idx)
+			self.__calcMovAvgs(idx)
 			# self.__calcBolBand(idx)
 			# print("idx: {0} {1:.2f}".format(idx, day.change))
 
@@ -84,22 +86,37 @@ class EquityData:
 			return np.std([self.data[i].close for i in range(idxStart, idxEnd)])
 		return 0
 
+	def __isDown(self, idx):
+		return True
+
+	def __uptrend(self, idx):				
+		idxstart = idx - self.MONTH
+		if (idxstart > 0):
+			for i in range(idxstart, idx):
+				if (self.data[i].close < self.data[i].movavg['200day']):
+					return False
+			return True
+		return False
+
+	def __entry(self, idx):		
+		return self.__uptrend(idx) and self.__isDown(idx)
+
 	def __bullput(self):				
 		for idx, day in enumerate(self.data):
 			expidx = idx - self.HOLD_PERIOD
-			if (day.close > 0 and expidx > 0):				
+			if (day.close > 0 and expidx > 0 and self.__entry(idx)):				
 				put = Option(Option.SHORT_VERTICAL_PUT, day, self.data[expidx])
 				self.results.addStat(put.result)
 				print(put.toString())
 
 	def toString(self):
-		print(self.results.toString())
+		return self.results.toString()
 
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)
 	spx = EquityData('Data/SPX.csv')
-	spx.toString()	
+	print(spx.toString())
 
 if __name__ == "__main__":
     main()
