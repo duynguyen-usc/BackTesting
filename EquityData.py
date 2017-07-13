@@ -13,6 +13,7 @@ class EquityData:
 	def __init__(self, csvFile):		
 		self.data = []
 		self.results = Result()
+		self.csvFile = csvFile
 		self.__parseCsvFile(csvFile)		
 		self.__lastIdx = len(self.data) - 1
 		self.__interDayCalculations()
@@ -107,10 +108,10 @@ class EquityData:
 			if (day.close > 0 and expidx > 0 and self.__entry(idx)):				
 				put = Option(Option.SHORT_VERTICAL_PUT, day, self.data[expidx])
 				self.results.addStat(put.result)
-				print(put.toString())
+				#print(put.toString())
 
-	def toString(self):
-		return self.results.toString()
+	def toString(self):		
+		return "{0}\n\n{1}\n".format(self.csvFile, self.results.toString())
 
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))
