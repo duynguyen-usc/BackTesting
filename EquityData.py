@@ -10,8 +10,12 @@ class EquityData:
 
 	def __init__(self, csvFile):		
 		self.data = []
+		self.results = Result()
 		self.__parseCsvFile(csvFile)		
 		self.__lastIdx = len(self.data) - 1
+
+		self.__bullput()
+		
 
 	def __parseCsvFile(self, csvFile):
 		data = [line.rstrip('\n') for line in open(csvFile)]
@@ -80,20 +84,22 @@ class EquityData:
 			return np.std([self.data[i].close for i in range(idxStart, idxEnd)])
 		return 0
 
-	def bullput(self):
-		r = Result()		
+	def __bullput(self):				
 		for idx, day in enumerate(self.data):
 			expidx = idx - self.HOLD_PERIOD
 			if (day.close > 0 and expidx > 0):				
 				put = Option(Option.SHORT_VERTICAL_PUT, day, self.data[expidx])
-				r.addStat(put.result)
-				print(put.toString())
+				self.results.addStat(put.result)
+				#print(put.toString())
+
+	def toString(self):
+		print(self.results.toString())
 
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)
 	spx = EquityData('Data/SPX.csv')
-	spx.bullput()
+	spx.toString()	
 
 if __name__ == "__main__":
     main()
