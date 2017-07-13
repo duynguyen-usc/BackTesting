@@ -88,7 +88,7 @@ class EquityData:
 		return 0
 
 	def __isDown(self, idx):
-		return True
+		return self.data[idx].percentChange < 0
 
 	def __uptrend(self, idx):				
 		idxstart = idx - self.MONTH
