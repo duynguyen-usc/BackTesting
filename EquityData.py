@@ -85,9 +85,9 @@ class EquityData:
 		for idx, day in enumerate(self.data):
 			expidx = idx - self.HOLD_PERIOD
 			if (day.close > 0 and expidx > 0):				
-				putoption = Option(Option.SHORT_VERTICAL_PUT, day, self.data[expidx])
-				r.addStat(putoption.result)
-				print(putoption.toString())
+				put = Option(Option.SHORT_VERTICAL_PUT, day, self.data[expidx])
+				r.addStat(put.result)
+				print(put.toString())
 
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))
