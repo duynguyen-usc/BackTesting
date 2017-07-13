@@ -5,12 +5,8 @@ class Result:
 	MAX_LOSS = 3
 
 	def __init__(self):
-		self.result = []
-		self.result[self.WIN] = 0 
-		self.result[self.LOSS] = 0 
-		self.result[self.MAX_GAIN] = 0 
-		self.result[self.MAX_LOSS] = 0 
-
+		self.result = [0,0,0,0]
+		
 	def __total(self):
 		return self.wins + self.loss
 

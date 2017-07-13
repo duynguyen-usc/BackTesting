@@ -87,7 +87,6 @@ class EquityData:
 				expday = self.data[idx + self.HOLD_PERIOD]
 				putoption = Option(Option.SHORT_VERTICAL_PUT, day, expday)
 				print(putoption.toString())
-		
 
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))
