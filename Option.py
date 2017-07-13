@@ -10,9 +10,10 @@ class Option:
 		self.today = today # PriceData
 		self.expday = expday # PriceData
 		self.longstrike = None
-		self.shortstrike = None		
+		self.shortstrike = None
+		self.result = {}
 		self.__setoptstructure(optstruct)
-		self.__setStrikes()
+		self.__setStrikes()		
 
 	def __setoptstructure(self, optstruct):
 		if(optstruct not in (self.SHORT_VERTICAL_PUT, 
@@ -38,18 +39,16 @@ class Option:
 	def __isBullPut(self):
 		return self.structure == self.SHORT_VERTICAL_PUT
 
-	def __isWin(self, expclose):
+	def __setTradeResult(self):
 		if (self.__isBullPut()):
-			return expclose > self.shortstrike
-		return False		
+			self.result[0] = 1 if (self.shortstrike < self.expday.close) else 0
+			self.result[1] = 1 if (self.shortstrike > self.expday.close) else 0
+			self.result[3] = 1 if (self.longstrike > self.expday.close) else 0
+			self.result[4] = 1 if (self.shortstrike < self.expday.close) else 0
 
-	def __isMaxLoss(self, expclose):
-		if(not self.isWin(expclose)):
-			if (self.pos == self.SHORT):
-				return expclose >= self.longstrike
-			else:
-				return expclose <= self.longstrike
-		return False
+			
+
+
 
 	def toString(self):
 		strOpt = "{0}\t".format(self.today.date.strftime('%Y-%m-%d'))
