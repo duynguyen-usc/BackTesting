@@ -1,11 +1,9 @@
 class Result:
-	WIN = 0
-	LOSS = 1
-	MAX_GAIN = 2
-	MAX_LOSS = 3
-
 	def __init__(self):
-		self.result = [0,0,0,0]
+		self.win = 0
+		self.loss = 0
+		self.maxLoss = 0
+		self.maxGain = 0
 		
 	def __total(self):
 		return self.wins + self.loss
@@ -15,8 +13,8 @@ class Result:
 			return format(100 * val / total, "0.2f")
 		return 0
 
-	def addResult(self, r):
-		self.result[self.WIN] += r.result[self.WIN]
-		self.result[self.LOSS] += r.result[self.LOSS] 
-		self.result[self.MAX_GAIN] += r.result[self.MAX_GAIN] 
-		self.result[self.MAX_LOSS] += r.result[self.MAX_LOSS]
+	def addStat(self, r):
+		self.win += r.win 
+		self.loss = r.loss
+		self.maxLoss = r.maxLoss
+		self.maxGain = r.maxGain

@@ -83,9 +83,10 @@ class EquityData:
 	def bullput(self):
 		r = Result()		
 		for idx, day in enumerate(self.data):
-			if (day.close > 0 and (idx + self.HOLD_PERIOD) < self.__lastIdx):
-				expday = self.data[idx + self.HOLD_PERIOD]
-				putoption = Option(Option.SHORT_VERTICAL_PUT, day, expday)
+			expidx = idx - self.HOLD_PERIOD
+			if (day.close > 0 and expidx > 0):				
+				putoption = Option(Option.SHORT_VERTICAL_PUT, day, self.data[expidx])
+				r.addStat(putoption.result)
 				print(putoption.toString())
 
 def main():

@@ -13,7 +13,7 @@ class Option:
 		self.expday = expday # PriceData
 		self.longstrike = None
 		self.shortstrike = None
-		self.r = Result()
+		self.result = Result()
 		self.__setoptstructure(optstruct)
 		self.__setStrikes()
 		self.__setTradeResult()
@@ -44,15 +44,19 @@ class Option:
 
 	def __setTradeResult(self):
 		if (self.__isBullPut()):
-			self.r.result[Result.WIN] = 1 if (self.shortstrike < self.expday.close) else 0
-			self.r.result[Result.LOSS] = 1 if (self.shortstrike > self.expday.close) else 0
-			self.r.result[Result.MAX_LOSS] = 1 if (self.longstrike > self.expday.close) else 0
-			self.r.result[Result.MAX_GAIN] = 1 if (self.shortstrike < self.expday.close) else 0
-
+			if (self.shortstrike < self.expday.close):
+				self.result.win = 1
+				self.result.maxGain = 1
+			else:
+				self.result.loss = 1
+				if (self.longstrike > self.expday.close):
+					self.result.maxLoss = 1 
+			
 	def toString(self):
-		ml = 'MaxLoss' if (self.r.result[Result.MAX_LOSS] == 1) else ''
+		ml = 'ML' if (self.result.maxLoss == 1) else ''
+		w = 'W' if (self.result.win == 1) else 'L'
 		strOpt = "{0}\t".format(self.today.date.strftime('%Y-%m-%d'))
 		strOpt += "{0}\t".format(round(self.today.close, 2))
 		strOpt += "-{0}/{1}\t".format(self.shortstrike, self.longstrike)
-		strOpt += "{0}\t{1}\t".format(self.r.result[Result.WIN], ml)
+		strOpt += "{0}\t{1}\t".format(w, ml)
 		return strOpt
