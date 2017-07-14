@@ -61,5 +61,7 @@ class Option:
 		strOpt += "{0}\t".format(round(self.today.close, 2))
 		strOpt += "{0}\t".format(round(self.today.movavg['200day']))
 		strOpt += "-{0}/{1}\t".format(self.shortstrike, self.longstrike)
+		strOpt += "{0}\t".format(self.expday.date.strftime('%Y-%m-%d'))
+		strOpt += "{0}\t".format(round(self.expday.close, 2))
 		strOpt += "{0}\t{1}\t".format(w, ml)
 		return strOpt
