@@ -107,8 +107,9 @@ class EquityData:
 			expidx = idx - self.HOLD_PERIOD
 			if (day.close > 0 and expidx > 0 and self.__entry(idx)):				
 				put = Option(Option.SHORT_VERTICAL_PUT, day, self.data[expidx])
-				self.results.addStat(put.result)
-				print(put.toString())
+				if (put.shortstrike != 0):
+					self.results.addStat(put.result)
+					print(put.toString())
 
 	def toString(self):		
 		return "{0}\n\n{1}\n".format(self.csvFile, self.results.toString())
