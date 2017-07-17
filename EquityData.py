@@ -95,7 +95,7 @@ class EquityData:
 		if (idxstart > 0):
 			for i in range(idxstart, idx):
 				if (self.data[i].close < self.data[i].movavg['200day'] or
-					self.data[i].movavg['50day'] < self.data[i].movavg['100day']):
+					self.data[i].movavg['20day'] < self.data[i].movavg['50day']):
 					return False
 			return True
 		return False
