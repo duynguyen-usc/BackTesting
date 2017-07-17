@@ -90,11 +90,12 @@ class EquityData:
 	def __isDown(self, idx):
 		return self.data[idx].percentChange < 0
 
-	def __uptrend(self, idx):				
+	def __uptrend(self, idx):			
 		idxstart = idx - self.MONTH
 		if (idxstart > 0):
 			for i in range(idxstart, idx):
-				if (self.data[i].close < self.data[i].movavg['200day']):
+				if (self.data[i].close < self.data[i].movavg['200day'] or
+					self.data[i].movavg['50day'] < self.data[i].movavg['100day']):
 					return False
 			return True
 		return False
@@ -107,8 +108,8 @@ class EquityData:
 			expidx = idx + self.HOLD_PERIOD
 			if (day.close > 0 and expidx < self.__lastIdx and self.__entry(idx)):				
 				put = Option(Option.SHORT_VERTICAL_PUT, day, self.data[expidx])
-				if (put.shortstrike != 0):
-					self.results.addStat(put.result)
+				self.results.addStat(put.result)
+				if (put.shortstrike != 0 and put.result.maxLoss == 1):
 					print(put.toString())
 
 	def toString(self):		
