@@ -45,8 +45,8 @@ class EquityData:
 
 	def __calcMovAvgs(self, idx):		
 		for p in PriceData.periods:
-			offset =  idx + PriceData.periods[p]
-			self.data[idx].movavg[p] = self.__getAverage(idx, offset)
+			offset =  idx - PriceData.periods[p]
+			self.data[idx].movavg[p] = self.__getAverage(offset, idx)
 
 	def __calcBolBand(self, idx):		
 		midline = self.data[idx].movavg[self.BOLBAND_P]
@@ -68,33 +68,34 @@ class EquityData:
 		return 0
 		
 	def __getMax(self, idxStart, idxEnd):		
-		if(idxEnd < self.__lastIdx):
+		if(idxStart > 0):
 			return np.max([self.data[i].close for i in range(idxStart, idxEnd)])
 		return 0
 
 	def __getMin(self, idxStart, idxEnd):		
-		if(idxEnd < self.__lastIdx):
+		if(idxStart > 0):
 			return np.min([self.data[i].close for i in range(idxStart, idxEnd)])
 		return 0
 
 	def __getAverage(self, idxStart, idxEnd):		
-		if(idxEnd < self.__lastIdx):
+		if(idxStart > 0):
 			return sum(self.data[i].close for i in range(idxStart, idxEnd)) / (idxEnd - idxStart)
 		return 0
 
 	def __calcStdDev(self, idxStart, idxEnd):		
-		if(idxEnd < self.__lastIdx):
+		if(idxStart > 0):
 			return np.std([self.data[i].close for i in range(idxStart, idxEnd)])
 		return 0
 
 	def __isDown(self, idx):
 		return self.data[idx].percentChange < 0
 
-	def __uptrend(self, idx):				
+	def __uptrend(self, idx):			
 		idxstart = idx - self.MONTH
 		if (idxstart > 0):
 			for i in range(idxstart, idx):
-				if (self.data[i].close < self.data[i].movavg['200day']):
+				if (self.data[i].close < self.data[i].movavg['200day'] or
+					self.data[i].movavg['20day'] < self.data[i].movavg['50day']):
 					return False
 			return True
 		return False
@@ -104,11 +105,12 @@ class EquityData:
 
 	def __bullput(self):				
 		for idx, day in enumerate(self.data):
-			expidx = idx - self.HOLD_PERIOD
-			if (day.close > 0 and expidx > 0 and self.__entry(idx)):				
+			expidx = idx + self.HOLD_PERIOD
+			if (day.close > 0 and expidx < self.__lastIdx and self.__entry(idx)):				
 				put = Option(Option.SHORT_VERTICAL_PUT, day, self.data[expidx])
 				self.results.addStat(put.result)
-				#print(put.toString())
+				if (put.shortstrike != 0 and put.result.maxLoss == 1):
+					print(put.toString())
 
 	def toString(self):		
 		return "{0}\n\n{1}\n".format(self.csvFile, self.results.toString())
@@ -116,7 +118,7 @@ class EquityData:
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)
-	spx = EquityData('Data/SPX.csv')
+	spx = EquityData('Data/GSPC.csv')
 	print(spx.toString())
 
 if __name__ == "__main__":
