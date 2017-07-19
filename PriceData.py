@@ -56,7 +56,7 @@ class PriceData:
 		except ValueError:
 			return 0
 
-	def toString(self):
-		fmt = '0.2f'
-		cl = format(self.close, fmt)
-		return "{0}\t{1}\t{2}".format(self.date, cl, self.bollingerband.toString())
+	def toString(self):		
+		pd = "{0}\t".format(self.date.strftime('%Y-%m-%d'))
+		pd += "{0}\t".format(round(self.close, 2))
+		return pd
