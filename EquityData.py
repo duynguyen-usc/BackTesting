@@ -105,7 +105,7 @@ class EquityData:
 		return self.__uptrend(idx) and self.__isDown(idx)
 
 	def __getPeriodData(self, idxstart, idxend):
-		return [self.data[i] for i in range(idxstart, idxend)]
+		return [self.data[i] for i in range(idxstart + 1, idxend + 1)]
 
 	def __bullput(self):				
 		for idx, day in enumerate(self.data):
