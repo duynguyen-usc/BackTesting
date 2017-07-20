@@ -3,7 +3,6 @@ import numpy as np
 from Option import Option
 from PriceData import PriceData
 from Result import Result
-from LossAnalysis import LossAnalysis
 
 class EquityData:
 	BOLBAND_P = '20day'
@@ -105,17 +104,16 @@ class EquityData:
 		return self.__uptrend(idx) and self.__isDown(idx)
 
 	def __getPeriodData(self, idxstart, idxend):
-		return [self.data[i] for i in range(idxstart + 1, idxend + 1)]
+		return [self.data[i] for i in range(idxstart, idxend)]
 
 	def __bullput(self):				
 		for idx, day in enumerate(self.data):
-			expidx = idx + self.HOLD_PERIOD
+			expidx = idx + self.HOLD_PERIOD + 1
 			if (day.close > 0 and expidx < self.__lastIdx and self.__entry(idx)):				
-				put = Option(Option.SHORT_VERTICAL_PUT, day, self.data[expidx])
+				put = Option(Option.SHORT_VERTICAL_PUT, self.__getPeriodData(idx, expidx))
 				self.results.addStat(put.result)
-				if (put.shortstrike != 0 and put.result.loss == 1):
-					la = LossAnalysis(put, self.__getPeriodData(idx, expidx))
-					print(la.toString())
+				if (put.shortstrike != 0 and put.result.loss == 1):					
+					print(put.toString())
 
 	def toString(self):		
 		return "{0}\n\n{1}\n".format(self.csvFile, self.results.toString())

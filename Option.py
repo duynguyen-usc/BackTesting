@@ -8,9 +8,10 @@ class Option:
 	PCT_MIN = 0.05	
 	PCT_UP = 0.015
 
-	def __init__(self, optstruct, today, expday):		
-		self.today = today # PriceData
-		self.expday = expday # PriceData
+	def __init__(self, optstruct, hpdata):
+		self.hpdata = hpdata
+		self.today = self.hpdata[0]
+		self.expday = self.hpdata[len(hpdata) - 1]
 		self.longstrike = None
 		self.shortstrike = None
 		self.result = Result()
