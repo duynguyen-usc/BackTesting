@@ -1,5 +1,5 @@
+import math
 from Result import Result
-
 
 class Option:	
 	SHORT_VERTICAL_PUT = 0
@@ -31,8 +31,8 @@ class Option:
 		if (self.__isBullPut()):
 			self.longstrike = self.shortstrike - self.__getspread()		
 
-	def __roundStrike(self, x, base=5):		
-		return int(base * round(float(x) / base))
+	def __roundStrike(self, x, base=5):
+		return int(base * math.floor(float(x) / base))
 
 	def __setStrikes(self):
 		if (self.__isBullPut()):			
@@ -59,7 +59,7 @@ class Option:
 		w = 'W' if (self.result.win == 1) else 'L'
 		strOpt = "{0}\t".format(self.today.date.strftime('%Y-%m-%d'))
 		strOpt += "{0}\t".format(round(self.today.close, 2))
-		strOpt += "{0}\t".format(round(self.today.movavg['200day']))
+		strOpt += "{0}ma\t".format(round(self.today.movavg['200day']))
 		strOpt += "-{0}/{1}\t".format(self.shortstrike, self.longstrike)
 		strOpt += "{0}\t".format(self.expday.date.strftime('%Y-%m-%d'))
 		strOpt += "{0}\t".format(round(self.expday.close, 2))

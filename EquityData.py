@@ -113,7 +113,7 @@ class EquityData:
 			if (day.close > 0 and expidx < self.__lastIdx and self.__entry(idx)):				
 				put = Option(Option.SHORT_VERTICAL_PUT, day, self.data[expidx])
 				self.results.addStat(put.result)
-				if (put.shortstrike != 0 and put.result.maxLoss == 1):
+				if (put.shortstrike != 0 and put.result.loss == 1):
 					la = LossAnalysis(put, self.__getPeriodData(idx, expidx))
 					print(la.toString())
 
