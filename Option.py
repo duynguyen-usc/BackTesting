@@ -53,6 +53,14 @@ class Option:
 				self.result.loss = 1
 				if (self.longstrike > self.expday.close):
 					self.result.maxLoss = 1 
+
+	def __isInTheMoney(self, day):		
+		if(self.option.structure == Option.SHORT_VERTICAL_PUT):
+			return day.close < self.option.shortstrike
+		return False
+
+	def __daysInTheMoney(self):
+		return sum([1 for d in self.hpdata if self.__isInTheMoney(d)])
 			
 	def toString(self):
 		ml = 'ML' if (self.result.maxLoss == 1) else ''
