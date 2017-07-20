@@ -5,8 +5,7 @@ class Option:
 	SHORT_VERTICAL_PUT = 0
 	LONG_VERTICAL_CALL = 1
 
-	PCT_MIN = 0.05
-	PCT_DOWN = 0.07
+	PCT_MIN = 0.05	
 	PCT_UP = 0.015
 
 	def __init__(self, optstruct, today, expday):		
@@ -37,10 +36,9 @@ class Option:
 
 	def __setStrikes(self):
 		if (self.__isBullPut()):			
-			pctdown = self.today.close * (1 - self.PCT_DOWN)
+			pct = self.today.close * (1 - self.PCT_MIN)
 			movavg = self.today.movavg['200day']
-
-			self.shortstrike = self.__roundStrike(min([movavg, pctdown]))
+			self.shortstrike = self.__roundStrike(min([movavg, pct]))
 		self.__setLegs()		
 
 	def __isBullPut(self):
@@ -63,7 +61,7 @@ class Option:
 		strOpt += "{0}\t".format(round(self.today.close, 2))
 		strOpt += "{0}\t".format(round(self.today.movavg['200day']))
 		strOpt += "-{0}/{1}\t".format(self.shortstrike, self.longstrike)
-		strOpt += "{0}\t".format(self.expday.date.strftime('%Y-%m-%d'))
+		# strOpt += "{0}\t".format(self.expday.date.strftime('%Y-%m-%d'))
 		strOpt += "{0}\t".format(round(self.expday.close, 2))
 		strOpt += "{0}\t{1}\t".format(w, ml)
 		return strOpt
