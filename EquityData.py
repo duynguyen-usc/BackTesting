@@ -3,6 +3,7 @@ import numpy as np
 from Option import Option
 from PriceData import PriceData
 from Result import Result
+from Tools import StringBuilder
 
 class EquityData:
 	BOLBAND_P = '20day'
@@ -116,8 +117,13 @@ class EquityData:
 					self.results.addStat(put.result)
 					print(put.toString())
 
-	def toString(self):		
-		return "{0}\n\n{1}\n".format(self.csvFile, self.results.toString())
+	def toString(self):	
+		eq = StringBuilder()
+		eq.addline()		
+		eq.add(self.csvFile)
+		eq.addline()
+		eq.add(self.results.toString())
+		return eq.toString()
 
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))

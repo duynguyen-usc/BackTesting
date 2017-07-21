@@ -1,4 +1,5 @@
 from datetime import datetime
+from Tools import StringBuilder
 
 class BollingerBand:
 	def __init__(self):
@@ -56,7 +57,8 @@ class PriceData:
 		except ValueError:
 			return 0
 
-	def toString(self):		
-		pd = "{0}\t".format(self.date.strftime('%Y-%m-%d'))
-		pd += "{0}\t".format(round(self.close, 2))
-		return pd
+	def toString(self):	
+		pd = StringBuilder()
+		pd.add(self.date.strftime('%Y-%m-%d'))
+		pd.add(round(self.close, 2))
+		return pd.toString()
