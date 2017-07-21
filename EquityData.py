@@ -88,8 +88,8 @@ class EquityData:
 			return np.std([self.data[i].close for i in range(idxStart, idxEnd)])
 		return 0
 
-	def __isDown(self, idx):
-		return self.data[idx].percentChange < 0
+	def __isDown(self, idx, pct=0):
+		return self.data[idx].percentChange < pct
 
 	def __uptrend(self, idx):			
 		idxstart = idx - self.MONTH
