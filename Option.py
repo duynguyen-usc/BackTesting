@@ -28,12 +28,15 @@ class Option:
 			raise ValueError('optionstructure not valid')
 		self.structure = optstruct
 
-	def __getspread(self):
+	def __setSpread(self):
 		return 20 if (self.today.close >= 100) else 5
+
+	def __getSpread(self):
+		return "-{0}/{1}\t".format(self.shortstrike, self.longstrike)
 
 	def __setLegs(self):
 		if (self.__isBullPut()):
-			self.longstrike = self.shortstrike - self.__getspread()		
+			self.longstrike = self.shortstrike - self.__setSpread()		
 
 	def __roundStrike(self, x, base=5):
 		return int(base * math.floor(float(x) / base))
@@ -66,17 +69,20 @@ class Option:
 	def __daysInTheMoney(self):
 		return sum([1 for d in self.hpdata if self.__isInTheMoney(d)])
 
-	def __getLoss(self):
-		ml = 'ML' if (self.result.maxLoss == 1) else ''
-		w = 'W' if (self.result.win == 1) else 'L'
+	def __isWin(self):
+		if (self.result.win == 1):
+			return 'W'
+		else:
+			return 'ML' if self.result.maxLoss == 1 else 'L'
 			
 	def toString(self):	
 		strOpt = StringBuilder()
 		strOpt.add(self.today.date.strftime('%Y-%m-%d'))
 		strOpt.add(round(self.today.close, 2))
 		strOpt.add(round(self.today.movavg['200day']))
-		strOpt.add("-{0}/{1}\t".format(self.shortstrike, self.longstrike))
+		strOpt.add(self.__getSpread())
 		strOpt.add(self.expday.date.strftime('%Y-%m-%d'))		
 		strOpt.add(round(self.expday.close))
 		strOpt.add("itm:{0}\t".format(self.__daysInTheMoney()))
+		strOpt.add(self.__isWin())
 		return strOpt.toString()

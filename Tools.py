@@ -3,13 +3,17 @@ class StringBuilder:
 		self.s = str
 
 	def add(self, s):
-		self.s += "{0}\t".format(s)
+		self.s += s
 
-	def addline(self):
-		self.s += '\n'
+	def addline(self, s):
+		self.s += s + '\n'
 
-	def addtab(self):
-		self.s += '\t'
+	def addtab(self, s):
+		self.s += s + '\t'
+
+	def prepend(self, s):
+		self.s = s + self.s
 
 	def toString(self):
 		return self.s
+

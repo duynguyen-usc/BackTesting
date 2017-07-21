@@ -118,11 +118,9 @@ class EquityData:
 					print(put.toString())
 
 	def toString(self):	
-		eq = StringBuilder()
-		eq.addline()		
-		eq.add(self.csvFile)
-		eq.addline()
-		eq.add(self.results.toString())
+		eq = StringBuilder()		
+		eq.addline(self.csvFile)
+		eq.addline(self.results.toString())
 		return eq.toString()
 
 def main():
