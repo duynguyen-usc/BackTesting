@@ -1,5 +1,6 @@
 import math
 from Result import Result
+from Tools import StringBuilder
 
 class Option:	
 	SHORT_VERTICAL_PUT = 0
@@ -64,16 +65,18 @@ class Option:
 
 	def __daysInTheMoney(self):
 		return sum([1 for d in self.hpdata if self.__isInTheMoney(d)])
-			
-	def toString(self):
+
+	def __getLoss(self):
 		ml = 'ML' if (self.result.maxLoss == 1) else ''
 		w = 'W' if (self.result.win == 1) else 'L'
-		strOpt = "{0}\t".format(self.today.date.strftime('%Y-%m-%d'))
-		# strOpt += "{0}\t".format(round(self.today.close, 2))
-		# strOpt += "{0}\t".format(round(self.today.movavg['200day']))
-		strOpt += "-{0}/{1}\t".format(self.shortstrike, self.longstrike)
-		# strOpt += "{0}\t".format(self.expday.date.strftime('%Y-%m-%d'))		
-		strOpt += "{0}\t".format(round(self.expday.close))
-		strOpt += "itm:{0}\t".format(self.__daysInTheMoney())
-		strOpt += "{0}\t{1}\t".format(w, ml)
-		return strOpt
+			
+	def toString(self):	
+		strOpt = StringBuilder()
+		strOpt.add(self.today.date.strftime('%Y-%m-%d'))
+		strOpt.add(round(self.today.close, 2))
+		strOpt.add(round(self.today.movavg['200day']))
+		strOpt.add("-{0}/{1}\t".format(self.shortstrike, self.longstrike))
+		strOpt.add(self.expday.date.strftime('%Y-%m-%d'))		
+		strOpt.add(round(self.expday.close))
+		strOpt.add("itm:{0}\t".format(self.__daysInTheMoney()))
+		return strOpt.toString()
