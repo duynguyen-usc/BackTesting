@@ -3,7 +3,7 @@ class StringBuilder:
 		self.s = str
 
 	def add(self, s):
-		self.s += s
+		self.s += "{0}".format(s)
 
 	def addline(self, s):
 		self.s += s + '\n'
