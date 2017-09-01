@@ -1,3 +1,5 @@
+from Tools import StringBuilder
+
 class Result:
 	def __init__(self):
 		self.win = 0
@@ -21,11 +23,12 @@ class Result:
 		self.maxGain += r.maxGain
 
 	def toString(self):
-		tr = "W:\t{1}%\t({0})\n".format(self.win, self.__percent(self.win))
-		tr += "MG:\t{1}%\t({0})\n".format(self.maxGain, self.__percent(self.maxGain))
-		tr += "L:\t{1}%\t({0})\n".format(self.loss, self.__percent(self.loss))
-		tr += "ML:\t{1}%\t({0})\n".format(self.maxLoss, self.__percent(self.maxLoss))
-		return tr
+		tr = StringBuilder()
+		tr.addline("W:\t{1}%\t({0})".format(self.win, self.__percent(self.win)))
+		tr.addline("MG:\t{1}%\t({0})".format(self.maxGain, self.__percent(self.maxGain)))
+		tr.addline("L:\t{1}%\t({0})".format(self.loss, self.__percent(self.loss)))
+		tr.addline("ML:\t{1}%\t({0})".format(self.maxLoss, self.__percent(self.maxLoss)))
+		return tr.toString()
 		
 
 		

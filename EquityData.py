@@ -88,8 +88,8 @@ class EquityData:
 			return np.std([self.data[i].close for i in range(idxStart, idxEnd)])
 		return 0
 
-	def __isDown(self, idx):
-		return self.data[idx].percentChange < 0
+	def __isDown(self, idx, pct=0):
+		return self.data[idx].percentChange < pct
 
 	def __uptrend(self, idx):			
 		idxstart = idx - self.MONTH
@@ -118,11 +118,9 @@ class EquityData:
 					print(put.toString())
 
 	def toString(self):	
-		eq = StringBuilder()
-		eq.addline()		
-		eq.add(self.csvFile)
-		eq.addline()
-		eq.add(self.results.toString())
+		eq = StringBuilder()		
+		eq.addline(self.csvFile)
+		eq.addline(self.results.toString())
 		return eq.toString()
 
 def main():
