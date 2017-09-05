@@ -111,8 +111,7 @@ class EquityData:
 		for idx, day in enumerate(self.data):
 			expidx = idx + self.HOLD_PERIOD + 1
 			if (day.close > 0 and expidx < self.__lastIdx and self.__entry(idx)):				
-				put = Option(Option.SHORT_VERTICAL_PUT, self.__getPeriodData(idx, expidx))				
-				# if (put.shortstrike != 0 and put.result.loss == 1):
+				put = Option(Option.SHORT_VERTICAL_PUT, self.__getPeriodData(idx, expidx))
 				if (put.shortstrike != 0 and put.itm > 1):
 					self.results.addStat(put.result)
 					print(put.toString())
