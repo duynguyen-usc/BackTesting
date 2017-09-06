@@ -35,8 +35,17 @@ class EquityData:
 			if(idx != 0):		
 				self.vixdata.append((PriceData(csvline)))
 
+	def __getVixValue(self, d):
+		for idx, vx in enumerate(self.vixdata):
+			if (vx.date == d):
+				return vx.close
+
+	def __addVixValue(self, idx):
+		self.data[idx].vix = self.__getVixValue(self.data[idx].date)
+
 	def __interDayCalculations(self):
-		for idx, day in enumerate(self.data):			
+		for idx, day in enumerate(self.data):
+			self.__addVixValue(idx)		
 			self.__calcChange(idx)
 			self.__calcMovAvgs(idx)
 			# self.__calcBolBand(idx)

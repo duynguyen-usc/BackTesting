@@ -80,6 +80,7 @@ class Option:
 		strOpt.addDate(self.today.date)
 		strOpt.addtab(round(self.today.close, 2))
 		strOpt.addtab(round(self.today.movavg['200day']))
+		strOpt.addtab(round(self.today.vix, 2))
 		strOpt.addtab(self.__getSpread())
 		strOpt.addDate(self.expday.date)		
 		strOpt.addtab(round(self.expday.close))
