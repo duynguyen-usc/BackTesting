@@ -8,7 +8,7 @@ from Tools import StringBuilder
 class EquityData:
 	BOLBAND_P = '20day'
 	HOLD_PERIOD = 25
-	MONTH = 25
+	MONTH = 36
 	TWO_WEEKS = 10	
 
 	def __init__(self, csvFile):		
@@ -120,7 +120,9 @@ class EquityData:
 		return False
 
 	def __entry(self, idx):		
-		return self.__uptrend(idx) and self.__isDown(idx)
+		return (self.__uptrend(idx) and 
+				self.__isDown(idx) and 
+				self.data[idx].vix > 17)
 
 	def __getPeriodData(self, idxstart, idxend):
 		return [self.data[i] for i in range(idxstart, idxend)]
@@ -131,11 +133,12 @@ class EquityData:
 			if (day.close > 0 and expidx < self.__lastIdx and self.__entry(idx)):				
 				put = Option(Option.SHORT_VERTICAL_PUT, self.__getPeriodData(idx, expidx))
 				
-				self.results.addStat(put.result)
+				self.results.addStat(put.result)				
 				if (put.shortstrike != 0 and put.itm > 1):
 					self.touchresults.addStat(put.result)
-					if(put.result.maxLoss == 1):
+					if(put.result.loss == 1):
 						print(put.toString())
+					
 
 	def toString(self):	
 		eq = StringBuilder()
