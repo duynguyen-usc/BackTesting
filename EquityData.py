@@ -13,9 +13,11 @@ class EquityData:
 
 	def __init__(self, csvFile):		
 		self.data = []
+		self.vixdata = []
 		self.results = Result()
 		self.csvFile = csvFile
-		self.__parseCsvFile(csvFile)		
+		self.__parseCsvFile(csvFile)
+		self.__parseVixFile()		
 		self.__lastIdx = len(self.data) - 1
 		self.__interDayCalculations()
 		self.__bullput()
@@ -26,6 +28,12 @@ class EquityData:
 		for idx, csvline in enumerate(data):
 			if(idx != 0):		
 				self.data.append((PriceData(csvline)))
+
+	def __parseVixFile(self):
+		data = [line.rstrip('\n') for line in open('Data\VIX.csv')]
+		for idx, csvline in enumerate(data):
+			if(idx != 0):		
+				self.vixdata.append((PriceData(csvline)))
 
 	def __interDayCalculations(self):
 		for idx, day in enumerate(self.data):			
