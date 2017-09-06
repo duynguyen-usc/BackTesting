@@ -8,8 +8,11 @@ from Tools import StringBuilder
 class EquityData:
 	BOLBAND_P = '20day'
 	HOLD_PERIOD = 25
-	MONTH = 36
-	TWO_WEEKS = 10	
+	MONTH = 25	
+	TWO_WEEKS = 10
+	
+	VIX_MIN = 12.0
+	PCT_DOWN_MIN = -0.25
 
 	def __init__(self, csvFile):		
 		self.data = []
@@ -121,8 +124,8 @@ class EquityData:
 
 	def __entry(self, idx):		
 		return (self.__uptrend(idx) and 
-				self.__isDown(idx) and 
-				self.data[idx].vix > 17)
+				self.__isDown(idx, self.PCT_DOWN_MIN) and 
+				self.data[idx].vix > self.VIX_MIN)
 
 	def __getPeriodData(self, idxstart, idxend):
 		return [self.data[i] for i in range(idxstart, idxend)]
