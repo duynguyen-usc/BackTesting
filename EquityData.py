@@ -30,7 +30,7 @@ class EquityData:
 				self.data.append((PriceData(csvline)))
 
 	def __parseVixFile(self):
-		data = [line.rstrip('\n') for line in open('Data\VIX.csv')]
+		data = [line.rstrip('\n') for line in open('Data/VIX.csv')]
 		for idx, csvline in enumerate(data):
 			if(idx != 0):		
 				self.vixdata.append((PriceData(csvline)))
