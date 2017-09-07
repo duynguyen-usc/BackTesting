@@ -40,6 +40,7 @@ class PriceData:
 		self.percentChange = 0
 		self.movavg = {}
 		self.bollingerband = BollingerBand()
+		self.vix = 0
 
 	def __parseCsvLine(self, csvLine):
 		csvData = csvLine.split(',')

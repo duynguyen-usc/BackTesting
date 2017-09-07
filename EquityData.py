@@ -8,14 +8,20 @@ from Tools import StringBuilder
 class EquityData:
 	BOLBAND_P = '20day'
 	HOLD_PERIOD = 25
-	MONTH = 25
-	TWO_WEEKS = 10	
+	MONTH = 25	
+	TWO_WEEKS = 10
+	
+	VIX_MIN = 12.0
+	PCT_DOWN_MIN = -0.25
 
 	def __init__(self, csvFile):		
 		self.data = []
+		self.vixdata = []
 		self.results = Result()
+		self.touchresults = Result()
 		self.csvFile = csvFile
-		self.__parseCsvFile(csvFile)		
+		self.__parseCsvFile(csvFile)
+		self.__parseVixFile()		
 		self.__lastIdx = len(self.data) - 1
 		self.__interDayCalculations()
 		self.__bullput()
@@ -27,8 +33,23 @@ class EquityData:
 			if(idx != 0):		
 				self.data.append((PriceData(csvline)))
 
+	def __parseVixFile(self):
+		data = [line.rstrip('\n') for line in open('Data/VIX.csv')]
+		for idx, csvline in enumerate(data):
+			if(idx != 0):		
+				self.vixdata.append((PriceData(csvline)))
+
+	def __getVixValue(self, d):
+		for idx, vx in enumerate(self.vixdata):
+			if (vx.date == d):
+				return vx.close
+
+	def __addVixValue(self, idx):
+		self.data[idx].vix = self.__getVixValue(self.data[idx].date)
+
 	def __interDayCalculations(self):
-		for idx, day in enumerate(self.data):			
+		for idx, day in enumerate(self.data):
+			self.__addVixValue(idx)		
 			self.__calcChange(idx)
 			self.__calcMovAvgs(idx)
 			# self.__calcBolBand(idx)
@@ -102,7 +123,9 @@ class EquityData:
 		return False
 
 	def __entry(self, idx):		
-		return self.__uptrend(idx) and self.__isDown(idx)
+		return (self.__uptrend(idx) and 
+				self.__isDown(idx, self.PCT_DOWN_MIN) and 
+				self.data[idx].vix > self.VIX_MIN)
 
 	def __getPeriodData(self, idxstart, idxend):
 		return [self.data[i] for i in range(idxstart, idxend)]
@@ -111,22 +134,28 @@ class EquityData:
 		for idx, day in enumerate(self.data):
 			expidx = idx + self.HOLD_PERIOD + 1
 			if (day.close > 0 and expidx < self.__lastIdx and self.__entry(idx)):				
-				put = Option(Option.SHORT_VERTICAL_PUT, self.__getPeriodData(idx, expidx))				
-				# if (put.shortstrike != 0 and put.result.loss == 1):
+				put = Option(Option.SHORT_VERTICAL_PUT, self.__getPeriodData(idx, expidx))
+				
+				self.results.addStat(put.result)				
 				if (put.shortstrike != 0 and put.itm > 1):
-					self.results.addStat(put.result)
-					print(put.toString())
+					self.touchresults.addStat(put.result)
+					if(put.result.loss == 1):
+						print(put.toString())
+					
 
 	def toString(self):	
-		eq = StringBuilder()		
-		eq.addline(self.csvFile)
+		eq = StringBuilder()
+		eq.addline('')
+		eq.addline('Overall:')
 		eq.addline(self.results.toString())
+		eq.addline('Touch results:')
+		eq.addline(self.touchresults.toString())
 		return eq.toString()
 
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)
-	spx = EquityData('Data/GSPC.csv')
+	spx = EquityData('Data/SPX.csv')
 	print(spx.toString())
 
 if __name__ == "__main__":
