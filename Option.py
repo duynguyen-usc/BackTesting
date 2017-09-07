@@ -19,8 +19,7 @@ class Option:
 		self.result = Result()
 		self.__setoptstructure(optstruct)
 		self.__setStrikes()
-		self.__setTradeResult()
-		self.itm = self.__daysInTheMoney()
+		self.__setTradeResult()		
 
 	def __setoptstructure(self, optstruct):
 		if(optstruct not in (self.SHORT_VERTICAL_PUT, 
@@ -52,10 +51,12 @@ class Option:
 		return self.structure == self.SHORT_VERTICAL_PUT
 
 	def __setTradeResult(self):
+		self.itm = self.__daysInTheMoney()		
 		if (self.__isBullPut()):
 			if (self.shortstrike < self.expday.close):
 				self.result.win = 1
-				self.result.maxGain = 1
+				if(self.itm > 5):
+					self.result.maxGain = 1
 			else:
 				self.result.loss = 1
 				if (self.longstrike > self.expday.close):
