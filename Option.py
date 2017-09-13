@@ -15,7 +15,7 @@ class Option:
 		self.today = self.hpdata[0]
 		self.expday = self.hpdata[len(hpdata) - 1]		
 		self.longstrike = None
-		self.shortstrike = None
+		self.shortstrike = None		
 		self.result = Result()
 		self.__setoptstructure(optstruct)
 		self.__setStrikes()
@@ -75,6 +75,12 @@ class Option:
 			return 'W'
 		else:
 			return 'ML' if self.result.maxLoss == 1 else 'L'
+
+	def getFirstTouchIdx(self):
+		for idx, day in enumerate(self.hpdata):
+			if (self.__isInTheMoney(day)):
+				return idx
+		return -1
 			
 	def toString(self):	
 		strOpt = StringBuilder()
