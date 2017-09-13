@@ -148,6 +148,7 @@ class EquityData:
 						repairtrade = Option(Option.SHORT_VERTICAL_PUT, 
 							self.__getPeriodData(repairIdx, expidx))
 						self.repairresults.addStat(repairtrade.result)
+						print(repairtrade.toString() + "*")
 
 	def toString(self):	
 		eq = StringBuilder()
