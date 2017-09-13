@@ -19,6 +19,7 @@ class EquityData:
 		self.vixdata = []
 		self.results = Result()
 		self.touchresults = Result()
+		self.repairresults = Result()
 		self.csvFile = csvFile
 		self.__parseCsvFile(csvFile)
 		self.__parseVixFile()		
@@ -134,14 +135,19 @@ class EquityData:
 		for idx, day in enumerate(self.data):
 			expidx = idx + self.HOLD_PERIOD + 1
 			if (day.close > 0 and expidx < self.__lastIdx and self.__entry(idx)):				
-				put = Option(Option.SHORT_VERTICAL_PUT, self.__getPeriodData(idx, expidx))
+				put = Option(Option.SHORT_VERTICAL_PUT, 
+					self.__getPeriodData(idx, expidx))
 				
 				self.results.addStat(put.result)				
 				if (put.shortstrike != 0 and put.itm > 1):
 					self.touchresults.addStat(put.result)
-					if(put.result.loss == 1):
+					if(put.result.loss == 1):						
 						print(put.toString())
-					
+						repairIdx = idx + put.getFirstTouchIdx() + 1
+						expidx = repairIdx + self.HOLD_PERIOD + 1
+						repairtrade = Option(Option.SHORT_VERTICAL_PUT, 
+							self.__getPeriodData(repairIdx, expidx))
+						self.repairresults.addStat(repairtrade.result)
 
 	def toString(self):	
 		eq = StringBuilder()
@@ -150,6 +156,8 @@ class EquityData:
 		eq.addline(self.results.toString())
 		eq.addline('Touch results:')
 		eq.addline(self.touchresults.toString())
+		eq.addline('Repair results:')
+		eq.addline(self.repairresults.toString())
 		return eq.toString()
 
 def main():
