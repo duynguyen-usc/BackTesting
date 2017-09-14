@@ -143,7 +143,7 @@ class EquityData:
 					self.touchresults.addStat(put.result)
 					if(put.result.loss == 1):						
 						print(put.toString())
-						repairIdx = idx + put.getFirstTouchIdx() + 1
+						repairIdx = idx + put.getFirstTouchIdx()
 						expidx = repairIdx + self.HOLD_PERIOD + 1
 						repairtrade = Option(Option.SHORT_VERTICAL_PUT, 
 							self.__getPeriodData(repairIdx, expidx))
