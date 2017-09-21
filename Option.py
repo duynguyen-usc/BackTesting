@@ -8,14 +8,15 @@ class Option:
 	SHORT_VERTICAL_CALL = 2
 	LONG_VERTICAL_CALL = 3
 
-	PCT_MIN = 0.03
+	PCT_MIN = 0.07
 
-	def __init__(self, optstruct, hpdata):
+	def __init__(self, optstruct, hpdata, repair=False):
 		self.hpdata = hpdata
 		self.today = self.hpdata[0]
 		self.expday = self.hpdata[len(hpdata) - 1]		
 		self.longstrike = None
-		self.shortstrike = None		
+		self.shortstrike = None	
+		self.isRepair = repair	
 		self.result = Result()
 		self.__setoptstructure(optstruct)
 		self.__setStrikes()
@@ -41,10 +42,14 @@ class Option:
 		return int(base * math.floor(float(x) / base))
 
 	def __setStrikes(self):
-		if (self.__isBullPut()):			
-			pct = self.today.close * (1 - self.PCT_MIN)
-			ma = self.today.movavg['200day']
-			self.shortstrike = self.__roundStrike(min([ma, pct]))
+		if (self.__isBullPut()):
+			if(self.isRepair):
+				repairpct = 0.03
+				self.shortstrike = self.__roundStrike(self.today.close * (1 - repairpct))
+			else:
+				pct = self.today.close * (1 - self.PCT_MIN)
+				ma = self.today.movavg['200day']
+				self.shortstrike = self.__roundStrike(min([ma, pct]))
 		self.__setLegs()		
 
 	def __isBullPut(self):

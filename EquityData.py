@@ -146,7 +146,7 @@ class EquityData:
 						repairIdx = idx + put.getFirstTouchIdx()
 						expidx = repairIdx + self.HOLD_PERIOD + 1
 						repairtrade = Option(Option.SHORT_VERTICAL_PUT, 
-							self.__getPeriodData(repairIdx, expidx))
+							self.__getPeriodData(repairIdx, expidx), True)
 						self.repairresults.addStat(repairtrade.result)
 						print(repairtrade.toString() + "*")
 
