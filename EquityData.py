@@ -12,7 +12,7 @@ class EquityData:
 	TWO_WEEKS = 10
 	
 	VIX_MIN = 12.0
-	PCT_DOWN_MIN = -0.25
+	PCT_DOWN_MIN = 0
 
 	def __init__(self, csvFile):		
 		self.data = []

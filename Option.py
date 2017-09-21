@@ -44,7 +44,7 @@ class Option:
 	def __setStrikes(self):
 		if (self.__isBullPut()):
 			if(self.isRepair):
-				repairpct = 0.03
+				repairpct = 0.04
 				self.shortstrike = self.__roundStrike(self.today.close * (1 - repairpct))
 			else:
 				pct = self.today.close * (1 - self.PCT_MIN)
