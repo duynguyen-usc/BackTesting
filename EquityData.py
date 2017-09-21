@@ -140,15 +140,14 @@ class EquityData:
 				
 				self.results.addStat(put.result)				
 				if (put.shortstrike != 0 and put.itm > 1):
-					self.touchresults.addStat(put.result)
-					if(put.result.loss == 1):						
-						print(put.toString())
-						repairIdx = idx + put.getFirstTouchIdx()
-						expidx = repairIdx + self.HOLD_PERIOD + 1
-						repairtrade = Option(Option.SHORT_VERTICAL_PUT, 
-							self.__getPeriodData(repairIdx, expidx), True)
-						self.repairresults.addStat(repairtrade.result)
-						print(repairtrade.toString() + "*")
+					print(put.toString())
+					self.touchresults.addStat(put.result)					
+					repairIdx = idx + put.getFirstTouchIdx()
+					expidx = repairIdx + self.HOLD_PERIOD + 1
+					repairtrade = Option(Option.SHORT_VERTICAL_PUT, 
+						self.__getPeriodData(repairIdx, expidx), True)
+					self.repairresults.addStat(repairtrade.result)
+					print(repairtrade.toString() + "*")
 
 	def toString(self):	
 		eq = StringBuilder()
