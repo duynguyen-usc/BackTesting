@@ -1,0 +1,8 @@
+class Constants:	
+	STRIKE_PCT_DOWN = 0.05
+	NETCHANGE_PCT = 10	
+	VIX_MIN = 1	
+
+	HOLD_PERIOD = 25
+	MONTH = 25	
+	BOLBAND_PERIOD = '20day'

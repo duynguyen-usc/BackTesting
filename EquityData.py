@@ -1,19 +1,13 @@
+
 import os
 import numpy as np
 from Option import Option
 from PriceData import PriceData
 from Result import Result
 from Tools import StringBuilder
+from Constants import Constants
 
 class EquityData:
-	BOLBAND_P = '20day'
-	HOLD_PERIOD = 25
-	MONTH = 25	
-	TWO_WEEKS = 10
-	
-	VIX_MIN = 1
-	PCT_DOWN_MIN = 10
-
 	def __init__(self, csvFile):		
 		self.data = []
 		self.vixdata = []
@@ -25,8 +19,7 @@ class EquityData:
 		self.__parseVixFile()		
 		self.__lastIdx = len(self.data) - 1
 		self.__interDayCalculations()
-		self.__bullput()
-		
+		self.__bullput()	
 
 	def __parseCsvFile(self, csvFile):
 		data = [line.rstrip('\n') for line in open(csvFile)]
@@ -72,14 +65,14 @@ class EquityData:
 			self.data[idx].movavg[p] = self.__getAverage(offset, idx)
 
 	def __calcBolBand(self, idx):		
-		midline = self.data[idx].movavg[self.BOLBAND_P]
-		stddev = self.__calcStdDev(idx, idx + PriceData.periods[self.BOLBAND_P])
+		midline = self.data[idx].movavg[Constants.BOLBAND_PERIOD]
+		stddev = self.__calcStdDev(idx, idx + PriceData.periods[Constants.BOLBAND_PERIOD])
 		self.data[idx].bollingerband.calculate(midline, stddev)
 
 	def __calcBandAvg(self, idx):		
 		bsum = 0
 		bcount = 0
-		idxend = idx + PriceData.periods[self.BOLBAND_P]
+		idxend = idx + PriceData.periods[Constants.BOLBAND_PERIOD]
 		for i in range(idx, idxend):			
 			if(i < self.__lastIdx):				
 				bw = self.data[i].bollingerband.bandwidth				
@@ -114,7 +107,7 @@ class EquityData:
 		return self.data[idx].percentChange < pct
 
 	def __uptrend(self, idx):			
-		idxstart = idx - self.MONTH
+		idxstart = idx - Constants.MONTH
 		if (idxstart > 0):
 			for i in range(idxstart, idx):
 				if (self.data[i].close < self.data[i].movavg['200day'] or
@@ -125,15 +118,15 @@ class EquityData:
 
 	def __entry(self, idx):		
 		return (self.__uptrend(idx) and 
-				self.__isDown(idx, self.PCT_DOWN_MIN) and 
-				self.data[idx].vix > self.VIX_MIN)
+				self.__isDown(idx, Constants.STRIKE_PCT_DOWN) and 
+				self.data[idx].vix > Constants.VIX_MIN)
 
 	def __getPeriodData(self, idxstart, idxend):
 		return [self.data[i] for i in range(idxstart, idxend)]
 
 	def __bullput(self):				
 		for idx, day in enumerate(self.data):
-			expidx = idx + self.HOLD_PERIOD + 1
+			expidx = idx + Constants.HOLD_PERIOD + 1
 			if (day.close > 0 and expidx < self.__lastIdx and self.__entry(idx)):				
 				put = Option(Option.SHORT_VERTICAL_PUT, 
 					self.__getPeriodData(idx, expidx))
@@ -143,7 +136,7 @@ class EquityData:
 					print(put.toString())
 					self.touchresults.addStat(put.result)					
 					repairIdx = idx + put.getFirstTouchIdx()
-					expidx = repairIdx + self.HOLD_PERIOD + 1
+					expidx = repairIdx + Constants.HOLD_PERIOD + 1
 					repairtrade = Option(Option.SHORT_VERTICAL_PUT, 
 						self.__getPeriodData(repairIdx, expidx), True)
 					self.repairresults.addStat(repairtrade.result)

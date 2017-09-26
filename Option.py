@@ -1,14 +1,13 @@
 import math
 from Result import Result
 from Tools import StringBuilder
+from Constants import Constants
 
 class Option:	
 	SHORT_VERTICAL_PUT = 0
 	LONG_VERTICAL_PUT = 1	
 	SHORT_VERTICAL_CALL = 2
 	LONG_VERTICAL_CALL = 3
-
-	PCT_MIN = 0.07
 
 	def __init__(self, optstruct, hpdata, repair=False):
 		self.hpdata = hpdata
@@ -47,7 +46,7 @@ class Option:
 				repairpct = 0.04
 				self.shortstrike = self.__roundStrike(self.today.close * (1 - repairpct))
 			else:
-				pct = self.today.close * (1 - self.PCT_MIN)
+				pct = self.today.close * (1 - Constants.STRIKE_PCT_DOWN)
 				ma = self.today.movavg['200day']
 				self.shortstrike = self.__roundStrike(min([ma, pct]))
 		self.__setLegs()		
