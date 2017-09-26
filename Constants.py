@@ -1,5 +1,6 @@
 class Constants:	
 	STRIKE_PCT_DOWN = 0.05
+	REPAIR_STRIKE_PCT_DOWN = 0.04
 	NETCHANGE_PCT = 10	
 	VIX_MIN = 1	
 

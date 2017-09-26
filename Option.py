@@ -43,10 +43,10 @@ class Option:
 	def __setStrikes(self):
 		if (self.__isBullPut()):
 			if(self.isRepair):
-				repairpct = 0.04
-				self.shortstrike = self.__roundStrike(self.today.close * (1 - repairpct))
+				self.shortstrike = self.__roundStrike(
+					self.today.close * (1 - Constants.REPAIR_STRIKE_PCT_DOWN))
 			else:
-				pct = self.today.close * (1 - Constants.STRIKE_PCT_DOWN)
+				pct = self.today.close * (1 - Constants.STRIKE_PCT_DOWN)				
 				ma = self.today.movavg['200day']
 				self.shortstrike = self.__roundStrike(min([ma, pct]))
 		self.__setLegs()		
