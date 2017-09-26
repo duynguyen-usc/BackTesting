@@ -1,6 +1,7 @@
 import math
 from Result import Result
 from Tools import StringBuilder
+from Constants import Constants
 
 class Option:	
 	SHORT_VERTICAL_PUT = 0
@@ -8,14 +9,13 @@ class Option:
 	SHORT_VERTICAL_CALL = 2
 	LONG_VERTICAL_CALL = 3
 
-	PCT_MIN = 0.03
-
-	def __init__(self, optstruct, hpdata):
+	def __init__(self, optstruct, hpdata, repair=False):
 		self.hpdata = hpdata
 		self.today = self.hpdata[0]
 		self.expday = self.hpdata[len(hpdata) - 1]		
 		self.longstrike = None
-		self.shortstrike = None		
+		self.shortstrike = None	
+		self.isRepair = repair	
 		self.result = Result()
 		self.__setoptstructure(optstruct)
 		self.__setStrikes()
@@ -41,10 +41,14 @@ class Option:
 		return int(base * math.floor(float(x) / base))
 
 	def __setStrikes(self):
-		if (self.__isBullPut()):			
-			pct = self.today.close * (1 - self.PCT_MIN)
-			ma = self.today.movavg['200day']
-			self.shortstrike = self.__roundStrike(min([ma, pct]))
+		if (self.__isBullPut()):
+			if(self.isRepair):
+				self.shortstrike = self.__roundStrike(
+					self.today.close * (1 - Constants.REPAIR_STRIKE_PCT_DOWN))
+			else:
+				pct = self.today.close * (1 - Constants.STRIKE_PCT_DOWN)				
+				ma = self.today.movavg['200day']
+				self.shortstrike = self.__roundStrike(min([ma, pct]))
 		self.__setLegs()		
 
 	def __isBullPut(self):
@@ -53,9 +57,11 @@ class Option:
 	def __setTradeResult(self):
 		self.itm = self.__daysInTheMoney()		
 		if (self.__isBullPut()):
+			if (self.itm > 5):
+				self.result.itm5 = 1
 			if (self.shortstrike < self.expday.close):
 				self.result.win = 1
-				if(self.itm > 5):
+				if(self.shortstrike < self.expday.close):
 					self.result.maxGain = 1
 			else:
 				self.result.loss = 1
