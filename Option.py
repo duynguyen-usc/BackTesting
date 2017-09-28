@@ -23,7 +23,7 @@ class Option:
 
 	def __setoptstructure(self, optstruct):
 		if(optstruct not in (self.SHORT_VERTICAL_PUT, 
-					 		 self.LONG_VERTICAL_CALL)):
+					 		 self.SHORT_VERTICAL_CALL)):
 			raise ValueError('optionstructure not valid')
 		self.structure = optstruct
 
@@ -91,6 +91,7 @@ class Option:
 			
 	def toString(self):	
 		strOpt = StringBuilder()
+		strOpt.addtab(self.today.date.weekday())
 		strOpt.addDate(self.today.date)
 		strOpt.addtab(round(self.today.close, 2))
 		strOpt.addtab(round(self.today.movavg['200day']))

@@ -7,3 +7,5 @@ class Constants:
 	HOLD_PERIOD = 25
 	MONTH = 25	
 	BOLBAND_PERIOD = '20day'
+
+	SHORT_HOLD_PERIOD = 2

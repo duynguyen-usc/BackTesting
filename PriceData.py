@@ -60,6 +60,6 @@ class PriceData:
 
 	def toString(self):	
 		pd = StringBuilder()
-		pd.add(self.date.strftime('%Y-%m-%d'))
-		pd.add(round(self.close, 2))
+		pd.addtab(self.date.strftime('%Y-%m-%d'))
+		pd.addtab(round(self.close, 2))
 		return pd.toString()

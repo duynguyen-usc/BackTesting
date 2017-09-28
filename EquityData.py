@@ -5,6 +5,7 @@ from Option import Option
 from PriceData import PriceData
 from Result import Result
 from Tools import StringBuilder
+from Tools import DateHelper
 from Constants import Constants
 
 class EquityData:
@@ -19,7 +20,7 @@ class EquityData:
 		self.__parseVixFile()		
 		self.__lastIdx = len(self.data) - 1
 		self.__interDayCalculations()
-		self.__bullput()	
+		# self.__bullput()	
 
 	def __parseCsvFile(self, csvFile):
 		data = [line.rstrip('\n') for line in open(csvFile)]
@@ -142,6 +143,12 @@ class EquityData:
 					self.repairresults.addStat(repairtrade.result)
 					print(repairtrade.toString() + "*")
 
+	def bearcall(self):
+		for idx, day in enumerate(self.data):
+			if(day.date.weekday() == DateHelper.WEDNESDAY):
+				print(DateHelper.getWeekday(day.date)+ ' ' + day.toString())
+
+
 	def toString(self):	
 		eq = StringBuilder()
 		eq.addline('')
@@ -157,7 +164,8 @@ def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)
 	spx = EquityData('Data/SPX.csv')
-	print(spx.toString())
+	# print(spx.toString())
+	spx.bearcall()
 
 if __name__ == "__main__":
     main()
