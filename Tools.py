@@ -1,4 +1,7 @@
-class Constants:	
+class Constants:
+	ISUP = 1
+	ISDOWN = 0
+
 	STRIKE_PCT_DOWN = 0.05
 	REPAIR_STRIKE_PCT_DOWN = 0.04
 	NETCHANGE_PCT = 10	

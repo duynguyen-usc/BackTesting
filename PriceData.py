@@ -1,6 +1,7 @@
 from datetime import datetime
 from Tools import StringBuilder
 from Tools import DateHelper
+from Tools import Constants
 
 class BollingerBand:
 	def __init__(self):
@@ -59,10 +60,10 @@ class PriceData:
 		except ValueError:
 			return 0
 
-	def isUp(self, pct=1):
+	def isUp(self, pct = Constants.ISUP):
 		return self.percentChange > pct
 
-	def isDown(self, pct=0):
+	def isDown(self, pct=Constants.ISDOWN):
 		return self.percentChange < pct
 
 	def toString(self):	
