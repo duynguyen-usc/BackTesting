@@ -119,9 +119,9 @@ class Option:
 	def toString(self):	
 		strOpt = StringBuilder()		
 		strOpt.addDate(self.today.date)
-		strOpt.addtab(round(self.today.close, 2))
+		strOpt.addtab(('%.2f' % self.today.close))
 		strOpt.addtab('%.2f' % self.today.percentChange)
 		strOpt.addtab(self.__getSpread())		
-		strOpt.addtab(round(self.expday.close))		
+		strOpt.addtab(('%.2f' % self.expday.close))
 		strOpt.addtab(self.__isWin())
 		return strOpt.toString()
