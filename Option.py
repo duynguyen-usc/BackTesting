@@ -57,16 +57,17 @@ class Option:
 	def __setTradeResult(self):
 		self.itm = self.__daysInTheMoney()		
 		if (self.__isBullPut()):
-			if (self.itm > 5):
-				self.result.itm5 = 1
+			if (self.itm > 1):
+				self.result.loss = 1
+				if (self.longstrike > self.expday.close):
+					self.result.maxLoss = 1
+				if (self.itm > 5):
+					self.result.itm5 = 1
+
 			if (self.shortstrike < self.expday.close):
 				self.result.win = 1
 				if(self.shortstrike < self.expday.close):
 					self.result.maxGain = 1
-			else:
-				self.result.loss = 1
-				if (self.longstrike > self.expday.close):
-					self.result.maxLoss = 1					 
 
 	def __isInTheMoney(self, d):		
 		if(self.structure == self.SHORT_VERTICAL_PUT):
