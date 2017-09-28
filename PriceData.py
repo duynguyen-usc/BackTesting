@@ -1,5 +1,6 @@
 from datetime import datetime
 from Tools import StringBuilder
+from Tools import DateHelper
 
 class BollingerBand:
 	def __init__(self):
@@ -58,8 +59,15 @@ class PriceData:
 		except ValueError:
 			return 0
 
+	def isUp(self, pct=1):
+		return self.percentChange > pct
+
+	def isDown(self, pct=0):
+		return self.percentChange < pct
+
 	def toString(self):	
 		pd = StringBuilder()
+		pd.addtab(DateHelper.getWeekday(self.date))
 		pd.addtab(self.date.strftime('%Y-%m-%d'))
 		pd.addtab(round(self.close, 2))
 		return pd.toString()

@@ -20,7 +20,7 @@ class EquityData:
 		self.__parseVixFile()		
 		self.__lastIdx = len(self.data) - 1
 		self.__interDayCalculations()
-		# self.__bullput()	
+		self.__bullput()	
 
 	def __parseCsvFile(self, csvFile):
 		data = [line.rstrip('\n') for line in open(csvFile)]
@@ -104,9 +104,6 @@ class EquityData:
 			return np.std([self.data[i].close for i in range(idxStart, idxEnd)])
 		return 0
 
-	def __isDown(self, idx, pct=0):
-		return self.data[idx].percentChange < pct
-
 	def __uptrend(self, idx):			
 		idxstart = idx - Constants.MONTH
 		if (idxstart > 0):
@@ -119,7 +116,7 @@ class EquityData:
 
 	def __entry(self, idx):		
 		return (self.__uptrend(idx) and 
-				self.__isDown(idx, Constants.STRIKE_PCT_DOWN) and 
+				self.data[idx].isDown(Constants.STRIKE_PCT_DOWN) and 
 				self.data[idx].vix > Constants.VIX_MIN)
 
 	def __getPeriodData(self, idxstart, idxend):
@@ -145,9 +142,8 @@ class EquityData:
 
 	def bearcall(self):
 		for idx, day in enumerate(self.data):
-			if(day.date.weekday() == DateHelper.WEDNESDAY):
-				print(DateHelper.getWeekday(day.date)+ ' ' + day.toString())
-
+			if(day.date.weekday() == DateHelper.WEDNESDAY and day.isUp()):
+				print(day.toString())
 
 	def toString(self):	
 		eq = StringBuilder()
@@ -164,8 +160,8 @@ def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)
 	spx = EquityData('Data/SPX.csv')
-	# print(spx.toString())
-	spx.bearcall()
+	print(spx.toString())
+	# spx.bearcall()
 
 if __name__ == "__main__":
     main()
