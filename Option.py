@@ -1,6 +1,7 @@
 import math
 from Result import Result
 from Tools import StringBuilder
+from Tools import DateHelper
 from Constants import Constants
 
 class Option:	
@@ -40,6 +41,12 @@ class Option:
 	def __roundStrike(self, x, base=5):
 		return int(base * math.floor(float(x) / base))
 
+	def __isBullPut(self):
+		return self.structure == self.SHORT_VERTICAL_PUT
+
+	def __isBearCall(self):
+		return self.structure == self.SHORT_VERTICAL_CALL
+
 	def __setStrikes(self):
 		if (self.__isBullPut()):
 			if(self.isRepair):
@@ -49,10 +56,11 @@ class Option:
 				pct = self.today.close * (1 - Constants.STRIKE_PCT_DOWN)				
 				ma = self.today.movavg['200day']
 				self.shortstrike = self.__roundStrike(min([ma, pct]))
-		self.__setLegs()		
 
-	def __isBullPut(self):
-		return self.structure == self.SHORT_VERTICAL_PUT
+		if (self.__isBearCall()):			
+			self.shortstrike = self.__roundStrike(self.today.close + 
+				(self.today.change * Constants.SHORT_MULTIPLIER))
+		self.__setLegs()
 
 	def __setTradeResult(self):
 		self.itm = self.__daysInTheMoney()		
@@ -91,7 +99,7 @@ class Option:
 			
 	def toString(self):	
 		strOpt = StringBuilder()
-		strOpt.addtab(self.today.date.weekday())
+		strOpt.addtab(DateHelper.getWeekday(self.today.date))
 		strOpt.addDate(self.today.date)
 		strOpt.addtab(round(self.today.close, 2))
 		strOpt.addtab(round(self.today.movavg['200day']))

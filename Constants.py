@@ -9,3 +9,4 @@ class Constants:
 	BOLBAND_PERIOD = '20day'
 
 	SHORT_HOLD_PERIOD = 2
+	SHORT_MULTIPLIER = 2

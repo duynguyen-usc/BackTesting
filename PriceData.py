@@ -70,4 +70,5 @@ class PriceData:
 		pd.addtab(DateHelper.getWeekday(self.date))
 		pd.addtab(self.date.strftime('%Y-%m-%d'))
 		pd.addtab(round(self.close, 2))
+		pd.addtab(round(self.percentChange, 2))
 		return pd.toString()
