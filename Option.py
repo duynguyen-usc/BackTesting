@@ -76,13 +76,26 @@ class Option:
 					self.result.itm5 = 1
 
 			if (self.shortstrike < self.expday.close):
-				self.result.win = 1
-				if(self.shortstrike < self.expday.close):
-					self.result.maxGain = 1
+				self.result.win = 1				
+				self.result.maxGain = 1
+
+		if (self.__isBearCall()):
+			if (self.itm > 1):
+				self.result.loss = 1
+				if (self.longstrike < self.expday.close):
+					self.result.maxLoss = 1
+				if (self.itm > 5):
+					self.result.itm5 = 1
+
+			if (self.shortstrike > self.expday.close):
+				self.result.win = 1				
+				self.result.maxGain = 1
 
 	def __isInTheMoney(self, d):		
 		if(self.structure == self.SHORT_VERTICAL_PUT):
 			return d.close < self.shortstrike
+		if(self.structure == self.SHORT_VERTICAL_CALL):
+			return d.close > self.shortstrike
 		return False
 
 	def __daysInTheMoney(self):

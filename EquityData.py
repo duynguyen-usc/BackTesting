@@ -141,15 +141,22 @@ class EquityData:
 					print(repairtrade.toString() + "*")
 
 	def bearcall(self):
-		callresults = Result()
+		bcresult = Result()
 		for idx, day in enumerate(self.data):
 			expidx = idx + Constants.SHORT_HOLD_PERIOD
 			if(day.date.weekday() == DateHelper.WEDNESDAY and day.isUp()):
 				call = Option(Option.SHORT_VERTICAL_CALL,
 					self.__getPeriodData(idx, expidx))
-				callresults.addStat(call.result)
-				print(call.toString())
+				bcresult.addStat(call.result)
+				if(call.result.loss > 0 ):
+					print(call.toString())
 
+		bcstring = StringBuilder()
+		bcstring.addline('')
+		bcstring.addline('Overall')
+		bcstring.addline(bcresult.toString())
+		print(bcstring.toString())
+		
 
 	def toString(self):	
 		eq = StringBuilder()
