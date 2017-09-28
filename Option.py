@@ -42,7 +42,10 @@ class Option:
 			self.longstrike = self.shortstrike + self.__setSpread()
 
 	def __roundStrike(self, x, base=5):
-		return int(base * math.floor(float(x) / base))
+		if(self.structure == self.SHORT_VERTICAL_PUT):
+			return int(base * math.floor(float(x) / base))
+		else:
+			return int(base * math.ceil(float(x) / base))
 
 	def __isBullPut(self):
 		return self.structure == self.SHORT_VERTICAL_PUT
@@ -80,7 +83,7 @@ class Option:
 				self.result.maxGain = 1
 
 		if (self.__isBearCall()):
-			if (self.itm > 1):
+			if (self.shortstrike < self.expday.close):				
 				self.result.loss = 1
 				if (self.longstrike < self.expday.close):
 					self.result.maxLoss = 1

@@ -148,8 +148,8 @@ class EquityData:
 				call = Option(Option.SHORT_VERTICAL_CALL,
 					self.__getPeriodData(idx, expidx))
 				bcresult.addStat(call.result)
-				if(call.result.loss > 0 ):
-					print(call.toString())
+				# if(call.result.loss > 0 ):
+				print(call.toString())
 
 		bcstring = StringBuilder()
 		bcstring.addline('')
