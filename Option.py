@@ -36,7 +36,10 @@ class Option:
 
 	def __setLegs(self):
 		if (self.__isBullPut()):
-			self.longstrike = self.shortstrike - self.__setSpread()		
+			self.longstrike = self.shortstrike - self.__setSpread()
+
+		if (self.__isBearCall()):
+			self.longstrike = self.shortstrike + self.__setSpread()
 
 	def __roundStrike(self, x, base=5):
 		return int(base * math.floor(float(x) / base))
@@ -98,8 +101,7 @@ class Option:
 		return -1
 			
 	def toString(self):	
-		strOpt = StringBuilder()
-		strOpt.addtab(DateHelper.getWeekday(self.today.date))
+		strOpt = StringBuilder()		
 		strOpt.addDate(self.today.date)
 		strOpt.addtab(round(self.today.close, 2))
 		strOpt.addtab(round(self.today.movavg['200day']))
