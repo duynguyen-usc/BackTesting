@@ -1,5 +1,5 @@
 class Constants:
-	ISUP = -10
+	ISUP = 0
 	ISDOWN = 0
 
 	STRIKE_PCT_DOWN = 0.05
