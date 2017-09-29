@@ -1,19 +1,3 @@
-class Constants:
-	ISUP = 1.2
-	ISDOWN = 0
-
-	STRIKE_PCT_DOWN = 0.05
-	REPAIR_STRIKE_PCT_DOWN = 0.04
-	NETCHANGE_PCT = 10	
-	VIX_MIN = 1	
-
-	HOLD_PERIOD = 25
-	MONTH = 25	
-	BOLBAND_PERIOD = '20day'
-
-	SHORT_HOLD_PERIOD = 3
-	SHORT_MULTIPLIER = 2
-
 class StringBuilder:
 	def __init__(self, str=""):
 		self.s = str
@@ -59,3 +43,19 @@ class DateHelper:
 		elif(d == DateHelper.FRIDAY):
 			return 'F'
 
+class Constants:
+	ISUP = 1.2
+	ISDOWN = 0
+
+	STRIKE_PCT_DOWN = 0.05
+	REPAIR_STRIKE_PCT_DOWN = 0.04
+	NETCHANGE_PCT = 10	
+	VIX_MIN = 1	
+
+	HOLD_PERIOD = 25
+	MONTH = 25	
+	BOLBAND_PERIOD = '20day'
+
+	SHORT_HOLD_PERIOD = 3	
+	SHORT_MULTIPLIER = 2
+	BEAR_CALL_DAY = DateHelper.TUESDAY
