@@ -60,10 +60,10 @@ class PriceData:
 		except ValueError:
 			return 0
 
-	def isUp(self, pct = Constants.ISUP):
+	def isUp(self, pct=0):
 		return self.percentChange > pct
 
-	def isDown(self, pct=Constants.ISDOWN):
+	def isDown(self, pct=0):
 		return self.percentChange < pct
 
 	def toString(self):	

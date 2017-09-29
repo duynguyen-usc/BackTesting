@@ -44,9 +44,6 @@ class DateHelper:
 			return 'F'
 
 class Constants:
-	ISUP = 1.2
-	ISDOWN = 0
-
 	STRIKE_PCT_DOWN = 0.05
 	REPAIR_STRIKE_PCT_DOWN = 0.04
 	NETCHANGE_PCT = 10	
@@ -56,6 +53,7 @@ class Constants:
 	MONTH = 25	
 	BOLBAND_PERIOD = '20day'
 
-	SHORT_HOLD_PERIOD = 3	
-	SHORT_MULTIPLIER = 2
-	BEAR_CALL_DAY = DateHelper.TUESDAY
+	SHORT_HOLD_PERIOD = 2	
+	SHORT_MULTIPLIER = 1
+	BEAR_CALL_DAY = DateHelper.WEDNESDAY
+	BEAR_CALL_ISUP = 1

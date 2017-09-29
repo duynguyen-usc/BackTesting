@@ -145,7 +145,8 @@ class EquityData:
 		bcresult = Result()
 		for idx, day in enumerate(self.data):
 			expidx = idx + Constants.SHORT_HOLD_PERIOD + 1
-			if(day.date.weekday() == Constants.BEAR_CALL_DAY and day.isUp()):
+			if(day.date.weekday() == Constants.BEAR_CALL_DAY and 
+				day.isUp(Constants.BEAR_CALL_ISUP)):
 				call = Option(Option.SHORT_VERTICAL_CALL,
 					self.__getPeriodData(idx, expidx))
 				bcresult.addStat(call.result)
