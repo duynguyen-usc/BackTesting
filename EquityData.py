@@ -143,7 +143,7 @@ class EquityData:
 	def bearcall(self):
 		bcresult = Result()
 		for idx, day in enumerate(self.data):
-			expidx = idx + Constants.SHORT_HOLD_PERIOD
+			expidx = idx + Constants.SHORT_HOLD_PERIOD + 1
 			if(day.date.weekday() == DateHelper.WEDNESDAY and day.isUp()):
 				call = Option(Option.SHORT_VERTICAL_CALL,
 					self.__getPeriodData(idx, expidx))

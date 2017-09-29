@@ -37,11 +37,13 @@ class StringBuilder:
 		return self.s
 
 class DateHelper:
-	MONDAY = 1
-	TUESDAY = 2
-	WEDNESDAY = 3
-	THURSDAY = 4
-	FRIDAY = 5
+	MONDAY = 0
+	TUESDAY = 1
+	WEDNESDAY = 2
+	THURSDAY = 3
+	FRIDAY = 4
+	SATURDAY = 5
+	SUNDAY = 6
 
 	@staticmethod
 	def getWeekday(day):
