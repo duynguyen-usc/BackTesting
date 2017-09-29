@@ -117,7 +117,8 @@ class Option:
 		return -1
 			
 	def toString(self):	
-		strOpt = StringBuilder()		
+		strOpt = StringBuilder()
+		strOpt.addtab(DateHelper.getWeekday(self.today.date))		
 		strOpt.addDate(self.today.date)
 		strOpt.addtab(('%.2f' % self.today.close))
 		strOpt.addtab('%.2f' % self.today.percentChange)

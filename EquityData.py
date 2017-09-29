@@ -120,7 +120,8 @@ class EquityData:
 				self.data[idx].vix > Constants.VIX_MIN)
 
 	def __getPeriodData(self, idxstart, idxend):
-		return [self.data[i] for i in range(idxstart, idxend)]
+		idxfinish = min([idxend, self.__lastIdx])
+		return [self.data[i] for i in range(idxstart, idxfinish)]
 
 	def __bullput(self):				
 		for idx, day in enumerate(self.data):
@@ -144,12 +145,12 @@ class EquityData:
 		bcresult = Result()
 		for idx, day in enumerate(self.data):
 			expidx = idx + Constants.SHORT_HOLD_PERIOD + 1
-			if(day.date.weekday() == DateHelper.WEDNESDAY and day.isUp()):
+			if(day.date.weekday() == DateHelper.TUESDAY and day.isUp()):
 				call = Option(Option.SHORT_VERTICAL_CALL,
 					self.__getPeriodData(idx, expidx))
 				bcresult.addStat(call.result)
-				# if(call.result.loss > 0 ):
-				print(call.toString())
+				if(call.result.loss > 0 ):
+					print(call.toString())
 
 		bcstring = StringBuilder()
 		bcstring.addline('')
