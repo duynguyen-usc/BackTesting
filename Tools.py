@@ -1,5 +1,5 @@
 class Constants:
-	ISUP = -10
+	ISUP = .25
 	ISDOWN = 0
 
 	STRIKE_PCT_DOWN = 0.05
@@ -12,7 +12,7 @@ class Constants:
 	BOLBAND_PERIOD = '20day'
 
 	SHORT_HOLD_PERIOD = 3
-	SHORT_MULTIPLIER = 1
+	SHORT_MULTIPLIER = 2
 
 class StringBuilder:
 	def __init__(self, str=""):
