@@ -21,7 +21,6 @@ class EquityData:
 		self.__parseVixFile()		
 		self.__lastIdx = len(self.data) - 1
 		self.__interDayCalculations()
-		# self.__bullput()	
 
 	def __parseCsvFile(self, csvFile):
 		data = [line.rstrip('\n') for line in open(csvFile)]
@@ -132,13 +131,13 @@ class EquityData:
 		eq.addline('')
 		eq.addline('Overall:')
 		eq.addline(self.results.toString())
-		# eq.addline('Touch results:')
-		# eq.addline(self.touchresults.toString())
-		# eq.addline('Repair results:')
-		# eq.addline(self.repairresults.toString())
+		eq.addline('Touch results:')
+		eq.addline(self.touchresults.toString())
+		eq.addline('Repair results:')
+		eq.addline(self.repairresults.toString())
 		print(eq.toString())
 
-	def __bullput(self):				
+	def bullput(self):				
 		for idx, day in enumerate(self.data):
 			expidx = idx + Constants.HOLD_PERIOD + 1
 			if (day.close > 0 and expidx < self.__lastIdx and self.__entry(idx)):				
@@ -153,6 +152,7 @@ class EquityData:
 					repairtrade = Option(Option.SHORT_VERTICAL_PUT, 
 						self.__getPeriodData(repairIdx, expidx), True)
 					self.repairresults.addStat(repairtrade.result)
+		self.__displayResult()
 
 	def bearcall(self):
 		for idx, day in enumerate(self.data):
@@ -171,8 +171,8 @@ def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)
 	spx = EquityData('Data/SPX.csv')
-	# print(spx.toString())
-	spx.bearcall()
+	spx.bullput()
+	# spx.bearcall()
 
 if __name__ == "__main__":
     main()
