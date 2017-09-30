@@ -118,7 +118,7 @@ class EquityData:
 		if (optSpreadType == Option.SHORT_VERTICAL_PUT):
 			return self.__bullPutEntry(idx)
 		elif (optSpreadType == Option.SHORT_VERTICAL_CALL):
-			return self.__bearCallEntry()
+			return self.__bearCallEntry(idx)
 		return False
 
 	def __bullPutEntry(self, idx):		
@@ -126,8 +126,9 @@ class EquityData:
 				self.data[idx].isDown(Constants.STRIKE_PCT_DOWN) and 
 				self.data[idx].vix > Constants.VIX_MIN)
 
-	def __bearCallEntry(self):
-		return True
+	def __bearCallEntry(self, idx):
+		return (self.data[idx].date.weekday() == Constants.BEAR_CALL_DAY and 		
+				self.data[idx].isUp(Constants.BEAR_CALL_ISUP))
 
 	def __getPeriodData(self, idxstart, idxend):
 		idxfinish = min([idxend, self.__lastIdx])
@@ -176,8 +177,8 @@ def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)
 	spx = EquityData('Data/SPX.csv')
-	spx.bullput()
-	# spx.bearcall()
+	# spx.bullput()
+	spx.bearcall()
 
 if __name__ == "__main__":
     main()
