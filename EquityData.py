@@ -12,6 +12,7 @@ class EquityData:
 	def __init__(self, csvFile):		
 		self.data = []
 		self.vixdata = []
+		self.resultdata = []
 		self.results = Result()
 		self.touchresults = Result()
 		self.repairresults = Result()
@@ -123,13 +124,26 @@ class EquityData:
 		idxfinish = min([idxend, self.__lastIdx])
 		return [self.data[i] for i in range(idxstart, idxfinish)]
 
+	def __displayResult(self):	
+		eq = StringBuilder()
+
+		for rd in self.resultdata:
+			eq.addline(rd.toString())
+		eq.addline('')
+		eq.addline('Overall:')
+		eq.addline(self.results.toString())
+		# eq.addline('Touch results:')
+		# eq.addline(self.touchresults.toString())
+		# eq.addline('Repair results:')
+		# eq.addline(self.repairresults.toString())
+		print(eq.toString())
+
 	def __bullput(self):				
 		for idx, day in enumerate(self.data):
 			expidx = idx + Constants.HOLD_PERIOD + 1
 			if (day.close > 0 and expidx < self.__lastIdx and self.__entry(idx)):				
 				put = Option(Option.SHORT_VERTICAL_PUT, 
 					self.__getPeriodData(idx, expidx))
-				
 				self.results.addStat(put.result)				
 				if (put.shortstrike != 0 and put.itm > 1):
 					print(put.toString())
@@ -139,37 +153,19 @@ class EquityData:
 					repairtrade = Option(Option.SHORT_VERTICAL_PUT, 
 						self.__getPeriodData(repairIdx, expidx), True)
 					self.repairresults.addStat(repairtrade.result)
-					print(repairtrade.toString() + "*")
 
 	def bearcall(self):
-		bcresult = Result()
 		for idx, day in enumerate(self.data):
 			expidx = idx + Constants.SHORT_HOLD_PERIOD + 1
 			if(day.date.weekday() == Constants.BEAR_CALL_DAY and 
 				day.isUp(Constants.BEAR_CALL_ISUP)):
 				call = Option(Option.SHORT_VERTICAL_CALL,
 					self.__getPeriodData(idx, expidx))
-				bcresult.addStat(call.result)
+				self.results.addStat(call.result)
 				if(call.result.loss > 0 ):
-					print(call.toString())
-
-		bcstring = StringBuilder()
-		bcstring.addline('')
-		bcstring.addline('Overall')
-		bcstring.addline(bcresult.toString())
-		print(bcstring.toString())
-		
-
-	def toString(self):	
-		eq = StringBuilder()
-		eq.addline('')
-		eq.addline('Overall:')
-		eq.addline(self.results.toString())
-		eq.addline('Touch results:')
-		eq.addline(self.touchresults.toString())
-		eq.addline('Repair results:')
-		eq.addline(self.repairresults.toString())
-		return eq.toString()
+					self.resultdata.append(call)
+		self.__displayResult()
+	
 
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))
