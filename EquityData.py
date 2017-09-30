@@ -114,21 +114,40 @@ class EquityData:
 			return True
 		return False
 
+	def __entry(self, optSpreadType, idx):
+		if (optSpreadType == Option.SHORT_VERTICAL_PUT):
+			return self.__bullPutEntry(idx)
+		elif (optSpreadType == Option.SHORT_VERTICAL_CALL):
+			return self.__bearCallEntry()
+		return False
+
 	def __bullPutEntry(self, idx):		
 		return (self.__uptrend(idx) and 
 				self.data[idx].isDown(Constants.STRIKE_PCT_DOWN) and 
 				self.data[idx].vix > Constants.VIX_MIN)
 
+	def __bearCallEntry(self):
+		return True
+
 	def __getPeriodData(self, idxstart, idxend):
 		idxfinish = min([idxend, self.__lastIdx])
 		return [self.data[i] for i in range(idxstart, idxfinish)]
 
-	def __simulateTrade(self, optSpreadType, hpdata):
+	def __simulateTrades(self, optSpreadType, holdPeriod):
+		for idx, day in enumerate(self.data):
+			expidx = idx + holdPeriod + 1
+			if (day.close > 0 and 
+				expidx < self.__lastIdx and 
+				self.__entry(optSpreadType, idx)):				
+				hpdata = self.__getPeriodData(idx, expidx)
+				self.__addTrade(optSpreadType, hpdata)
+		self.__displayResult()
+
+	def __addTrade(self, optSpreadType, hpdata):
 		optionSpread = Option(optSpreadType, hpdata)
 		self.results.addStat(optionSpread.result)
 		if(optionSpread.result.loss > 0 ):
 			self.resultdata.append(optionSpread)
-
 
 	def __displayResult(self):	
 		eq = StringBuilder()
@@ -145,20 +164,11 @@ class EquityData:
 		print(eq.toString())
 
 	def bullput(self):				
-		for idx, day in enumerate(self.data):
-			expidx = idx + Constants.HOLD_PERIOD + 1
-			if (day.close > 0 and expidx < self.__lastIdx and self.__bullPutEntry(idx)):				
-				hpdata = self.__getPeriodData(idx, expidx)
-				self.__simulateTrade(Option.SHORT_VERTICAL_PUT, hpdata)
+		self.__simulateTrades(Option.SHORT_VERTICAL_PUT, Constants.HOLD_PERIOD)
 		self.__displayResult()
 
 	def bearcall(self):
-		for idx, day in enumerate(self.data):
-			expidx = idx + Constants.SHORT_HOLD_PERIOD + 1
-			if(day.date.weekday() == Constants.BEAR_CALL_DAY and 
-				day.isUp(Constants.BEAR_CALL_ISUP)):
-				hpdata = self.__getPeriodData(idx, expidx)
-				self.__simulateTrade(Option.SHORT_VERTICAL_CALL, hpdata)
+		self.__simulateTrades(Option.SHORT_VERTICAL_CALL, Constants.SHORT_HOLD_PERIOD)
 		self.__displayResult()
 	
 
@@ -166,8 +176,8 @@ def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)
 	spx = EquityData('Data/SPX.csv')
-	# spx.bullput()
-	spx.bearcall()
+	spx.bullput()
+	# spx.bearcall()
 
 if __name__ == "__main__":
     main()
