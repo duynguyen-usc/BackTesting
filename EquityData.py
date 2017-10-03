@@ -38,6 +38,7 @@ class EquityData:
 		for idx, vx in enumerate(self.vixdata):
 			if (vx.date == d):
 				return vx.close
+		return 0
 
 	def __addVixValue(self, idx):
 		self.data[idx].vix = self.__getVixValue(self.data[idx].date)
@@ -177,8 +178,11 @@ def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)
 	spx = EquityData('Data/SPX.csv')
+	rut = EquityData('Data/RUT.csv')
 	# spx.bullput()
-	spx.bearcall()
+	# spx.bearcall()
+	rut.bullput()
+
 
 if __name__ == "__main__":
     main()
