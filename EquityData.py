@@ -138,8 +138,7 @@ class EquityData:
 	def __simulateTrades(self, optSpreadType, holdPeriod):
 		for idx, day in enumerate(self.data):
 			expidx = idx + holdPeriod + 1
-			if (day.close > 0 and 
-				expidx < self.__lastIdx and 
+			if (day.close > 0 and expidx < self.__lastIdx and 
 				self.__entry(optSpreadType, idx)):				
 				hpdata = self.__getPeriodData(idx, expidx)
 				self.__addTrade(optSpreadType, hpdata)
@@ -153,16 +152,17 @@ class EquityData:
 
 	def __displayResult(self):	
 		eq = StringBuilder()
-
 		for rd in self.resultdata:
 			eq.addline(rd.toString())
 		eq.addline('')
 		eq.addline('Overall:')
 		eq.addline(self.results.toString())
-		# eq.addline('Touch results:')
-		# eq.addline(self.touchresults.toString())
-		# eq.addline('Repair results:')
-		# eq.addline(self.repairresults.toString())
+		if (self.touchresults.total() > 0):
+			eq.addline('Touch results:')
+			eq.addline(self.touchresults.toString())
+		if(self.repairresults.total() > 0):
+			eq.addline('Repair results:')
+			eq.addline(self.repairresults.toString())
 		print(eq.toString())
 
 	def bullput(self):				
