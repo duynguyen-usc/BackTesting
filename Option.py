@@ -16,6 +16,7 @@ class Option:
 		self.expday = self.hpdata[len(hpdata) - 1]		
 		self.longstrike = None
 		self.shortstrike = None	
+		self.itm = 0
 		self.isRepair = repair	
 		self.result = Result()
 		self.__setoptstructure(optstruct)
@@ -125,4 +126,6 @@ class Option:
 		strOpt.addtab(self.__getSpread())		
 		strOpt.addtab(('%.2f' % self.expday.close))
 		strOpt.addtab(self.__isWin())
+		if(self.isRepair):
+			strOpt.addtab('repair')
 		return strOpt.toString()
