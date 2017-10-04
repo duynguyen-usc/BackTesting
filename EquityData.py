@@ -141,13 +141,12 @@ class EquityData:
 			if (day.close > 0 and expidx < self.__lastIdx and 
 				self.__entry(optSpreadType, idx)):				
 				hpdata = self.__getPeriodData(idx, expidx)
-				self.__addTrade(optSpreadType, hpdata)
-		self.__displayResult()
+				self.__addTrade(optSpreadType, hpdata)		
 
 	def __addTrade(self, optSpreadType, hpdata):
 		optionSpread = Option(optSpreadType, hpdata)
 		self.results.addStat(optionSpread.result)
-		if(optionSpread.result.loss > 0 ):
+		if(optionSpread.result.loss > 0 ):			
 			self.resultdata.append(optionSpread)
 
 	def __displayResult(self):	
@@ -182,6 +181,7 @@ def main():
 	# spx.bullput()
 	# spx.bearcall()
 	rut.bullput()
+	# rut.bearcall()
 
 
 if __name__ == "__main__":
