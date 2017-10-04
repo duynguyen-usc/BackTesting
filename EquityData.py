@@ -141,13 +141,21 @@ class EquityData:
 			if (day.close > 0 and expidx < self.__lastIdx and 
 				self.__entry(optSpreadType, idx)):				
 				hpdata = self.__getPeriodData(idx, expidx)
-				self.__addTrade(optSpreadType, hpdata)		
+				self.__addTrade(optSpreadType, hpdata, idx)
 
-	def __addTrade(self, optSpreadType, hpdata):
+	def __addTrade(self, optSpreadType, hpdata, idx):
 		optionSpread = Option(optSpreadType, hpdata)
 		self.results.addStat(optionSpread.result)
 		if(optionSpread.result.loss > 0 ):			
 			self.resultdata.append(optionSpread)
+		
+		if(optionSpread.itm > 1):
+			ridx = optionSpread.getFirstTouchIdx() + idx
+			rexpidx = ridx + Constants.REPAIR_HOLD_PERIOD
+			repairData = self.__getPeriodData(ridx, rexpidx)
+			repairTrade = Option(optSpreadType, repairData, True)
+			self.repairresults.addStat(repairTrade.result)
+			self.resultdata.append(repairTrade)
 
 	def __displayResult(self):	
 		eq = StringBuilder()
