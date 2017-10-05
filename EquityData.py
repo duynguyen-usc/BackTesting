@@ -124,7 +124,7 @@ class EquityData:
 
 	def __bullPutEntry(self, idx):		
 		return (self.__uptrend(idx) and 
-				self.data[idx].isDown(Constants.STRIKE_PCT_DOWN) and 
+				self.data[idx].isDown() and 
 				self.data[idx].vix > Constants.VIX_MIN)
 
 	def __bearCallEntry(self, idx):
@@ -146,10 +146,9 @@ class EquityData:
 	def __addTrade(self, optSpreadType, hpdata, idx):
 		optionSpread = Option(optSpreadType, hpdata)
 		self.results.addStat(optionSpread.result)
-		if(optionSpread.result.loss > 0 ):			
-			self.resultdata.append(optionSpread)
-		
-		if(optionSpread.itm > 1):
+		self.resultdata.append(optionSpread)
+
+		if(optionSpread.itm > 1):			
 			ridx = optionSpread.getFirstTouchIdx() + idx
 			rexpidx = ridx + Constants.REPAIR_HOLD_PERIOD
 			repairData = self.__getPeriodData(ridx, rexpidx)

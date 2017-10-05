@@ -44,8 +44,8 @@ class DateHelper:
 			return 'F'
 
 class Constants:
-	STRIKE_PCT_DOWN = 0.07
-	REPAIR_STRIKE_PCT_DOWN = 0.07	
+	STRIKE_PCT_DOWN = 0.08
+	REPAIR_STRIKE_PCT_DOWN = 0.05	
 	NETCHANGE_PCT = 10	
 	VIX_MIN = 1	
 

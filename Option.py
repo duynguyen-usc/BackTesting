@@ -125,6 +125,7 @@ class Option:
 		strOpt.addtab('%.2f' % self.today.percentChange)
 		strOpt.addtab(self.__getSpread())		
 		strOpt.addtab(('%.2f' % self.expday.close))
+		strOpt.addDate(self.expday.date)
 		strOpt.addtab(self.__isWin())
 		if(self.isRepair):
 			strOpt.addtab('repair')
