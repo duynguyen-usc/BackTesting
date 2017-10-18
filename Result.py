@@ -7,15 +7,15 @@ class Result:
 		self.maxLoss = 0
 		self.maxGain = 0
 		self.itm5 = 0
-		
-	def __total(self):
-		return self.wins + self.loss
 
 	def __percent(self, val):
-		total = self.win + self.loss
+		total = self.total()
 		if (total > 0):
 			return format(100 * val / total, "0.2f")
 		return 0
+
+	def total(self):
+		return self.win + self.loss
 
 	def addStat(self, r):
 		self.win += r.win 

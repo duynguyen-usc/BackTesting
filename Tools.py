@@ -20,3 +20,41 @@ class StringBuilder:
 	def toString(self):
 		return self.s
 
+class DateHelper:
+	MONDAY = 0
+	TUESDAY = 1
+	WEDNESDAY = 2
+	THURSDAY = 3
+	FRIDAY = 4
+	SATURDAY = 5
+	SUNDAY = 6
+
+	@staticmethod
+	def getWeekday(day):
+		d = day.weekday()
+		if(d == DateHelper.MONDAY):
+			return 'M'
+		elif(d == DateHelper.TUESDAY):
+			return 'T'
+		elif(d == DateHelper.WEDNESDAY):
+			return 'W'
+		elif(d == DateHelper.THURSDAY):
+			return 'H'
+		elif(d == DateHelper.FRIDAY):
+			return 'F'
+
+class Constants:
+	STRIKE_PCT_DOWN = 0.08
+	REPAIR_STRIKE_PCT_DOWN = 0.05	
+	NETCHANGE_PCT = 10	
+	VIX_MIN = 1	
+
+	HOLD_PERIOD = 25
+	REPAIR_HOLD_PERIOD = 25
+	MONTH = 25	
+	BOLBAND_PERIOD = '20day'
+
+	SHORT_HOLD_PERIOD = 2	
+	SHORT_MULTIPLIER = 1
+	BEAR_CALL_DAY = DateHelper.WEDNESDAY
+	BEAR_CALL_ISUP = 0

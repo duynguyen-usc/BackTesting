@@ -5,12 +5,14 @@ from Option import Option
 from PriceData import PriceData
 from Result import Result
 from Tools import StringBuilder
-from Constants import Constants
+from Tools import DateHelper
+from Tools import Constants
 
 class EquityData:
 	def __init__(self, csvFile):		
 		self.data = []
 		self.vixdata = []
+		self.resultdata = []
 		self.results = Result()
 		self.touchresults = Result()
 		self.repairresults = Result()
@@ -19,7 +21,6 @@ class EquityData:
 		self.__parseVixFile()		
 		self.__lastIdx = len(self.data) - 1
 		self.__interDayCalculations()
-		self.__bullput()	
 
 	def __parseCsvFile(self, csvFile):
 		data = [line.rstrip('\n') for line in open(csvFile)]
@@ -37,6 +38,7 @@ class EquityData:
 		for idx, vx in enumerate(self.vixdata):
 			if (vx.date == d):
 				return vx.close
+		return 0
 
 	def __addVixValue(self, idx):
 		self.data[idx].vix = self.__getVixValue(self.data[idx].date)
@@ -103,9 +105,6 @@ class EquityData:
 			return np.std([self.data[i].close for i in range(idxStart, idxEnd)])
 		return 0
 
-	def __isDown(self, idx, pct=0):
-		return self.data[idx].percentChange < pct
-
 	def __uptrend(self, idx):			
 		idxstart = idx - Constants.MONTH
 		if (idxstart > 0):
@@ -116,48 +115,81 @@ class EquityData:
 			return True
 		return False
 
-	def __entry(self, idx):		
+	def __entry(self, optSpreadType, idx):
+		if (optSpreadType == Option.SHORT_VERTICAL_PUT):
+			return self.__bullPutEntry(idx)
+		elif (optSpreadType == Option.SHORT_VERTICAL_CALL):
+			return self.__bearCallEntry(idx)
+		return False
+
+	def __bullPutEntry(self, idx):		
 		return (self.__uptrend(idx) and 
-				self.__isDown(idx, Constants.STRIKE_PCT_DOWN) and 
+				self.data[idx].isDown() and 
 				self.data[idx].vix > Constants.VIX_MIN)
 
+	def __bearCallEntry(self, idx):
+		return (self.data[idx].date.weekday() == Constants.BEAR_CALL_DAY and 		
+				self.data[idx].isUp(Constants.BEAR_CALL_ISUP))
+
 	def __getPeriodData(self, idxstart, idxend):
-		return [self.data[i] for i in range(idxstart, idxend)]
+		idxfinish = min([idxend, self.__lastIdx])
+		return [self.data[i] for i in range(idxstart, idxfinish)]
 
-	def __bullput(self):				
+	def __simulateTrades(self, optSpreadType, holdPeriod):
 		for idx, day in enumerate(self.data):
-			expidx = idx + Constants.HOLD_PERIOD + 1
-			if (day.close > 0 and expidx < self.__lastIdx and self.__entry(idx)):				
-				put = Option(Option.SHORT_VERTICAL_PUT, 
-					self.__getPeriodData(idx, expidx))
-				
-				self.results.addStat(put.result)				
-				if (put.shortstrike != 0 and put.itm > 1):
-					print(put.toString())
-					self.touchresults.addStat(put.result)					
-					repairIdx = idx + put.getFirstTouchIdx()
-					expidx = repairIdx + Constants.HOLD_PERIOD + 1
-					repairtrade = Option(Option.SHORT_VERTICAL_PUT, 
-						self.__getPeriodData(repairIdx, expidx), True)
-					self.repairresults.addStat(repairtrade.result)
-					print(repairtrade.toString() + "*")
+			expidx = idx + holdPeriod + 1
+			if (day.close > 0 and expidx < self.__lastIdx and 
+				self.__entry(optSpreadType, idx)):				
+				hpdata = self.__getPeriodData(idx, expidx)
+				self.__addTrade(optSpreadType, hpdata, idx)
 
-	def toString(self):	
+	def __addTrade(self, optSpreadType, hpdata, idx):
+		optionSpread = Option(optSpreadType, hpdata)
+		self.results.addStat(optionSpread.result)
+		self.resultdata.append(optionSpread)
+
+		if(optionSpread.itm > 1):			
+			ridx = optionSpread.getFirstTouchIdx() + idx
+			rexpidx = ridx + Constants.REPAIR_HOLD_PERIOD
+			repairData = self.__getPeriodData(ridx, rexpidx)
+			repairTrade = Option(optSpreadType, repairData, True)
+			self.repairresults.addStat(repairTrade.result)
+			self.resultdata.append(repairTrade)
+
+	def __displayResult(self):	
 		eq = StringBuilder()
+		for rd in self.resultdata:
+			eq.addline(rd.toString())
 		eq.addline('')
 		eq.addline('Overall:')
 		eq.addline(self.results.toString())
-		eq.addline('Touch results:')
-		eq.addline(self.touchresults.toString())
-		eq.addline('Repair results:')
-		eq.addline(self.repairresults.toString())
-		return eq.toString()
+		if (self.touchresults.total() > 0):
+			eq.addline('Touch results:')
+			eq.addline(self.touchresults.toString())
+		if(self.repairresults.total() > 0):
+			eq.addline('Repair results:')
+			eq.addline(self.repairresults.toString())
+		print(eq.toString())
+
+	def bullput(self):				
+		self.__simulateTrades(Option.SHORT_VERTICAL_PUT, Constants.HOLD_PERIOD)
+		self.__displayResult()
+
+	def bearcall(self):
+		self.__simulateTrades(Option.SHORT_VERTICAL_CALL, Constants.SHORT_HOLD_PERIOD)
+		self.__displayResult()
+	
 
 def main():
 	path = os.path.dirname(os.path.realpath(__file__))
 	os.chdir(path)
 	spx = EquityData('Data/SPX.csv')
-	print(spx.toString())
+	rut = EquityData('Data/RUT.csv')
+	# spx.bullput()
+	# spx.bearcall()
+	rut.bullput()
+	# rut.bearcall()
+
 
 if __name__ == "__main__":
     main()

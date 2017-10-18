@@ -1,7 +1,8 @@
 import math
 from Result import Result
 from Tools import StringBuilder
-from Constants import Constants
+from Tools import DateHelper
+from Tools import Constants
 
 class Option:	
 	SHORT_VERTICAL_PUT = 0
@@ -15,6 +16,7 @@ class Option:
 		self.expday = self.hpdata[len(hpdata) - 1]		
 		self.longstrike = None
 		self.shortstrike = None	
+		self.itm = 0
 		self.isRepair = repair	
 		self.result = Result()
 		self.__setoptstructure(optstruct)
@@ -23,7 +25,7 @@ class Option:
 
 	def __setoptstructure(self, optstruct):
 		if(optstruct not in (self.SHORT_VERTICAL_PUT, 
-					 		 self.LONG_VERTICAL_CALL)):
+					 		 self.SHORT_VERTICAL_CALL)):
 			raise ValueError('optionstructure not valid')
 		self.structure = optstruct
 
@@ -35,10 +37,22 @@ class Option:
 
 	def __setLegs(self):
 		if (self.__isBullPut()):
-			self.longstrike = self.shortstrike - self.__setSpread()		
+			self.longstrike = self.shortstrike - self.__setSpread()
+
+		if (self.__isBearCall()):
+			self.longstrike = self.shortstrike + self.__setSpread()
 
 	def __roundStrike(self, x, base=5):
-		return int(base * math.floor(float(x) / base))
+		if(self.structure == self.SHORT_VERTICAL_PUT):
+			return int(base * math.floor(float(x) / base))
+		else:
+			return int(base * math.ceil(float(x) / base))
+
+	def __isBullPut(self):
+		return self.structure == self.SHORT_VERTICAL_PUT
+
+	def __isBearCall(self):
+		return self.structure == self.SHORT_VERTICAL_CALL
 
 	def __setStrikes(self):
 		if (self.__isBullPut()):
@@ -49,29 +63,44 @@ class Option:
 				pct = self.today.close * (1 - Constants.STRIKE_PCT_DOWN)				
 				ma = self.today.movavg['200day']
 				self.shortstrike = self.__roundStrike(min([ma, pct]))
-		self.__setLegs()		
 
-	def __isBullPut(self):
-		return self.structure == self.SHORT_VERTICAL_PUT
+		if (self.__isBearCall()):			
+			self.shortstrike = self.__roundStrike(self.today.close + 
+				(self.today.change * Constants.SHORT_MULTIPLIER))
+		self.__setLegs()
 
 	def __setTradeResult(self):
 		self.itm = self.__daysInTheMoney()		
 		if (self.__isBullPut()):
-			if (self.itm > 1):
+			if (self.shortstrike < self.expday.close):
+				self.result.win = 1	
+			else: 
 				self.result.loss = 1
-				if (self.longstrike > self.expday.close):
+				if (self.itm > 1):				
+					if (self.longstrike > self.expday.close):
+						self.result.maxLoss = 1
+					if (self.itm > 5):
+						self.result.itm5 = 1
+				else:
+					self.result.maxGain = 1
+
+		if (self.__isBearCall()):
+			if (self.shortstrike < self.expday.close):				
+				self.result.loss = 1
+				if (self.longstrike < self.expday.close):
 					self.result.maxLoss = 1
 				if (self.itm > 5):
 					self.result.itm5 = 1
 
-			if (self.shortstrike < self.expday.close):
-				self.result.win = 1
-				if(self.shortstrike < self.expday.close):
-					self.result.maxGain = 1
+			if (self.shortstrike > self.expday.close):
+				self.result.win = 1				
+				self.result.maxGain = 1
 
 	def __isInTheMoney(self, d):		
 		if(self.structure == self.SHORT_VERTICAL_PUT):
 			return d.close < self.shortstrike
+		if(self.structure == self.SHORT_VERTICAL_CALL):
+			return d.close > self.shortstrike
 		return False
 
 	def __daysInTheMoney(self):
@@ -90,14 +119,14 @@ class Option:
 		return -1
 			
 	def toString(self):	
-		strOpt = StringBuilder()
+		strOpt = StringBuilder()	
 		strOpt.addDate(self.today.date)
-		strOpt.addtab(round(self.today.close, 2))
-		strOpt.addtab(round(self.today.movavg['200day']))
-		strOpt.addtab(round(self.today.vix, 2))
-		strOpt.addtab(self.__getSpread())
-		strOpt.addDate(self.expday.date)		
-		strOpt.addtab(round(self.expday.close))
-		strOpt.addtab(self.itm)
+		strOpt.addtab(('%.2f' % self.today.close))
+		strOpt.addtab('%.2f' % self.today.percentChange)
+		strOpt.addtab(self.__getSpread())		
+		strOpt.addtab(('%.2f' % self.expday.close))
+		strOpt.addDate(self.expday.date)
 		strOpt.addtab(self.__isWin())
+		if(self.isRepair):
+			strOpt.addtab('repair')
 		return strOpt.toString()
